@@ -42,7 +42,7 @@ BENCHMARK_DEFINE_F(SearchBenchmark, BinarySearch)(benchmark::State& state) {
 }
 BENCHMARK_REGISTER_F(SearchBenchmark, BinarySearch)
     ->RangeMultiplier(4)
-    ->Range(size, size);
+    ->Range(1 << 10, size);
 
 BENCHMARK_DEFINE_F(SearchBenchmark, BiasedSearch)(benchmark::State& state) {
   while (state.KeepRunning()) {
@@ -53,7 +53,7 @@ BENCHMARK_DEFINE_F(SearchBenchmark, BiasedSearch)(benchmark::State& state) {
 }
 BENCHMARK_REGISTER_F(SearchBenchmark, BiasedSearch)
     ->RangeMultiplier(4)
-    ->Range(size, size);
+    ->Range(1 << 10, size);
 
 BENCHMARK_DEFINE_F(SearchBenchmark, STLSearch)(benchmark::State& state) {
   while (state.KeepRunning()) {
@@ -63,7 +63,7 @@ BENCHMARK_DEFINE_F(SearchBenchmark, STLSearch)(benchmark::State& state) {
 }
 BENCHMARK_REGISTER_F(SearchBenchmark, STLSearch)
     ->RangeMultiplier(4)
-    ->Range(size, size);
+    ->Range(1 << 10, size);
 
 int compare(const void* p, const void* q) {
   int x = *reinterpret_cast<const int*>(p);
@@ -80,7 +80,7 @@ BENCHMARK_DEFINE_F(SearchBenchmark, BSearch)(benchmark::State& state) {
 }
 BENCHMARK_REGISTER_F(SearchBenchmark, BSearch)
     ->RangeMultiplier(4)
-    ->Range(size, size);
+    ->Range(1 << 10, size);
 }  // namespace
 
 BENCHMARK_MAIN()
