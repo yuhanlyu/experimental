@@ -1,5 +1,5 @@
-#ifndef FIB_H_
-#define FIB_H_
+#ifndef FIB_H
+#define FIB_H
 #include <stdint.h>
 
 // Computing Fibonacci number by using
