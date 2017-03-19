@@ -29,7 +29,7 @@ Please see the Makefile in each folder.Here are common targets:
 
 Befure run the benchmark, please turn off the cpu scaling.
 On linux, you can execute the following commdn to turn off the cpu scaling:
-sudo cpupower frequency-set -g performance
+`sudo cpupower frequency-set -g performance`
 
 On linux, you can execute the following commdn to turn on the cpu scaling:
-sudo cpupower frequency-set -g powersave
+`sudo cpupower frequency-set -g powersave`
