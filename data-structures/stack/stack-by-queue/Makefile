@@ -19,4 +19,4 @@ cppcheck: $(SRC)
 	$(CPPCHECK) $(CPPCHECK_FLAGS) $(SRC)
 
 clean:
-	rm stack_by_queue_test perf.data*
+	rm stack_by_queue_test stack_by_queue_benchmark perf.data*
