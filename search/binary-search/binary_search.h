@@ -10,8 +10,8 @@ const T* BinarySearch(const T* first, const T* last, T x) {
     int half = length >> 1;
     const T* middle = first + half;
     if (*middle < x) {
-      first = middle + 1;
       length -= half + 1;
+      first = middle + 1;
     } else {
       length = half;
     }
@@ -30,8 +30,8 @@ const T* BiasedBinarySearch(const T* first, const T* last, T x) {
     int half = length >> 2;
     const T* middle = first + half;
     if (*middle < x) {
-      first = middle + 1;
       length -= half + 1;
+      first = middle + 1;
     } else {
       length = half;
     }

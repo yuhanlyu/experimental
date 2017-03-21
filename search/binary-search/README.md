@@ -10,6 +10,11 @@ I read this method from the following paper:
 Gerth Stølting Brodal, Gabriel Moruz,Skewed Binary Search Trees,
 Lecture Notes in Computer Science Volume 4168, 2006, pp 708-719
 
+## Test method
+A set of integers is generated uniformly at random and sorted. Then, generate
+random number as target element to be searched in the sorted set. Since the
+random number generation is included in the CPU time in the benchmark, I also
+measure the running time of random number generation.
 
 ## Result
 I compared my implementation of binary search, biased searhc with STL
@@ -47,6 +52,11 @@ SearchBenchmark/BSearch/262144              182 ns        182 ns    3844379
 SearchBenchmark/BSearch/1048576             212 ns        212 ns    3304502
 
 The biased search is fastest method among all methods.
+
+Compare STLSearch with BiasedSearch when the set size is 1048576, the running
+time of STLSearch is 210 - 51(random numbe generation) = 159, and the running
+time of BiasedSearch is 167 - 51 = 112. Hence, biased search method reduced
+the running time by 30$.
 
 ### Result of perf stat
 Here is the perf stat for biased search
