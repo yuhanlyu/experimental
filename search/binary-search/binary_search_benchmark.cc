@@ -1,7 +1,6 @@
 #include "binary_search.h"
 
 #include <algorithm>
-#include <cstdint>
 #include <cstdlib>
 #include <limits>
 #include <random>
