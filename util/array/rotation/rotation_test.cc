@@ -34,7 +34,9 @@ TEST_F(RotationTest, ValidateJugglingBently) {
     int temp[size];
     std::copy(test, test + size, temp);
     JugglingBentley(temp, size, shift[i]);
-    for (int j = 0; j < size; ++j) ASSERT_EQ(temp[j], (j + shift[i]) % size);
+    for (int j = 0; j < size; ++j) {
+      ASSERT_EQ(temp[j], (j + shift[i]) % size);
+    }
   }
 }
 
@@ -63,7 +65,9 @@ TEST_F(RotationTest, ValidateBlockSwapShene) {
     int temp[size];
     std::copy(test, test + size, temp);
     BlockSwapShene(temp, size, shift[i]);
-    for (int j = 0; j < size; ++j) ASSERT_EQ(temp[j], (j + shift[i]) % size);
+    for (int j = 0; j < size; ++j) {
+      ASSERT_EQ(temp[j], (j + shift[i]) % size);
+    }
   }
 }
 
@@ -72,7 +76,9 @@ TEST_F(RotationTest, ValidateBlockSwapGries) {
     int temp[size];
     std::copy(test, test + size, temp);
     BlockSwapGries(temp, size, shift[i]);
-    for (int j = 0; j < size; ++j) ASSERT_EQ(temp[j], (j + shift[i]) % size);
+    for (int j = 0; j < size; ++j) {
+      ASSERT_EQ(temp[j], (j + shift[i]) % size);
+    }
   }
 }
 

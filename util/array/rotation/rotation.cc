@@ -47,9 +47,9 @@ void JugglingShene(int A[], int n, int k) {
 }
 
 void RotateReverse(int A[], int n, int k) {
-	std::reverse(A, A + k);
-	std::reverse(A + k, A + n);
-	std::reverse(A, A + n);
+  std::reverse(A, A + k);
+  std::reverse(A + k, A + n);
+  std::reverse(A, A + n);
 }
 
 void BlockSwapShene(int A[], int n, int k) {
