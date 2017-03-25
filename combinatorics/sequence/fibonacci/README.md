@@ -7,8 +7,8 @@ and tumble method is faster than iterative method.
 ----------------------------------------------------
 Benchmark             Time           CPU Iterations
 ----------------------------------------------------
-BM\_Iterative         39 ns         39 ns   17947895
-BM\_Doubling          11 ns         11 ns   66489336
-BM\_Tumble            25 ns         25 ns   27036572
-BM\_QMatrix           15 ns         15 ns   47370188
+BM_Iterative         39 ns         39 ns   17952331
+BM_Doubling          11 ns         11 ns   66511465
+BM_Tumble            24 ns         24 ns   29845878
+BM_QMatrix           15 ns         15 ns   47363973
 </pre>

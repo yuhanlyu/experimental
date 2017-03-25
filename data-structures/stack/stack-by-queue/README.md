@@ -12,8 +12,11 @@ will become O(n^{1/k}) for push and pop.
 
 ## Benchmark
 <pre>
-BM_StackByQueuePush       1955 ns       1955 ns    1195003
-BM_STLStackPush              2 ns          2 ns  296781088
-BM_StackByQueueMix         527 ns        527 ns    1000000
-BM_STLStackMix              56 ns         56 ns   12561888
+-----------------------------------------------------------
+Benchmark                    Time           CPU Iterations
+-----------------------------------------------------------
+BM_StackByQueuePush       1966 ns       1966 ns    1167950
+BM_STLStackPush              2 ns          2 ns  295125925
+BM_StackByQueueMix         528 ns        528 ns    1000000
+BM_STLStackMix              56 ns         56 ns   12534633
 </pre>

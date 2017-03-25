@@ -23,31 +23,34 @@ an element in a sorted integer array whose elements are drawn from a uniform
 distribution. The results are shown below:
 
 <pre>
-SearchBenchmark/Random/1048576               51 ns         51 ns   13827433
-SearchBenchmark/BinarySearch/1024            99 ns         99 ns    7050898
-SearchBenchmark/BinarySearch/4096           109 ns        109 ns    6450624
-SearchBenchmark/BinarySearch/16384          122 ns        122 ns    5757476
-SearchBenchmark/BinarySearch/65536          141 ns        141 ns    4960329
-SearchBenchmark/BinarySearch/262144         183 ns        183 ns    3828184
-SearchBenchmark/BinarySearch/1048576        212 ns        212 ns    3293893
-SearchBenchmark/BiasedSearch/1024            92 ns         92 ns    7605249
-SearchBenchmark/BiasedSearch/4096           102 ns        102 ns    6885205
-SearchBenchmark/BiasedSearch/16384          111 ns        111 ns    6287143
-SearchBenchmark/BiasedSearch/65536          123 ns        123 ns    5697893
-SearchBenchmark/BiasedSearch/262144         147 ns        147 ns    4782029
-SearchBenchmark/BiasedSearch/1048576        167 ns        167 ns    4184260
-SearchBenchmark/STLSearch/1024               98 ns         98 ns    7128321
-SearchBenchmark/STLSearch/4096              107 ns        107 ns    6525206
-SearchBenchmark/STLSearch/16384             122 ns        122 ns    5823726
-SearchBenchmark/STLSearch/65536             139 ns        139 ns    4865778
-SearchBenchmark/STLSearch/262144            181 ns        181 ns    3884047
-SearchBenchmark/STLSearch/1048576           210 ns        210 ns    3327416
-SearchBenchmark/BSearch/1024                101 ns        101 ns    6943504
-SearchBenchmark/BSearch/4096                110 ns        110 ns    6400934
-SearchBenchmark/BSearch/16384               122 ns        122 ns    5742203
-SearchBenchmark/BSearch/65536               141 ns        141 ns    4960557
-SearchBenchmark/BSearch/262144              182 ns        182 ns    3844379
-SearchBenchmark/BSearch/1048576             212 ns        212 ns    3304502
+----------------------------------------------------------------------------
+Benchmark                                     Time           CPU Iterations
+----------------------------------------------------------------------------
+SearchBenchmark/Random/1048576               51 ns         51 ns   13810522
+SearchBenchmark/BinarySearch/1024           102 ns        102 ns    7036987
+SearchBenchmark/BinarySearch/4096           109 ns        109 ns    6450115
+SearchBenchmark/BinarySearch/16384          122 ns        122 ns    5745382
+SearchBenchmark/BinarySearch/65536          140 ns        140 ns    5030229
+SearchBenchmark/BinarySearch/262144         184 ns        184 ns    3851069
+SearchBenchmark/BinarySearch/1048576        212 ns        212 ns    3298143
+SearchBenchmark/BiasedSearch/1024            92 ns         92 ns    7631767
+SearchBenchmark/BiasedSearch/4096           102 ns        102 ns    6878790
+SearchBenchmark/BiasedSearch/16384          113 ns        113 ns    6280001
+SearchBenchmark/BiasedSearch/65536          122 ns        122 ns    5735669
+SearchBenchmark/BiasedSearch/262144         147 ns        147 ns    4772481
+SearchBenchmark/BiasedSearch/1048576        169 ns        169 ns    4169881
+SearchBenchmark/STLSearch/1024               98 ns         98 ns    7116352
+SearchBenchmark/STLSearch/4096              107 ns        107 ns    6524691
+SearchBenchmark/STLSearch/16384             120 ns        120 ns    5813476
+SearchBenchmark/STLSearch/65536             143 ns        143 ns    5075027
+SearchBenchmark/STLSearch/262144            186 ns        186 ns    3755150
+SearchBenchmark/STLSearch/1048576           210 ns        210 ns    3330481
+SearchBenchmark/BSearch/1024                101 ns        101 ns    6958017
+SearchBenchmark/BSearch/4096                109 ns        109 ns    6375395
+SearchBenchmark/BSearch/16384               122 ns        122 ns    5714193
+SearchBenchmark/BSearch/65536               139 ns        139 ns    5030997
+SearchBenchmark/BSearch/262144              181 ns        181 ns    3868777
+SearchBenchmark/BSearch/1048576             212 ns        212 ns    3168074
 </pre>
 
 The biased search is fastest method among all methods.
