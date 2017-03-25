@@ -1,6 +1,6 @@
 #ifndef FIB_H
 #define FIB_H
-#include <stdint.h>
+#include <cstdint>
 
 // Computing Fibonacci number by using
 // F(2n) = F(n)^2 + F(n+1)^2 and F(2n+1) = 2F(n)F(n+1) + F(n+1)^2
