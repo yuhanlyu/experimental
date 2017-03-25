@@ -11,10 +11,9 @@ Using k queues to implement a stack is also possible, and the time complexity
 will become O(n^{1/k}) for push and pop.
 
 ## Benchmark
------------------------------------------------------------
-Benchmark                    Time           CPU Iterations
------------------------------------------------------------
+<pre>
 BM_StackByQueuePush       1955 ns       1955 ns    1195003
 BM_STLStackPush              2 ns          2 ns  296781088
 BM_StackByQueueMix         527 ns        527 ns    1000000
 BM_STLStackMix              56 ns         56 ns   12561888
+</pre>

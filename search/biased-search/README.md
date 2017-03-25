@@ -20,11 +20,9 @@ measure the running time of random number generation.
 I compared my implementation of binary search, biased searhc with STL
 lower\_bound and bsearch in stdlib by measuring the running time of finding
 an element in a sorted integer array whose elements are drawn from a uniform
-distribution. The result is shown below:
+distribution. The results are shown below:
 
-----------------------------------------------------------------------------
-Benchmark                                     Time           CPU Iterations
-----------------------------------------------------------------------------
+<pre>
 SearchBenchmark/Random/1048576               51 ns         51 ns   13827433
 SearchBenchmark/BinarySearch/1024            99 ns         99 ns    7050898
 SearchBenchmark/BinarySearch/4096           109 ns        109 ns    6450624
@@ -50,6 +48,7 @@ SearchBenchmark/BSearch/16384               122 ns        122 ns    5742203
 SearchBenchmark/BSearch/65536               141 ns        141 ns    4960557
 SearchBenchmark/BSearch/262144              182 ns        182 ns    3844379
 SearchBenchmark/BSearch/1048576             212 ns        212 ns    3304502
+</pre>
 
 The biased search is fastest method among all methods.
 
@@ -60,7 +59,7 @@ the running time by 30$.
 
 ### Result of perf stat
 Here is the perf stat for biased search
-
+<pre>
       45499.903695      task-clock (msec)         #    1.000 CPUs utilized          
                 32      context-switches          #    0.001 K/sec                  
                  0      cpu-migrations            #    0.000 K/sec                  
@@ -69,9 +68,10 @@ Here is the perf stat for biased search
    164,462,580,111      instructions              #    0.86  insn per cycle         
     30,552,200,918      branches                  #  671.478 M/sec                  
      2,978,081,010      branch-misses             #    9.75% of all branches 
+</pre>
 
 Here is the perf stat for binary search
-
+<pre>
       50629.590220      task-clock (msec)         #    1.000 CPUs utilized          
                 24      context-switches          #    0.000 K/sec                  
                  0      cpu-migrations            #    0.000 K/sec                  
@@ -80,9 +80,10 @@ Here is the perf stat for binary search
    114,467,394,551      instructions              #    0.54  insn per cycle         
     19,870,041,254      branches                  #  392.459 M/sec                  
      3,175,483,649      branch-misses             #   15.98% of all branches        
+</pre>
 
 Here is the perf stat for STL lower\_bound
-
+<pre>
       49887.583328      task-clock (msec)         #    1.000 CPUs utilized          
                 33      context-switches          #    0.001 K/sec                  
                  0      cpu-migrations            #    0.000 K/sec                  
@@ -91,9 +92,10 @@ Here is the perf stat for STL lower\_bound
    108,836,166,274      instructions              #    0.52  insn per cycle         
     20,202,816,406      branches                  #  404.967 M/sec                  
      3,240,770,704      branch-misses             #   16.04% of all branches      
+</pre>
 
 Here is the perf stat for stdlib bsearch
-
+<pre>
       50553.219060      task-clock (msec)         #    1.000 CPUs utilized          
                 22      context-switches          #    0.000 K/sec                  
                  0      cpu-migrations            #    0.000 K/sec                  
@@ -102,4 +104,4 @@ Here is the perf stat for stdlib bsearch
    103,908,539,111      instructions              #    0.49  insn per cycle         
     21,338,853,452      branches                  #  422.107 M/sec                  
      3,183,131,604      branch-misses             #   14.92% of all branches        
-
+</pre>
