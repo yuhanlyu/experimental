@@ -1,4 +1,4 @@
-include ../../flags.mk
+include ../../../flags.mk
 SRC = sum_benchmark.cc
 
 benchmark: sum_benchmark.cc

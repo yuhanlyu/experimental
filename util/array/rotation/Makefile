@@ -1,4 +1,4 @@
-include ../../flags.mk
+include ../../../flags.mk
 SRC = rotation.h rotation.cc rotation_test.cc rotation_benchmark.cc
 
 test: rotation.h rotation.cc rotation_test.cc

@@ -1,5 +1,7 @@
 #include "rotation.h"
 
+#include <algorithm>
+
 namespace {
 
 inline int GCD(int a, int b) {
@@ -53,9 +55,9 @@ void JugglingShene(int A[], int n, int k) {
 }
 
 void RotateReverse(int A[], int n, int k) {
-  Reverse(A, 0, k - 1);
-  Reverse(A, k, n - 1);
-  Reverse(A, 0, n - 1);
+	std::reverse(A, A + k);
+	std::reverse(A + k, A + n);
+	std::reverse(A, A + n);
 }
 
 void BlockSwapShene(int A[], int n, int k) {
