@@ -1,5 +1,5 @@
 include ../../../flags.mk
-SRC = fib.h fib.cc  fib.h  fib_test.cc fib_benchmark.cc
+SRC = fib.h fib.cc fib_test.cc fib_benchmark.cc
 
 test: fib.h fib.cc fib_test.cc
 	$(CC) $(CFLAGS) -L$(LIB_DIR) -I$(INCLUDE_DIR) fib.cc fib_test.cc $(TEST_FLAGS) -o fib_test
