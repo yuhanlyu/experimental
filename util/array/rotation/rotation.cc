@@ -10,14 +10,6 @@ inline int GCD(int a, int b) {
   return a + b;
 }
 
-inline void Reverse(int A[], int l, int r) {
-  while (l < r) {
-    int temp = A[l];
-    A[l++] = A[r];
-    A[r--] = temp;
-  }
-}
-
 // Swap the subarray A[i..i+k-1] with A[j..j+k-1].
 inline void SwapSection(int A[], int i, int j, int k) {
   while (k-- > 0) {
