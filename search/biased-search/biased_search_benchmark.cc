@@ -1,4 +1,4 @@
-#include "binary_search.h"
+#include "biased_search.h"
 
 #include <algorithm>
 #include <cstdlib>
@@ -9,33 +9,32 @@
 
 namespace {
 
-constexpr int size = 1 << 20;
+constexpr int size = 1 << 28;
 int test[size];
 
 class SearchBenchmark : public benchmark::Fixture {
  public:
   void SetUp(const ::benchmark::State& state) override {
-    generator.seed();
+    generator_.seed();
     for (int i = 0; i < state.range(0); ++i) {
-      test[i] = distribution(generator);
+      test[i] = 2 * i + 1;
     }
-    std::sort(test, test + state.range(0));
+		distribution_ = std::uniform_int_distribution<int>(0, state.range(0) * 2 + 1);
   }
-  std::default_random_engine generator;
-  std::uniform_int_distribution<int> distribution{
-      0, std::numeric_limits<int>::max()};
+  std::default_random_engine generator_;
+  std::uniform_int_distribution<int> distribution_;
 };
 
 BENCHMARK_DEFINE_F(SearchBenchmark, Random)(benchmark::State& state) {
   while (state.KeepRunning()) {
-    benchmark::DoNotOptimize(distribution(generator));
+    benchmark::DoNotOptimize(distribution_(generator_));
   }
 }
 BENCHMARK_REGISTER_F(SearchBenchmark, Random)->Arg(1 << 20);
 
 BENCHMARK_DEFINE_F(SearchBenchmark, BinarySearch)(benchmark::State& state) {
   while (state.KeepRunning()) {
-    int r = distribution(generator);
+    int r = distribution_(generator_);
     benchmark::DoNotOptimize(BinarySearch(test, test + state.range(0), r));
   }
 }
@@ -45,7 +44,7 @@ BENCHMARK_REGISTER_F(SearchBenchmark, BinarySearch)
 
 BENCHMARK_DEFINE_F(SearchBenchmark, BiasedSearch)(benchmark::State& state) {
   while (state.KeepRunning()) {
-    int r = distribution(generator);
+    int r = distribution_(generator_);
     benchmark::DoNotOptimize(
         BiasedBinarySearch(test, test + state.range(0), r));
   }
@@ -56,7 +55,7 @@ BENCHMARK_REGISTER_F(SearchBenchmark, BiasedSearch)
 
 BENCHMARK_DEFINE_F(SearchBenchmark, STLSearch)(benchmark::State& state) {
   while (state.KeepRunning()) {
-    int r = distribution(generator);
+    int r = distribution_(generator_);
     benchmark::DoNotOptimize(std::lower_bound(test, test + state.range(0), r));
   }
 }
@@ -72,7 +71,7 @@ int compare(const void* p, const void* q) {
 
 BENCHMARK_DEFINE_F(SearchBenchmark, BSearch)(benchmark::State& state) {
   while (state.KeepRunning()) {
-    int r = distribution(generator);
+    int r = distribution_(generator_);
     benchmark::DoNotOptimize(
         bsearch(&r, test, state.range(0), sizeof(int), compare));
   }

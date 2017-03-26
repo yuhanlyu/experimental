@@ -23,34 +23,50 @@ an element in a sorted integer array whose elements are drawn from a uniform
 distribution. The results are shown below:
 
 <pre>
-----------------------------------------------------------------------------
-Benchmark                                     Time           CPU Iterations
-----------------------------------------------------------------------------
-SearchBenchmark/Random/1048576               51 ns         51 ns   13810522
-SearchBenchmark/BinarySearch/1024           102 ns        102 ns    7036987
-SearchBenchmark/BinarySearch/4096           109 ns        109 ns    6450115
-SearchBenchmark/BinarySearch/16384          122 ns        122 ns    5745382
-SearchBenchmark/BinarySearch/65536          140 ns        140 ns    5030229
-SearchBenchmark/BinarySearch/262144         184 ns        184 ns    3851069
-SearchBenchmark/BinarySearch/1048576        212 ns        212 ns    3298143
-SearchBenchmark/BiasedSearch/1024            92 ns         92 ns    7631767
-SearchBenchmark/BiasedSearch/4096           102 ns        102 ns    6878790
-SearchBenchmark/BiasedSearch/16384          113 ns        113 ns    6280001
-SearchBenchmark/BiasedSearch/65536          122 ns        122 ns    5735669
-SearchBenchmark/BiasedSearch/262144         147 ns        147 ns    4772481
-SearchBenchmark/BiasedSearch/1048576        169 ns        169 ns    4169881
-SearchBenchmark/STLSearch/1024               98 ns         98 ns    7116352
-SearchBenchmark/STLSearch/4096              107 ns        107 ns    6524691
-SearchBenchmark/STLSearch/16384             120 ns        120 ns    5813476
-SearchBenchmark/STLSearch/65536             143 ns        143 ns    5075027
-SearchBenchmark/STLSearch/262144            186 ns        186 ns    3755150
-SearchBenchmark/STLSearch/1048576           210 ns        210 ns    3330481
-SearchBenchmark/BSearch/1024                101 ns        101 ns    6958017
-SearchBenchmark/BSearch/4096                109 ns        109 ns    6375395
-SearchBenchmark/BSearch/16384               122 ns        122 ns    5714193
-SearchBenchmark/BSearch/65536               139 ns        139 ns    5030997
-SearchBenchmark/BSearch/262144              181 ns        181 ns    3868777
-SearchBenchmark/BSearch/1048576             212 ns        212 ns    3168074
+------------------------------------------------------------------------------
+Benchmark                                       Time           CPU Iterations
+------------------------------------------------------------------------------
+SearchBenchmark/Random/1048576                 15 ns         15 ns   45187055
+SearchBenchmark/BinarySearch/1024              67 ns         67 ns   10242740
+SearchBenchmark/BinarySearch/4096              76 ns         76 ns    9237733
+SearchBenchmark/BinarySearch/16384             88 ns         88 ns    7905816
+SearchBenchmark/BinarySearch/65536            105 ns        105 ns    6616125
+SearchBenchmark/BinarySearch/262144           150 ns        150 ns    4649888
+SearchBenchmark/BinarySearch/1048576          181 ns        181 ns    3838077
+SearchBenchmark/BinarySearch/4194304          389 ns        389 ns    1777741
+SearchBenchmark/BinarySearch/16777216         655 ns        655 ns    1141015
+SearchBenchmark/BinarySearch/67108864         851 ns        851 ns     873919
+SearchBenchmark/BinarySearch/268435456       1118 ns       1118 ns     645259
+SearchBenchmark/BiasedSearch/1024              59 ns         59 ns   11213908
+SearchBenchmark/BiasedSearch/4096              67 ns         67 ns   10378944
+SearchBenchmark/BiasedSearch/16384             76 ns         76 ns    9191853
+SearchBenchmark/BiasedSearch/65536             86 ns         86 ns    8045438
+SearchBenchmark/BiasedSearch/262144           110 ns        110 ns    6347804
+SearchBenchmark/BiasedSearch/1048576          130 ns        130 ns    5276553
+SearchBenchmark/BiasedSearch/4194304          206 ns        206 ns    3389488
+SearchBenchmark/BiasedSearch/16777216         300 ns        300 ns    2326153
+SearchBenchmark/BiasedSearch/67108864         392 ns        392 ns    1757196
+SearchBenchmark/BiasedSearch/268435456        496 ns        496 ns    1420024
+SearchBenchmark/STLSearch/1024                 66 ns         66 ns   10349370
+SearchBenchmark/STLSearch/4096                 74 ns         74 ns    9450538
+SearchBenchmark/STLSearch/16384                86 ns         86 ns    8079243
+SearchBenchmark/STLSearch/65536               103 ns        103 ns    6753223
+SearchBenchmark/STLSearch/262144              144 ns        144 ns    4822735
+SearchBenchmark/STLSearch/1048576             177 ns        177 ns    3934067
+SearchBenchmark/STLSearch/4194304             386 ns        386 ns    1813994
+SearchBenchmark/STLSearch/16777216            640 ns        640 ns    1160343
+SearchBenchmark/STLSearch/67108864            826 ns        826 ns     901772
+SearchBenchmark/STLSearch/268435456          1092 ns       1092 ns     668420
+SearchBenchmark/BSearch/1024                   64 ns         64 ns   10430009
+SearchBenchmark/BSearch/4096                   72 ns         72 ns    9668074
+SearchBenchmark/BSearch/16384                  85 ns         85 ns    8238533
+SearchBenchmark/BSearch/65536                 101 ns        101 ns    6823913
+SearchBenchmark/BSearch/262144                143 ns        143 ns    4875428
+SearchBenchmark/BSearch/1048576               176 ns        176 ns    3913013
+SearchBenchmark/BSearch/4194304               382 ns        382 ns    1841604
+SearchBenchmark/BSearch/16777216              650 ns        650 ns    1146531
+SearchBenchmark/BSearch/67108864              847 ns        847 ns     869768
+SearchBenchmark/BSearch/268435456            1119 ns       1119 ns     642861
 </pre>
 
 The biased search is fastest method among all methods.
@@ -61,50 +77,63 @@ time of BiasedSearch is 167 - 51 = 112. Hence, biased search method reduced
 the running time by 30$.
 
 ### Result of perf stat
-Here is the perf stat for biased search
+BinarySearch
 <pre>
-      45499.903695      task-clock (msec)         #    1.000 CPUs utilized          
-                32      context-switches          #    0.001 K/sec                  
-                 0      cpu-migrations            #    0.000 K/sec                  
-               639      page-faults               #    0.014 K/sec                  
-   190,515,911,300      cycles                    #    4.187 GHz                    
-   164,462,580,111      instructions              #    0.86  insn per cycle         
-    30,552,200,918      branches                  #  671.478 M/sec                  
-     2,978,081,010      branch-misses             #    9.75% of all branches 
+    33,727,490,135      cycles                                                        (38.27%)
+    30,103,989,563      instructions              #    0.89  insn per cycle           (45.94%)
+     5,153,853,506      branches                                                      (46.03%)
+       472,722,916      branch-misses             #    9.17% of all branches          (46.07%)
+     1,540,754,056      L1-dcache-load-misses     #   39.94% of all L1-dcache hits    (46.14%)
+     3,857,967,189      L1-dcache-loads                                               (46.40%)
+     2,729,834,992      L1-dcache-stores                                              (30.94%)
+       330,591,295      LLC-load-misses           #   32.48% of all LL-cache hits     (30.97%)
+     1,017,790,575      LLC-loads                                                     (30.91%)
+        50,594,832      LLC-store-misses                                              (15.35%)
+        82,602,102      LLC-stores                                                    (15.34%)
+       473,420,603      branch-load-misses                                            (22.98%)
+     5,134,284,618      branch-loads                                                  (30.61%)
+BiasedSearch
+    37,477,990,530      cycles                                                        (38.35%)
+    41,707,176,142      instructions              #    1.11  insn per cycle           (46.05%)
+     7,640,213,270      branches                                                      (46.09%)
+       491,780,115      branch-misses             #    6.44% of all branches          (46.05%)
+     1,533,415,822      L1-dcache-load-misses     #   31.41% of all L1-dcache hits    (46.16%)
+     4,881,462,460      L1-dcache-loads                                               (46.32%)
+     3,330,336,368      L1-dcache-stores                                              (30.88%)
+       269,923,324      LLC-load-misses           #   27.41% of all LL-cache hits     (30.87%)
+       984,597,365      LLC-loads                                                     (30.82%)
+        54,174,347      LLC-store-misses                                              (15.42%)
+        96,277,104      LLC-stores                                                    (15.45%)
+       489,520,623      branch-load-misses                                            (23.06%)
+     7,652,727,534      branch-loads                                                  (30.73%)
+STLSearch
+    33,765,237,076      cycles                                                        (38.46%)
+    29,131,353,341      instructions              #    0.86  insn per cycle           (46.16%)
+     5,156,833,291      branches                                                      (46.16%)
+       474,271,947      branch-misses             #    9.20% of all branches          (46.16%)
+     1,558,090,589      L1-dcache-load-misses     #   39.92% of all L1-dcache hits    (46.16%)
+     3,902,742,001      L1-dcache-loads                                               (46.16%)
+     2,730,539,544      L1-dcache-stores                                              (30.77%)
+       323,592,976      LLC-load-misses           #   32.18% of all LL-cache hits     (30.84%)
+     1,005,678,738      LLC-loads                                                     (30.82%)
+        56,248,363      LLC-store-misses                                              (15.40%)
+        96,206,538      LLC-stores                                                    (15.40%)
+       473,922,338      branch-load-misses                                            (23.09%)
+     5,137,926,768      branch-loads                                                  (30.77%)
+BSearch
+    33,343,142,903      cycles                                                        (38.43%)
+    27,953,395,519      instructions              #    0.84  insn per cycle           (46.10%)
+     5,290,587,196      branches                                                      (46.15%)
+       450,016,837      branch-misses             #    8.51% of all branches          (46.19%)
+     1,580,384,521      L1-dcache-load-misses     #   40.00% of all L1-dcache hits    (46.15%)
+     3,950,583,215      L1-dcache-loads                                               (46.16%)
+     2,727,716,048      L1-dcache-stores                                              (30.75%)
+       335,720,820      LLC-load-misses           #   31.99% of all LL-cache hits     (30.82%)
+     1,049,578,985      LLC-loads                                                     (30.90%)
+        47,541,782      LLC-store-misses                                              (15.44%)
+        80,188,457      LLC-stores                                                    (15.35%)
+       452,680,318      branch-load-misses                                            (23.05%)
+     5,085,179,040      branch-loads                                                  (30.70%)
 </pre>
 
-Here is the perf stat for binary search
-<pre>
-      50629.590220      task-clock (msec)         #    1.000 CPUs utilized          
-                24      context-switches          #    0.000 K/sec                  
-                 0      cpu-migrations            #    0.000 K/sec                  
-               640      page-faults               #    0.013 K/sec                  
-   211,601,286,770      cycles                    #    4.179 GHz                    
-   114,467,394,551      instructions              #    0.54  insn per cycle         
-    19,870,041,254      branches                  #  392.459 M/sec                  
-     3,175,483,649      branch-misses             #   15.98% of all branches        
-</pre>
-
-Here is the perf stat for STL lower\_bound
-<pre>
-      49887.583328      task-clock (msec)         #    1.000 CPUs utilized          
-                33      context-switches          #    0.001 K/sec                  
-                 0      cpu-migrations            #    0.000 K/sec                  
-               641      page-faults               #    0.013 K/sec                  
-   208,814,333,106      cycles                    #    4.186 GHz                    
-   108,836,166,274      instructions              #    0.52  insn per cycle         
-    20,202,816,406      branches                  #  404.967 M/sec                  
-     3,240,770,704      branch-misses             #   16.04% of all branches      
-</pre>
-
-Here is the perf stat for stdlib bsearch
-<pre>
-      50553.219060      task-clock (msec)         #    1.000 CPUs utilized          
-                22      context-switches          #    0.000 K/sec                  
-                 0      cpu-migrations            #    0.000 K/sec                  
-               640      page-faults               #    0.013 K/sec                  
-   211,599,881,216      cycles                    #    4.186 GHz                    
-   103,908,539,111      instructions              #    0.49  insn per cycle         
-    21,338,853,452      branches                  #  422.107 M/sec                  
-     3,183,131,604      branch-misses             #   14.92% of all branches        
-</pre>
+BiasedSearch seems lower the branch misprediction rate and cache-miss rate.
