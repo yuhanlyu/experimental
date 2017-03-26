@@ -33,3 +33,11 @@ On linux, you can execute the following commdn to turn off the cpu scaling:
 
 On linux, you can execute the following commdn to turn on the cpu scaling:
 `sudo cpupower frequency-set -g powersave`
+
+## Perf
+After make perf, a \_perf file will be generated. There are several usages
+
+1. perf stat: see the result of hardware counters after execute the program.  
+   I usually use `-e cycles,instructions,branches,branch-misses,L1-dcache-load-misses,L1-dcache-loads,L1-dcache-stores,LLC-load-misses,LLC-loads,LLC-store-misses,LLC-stores,branch-load-misses,branch-loads`.
+1. perf record: record the counter in a file.
+1. perf report: annotate the program by using the result of perf record.
