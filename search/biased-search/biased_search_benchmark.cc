@@ -19,7 +19,8 @@ class SearchBenchmark : public benchmark::Fixture {
     for (int i = 0; i < state.range(0); ++i) {
       test[i] = 2 * i + 1;
     }
-		distribution_ = std::uniform_int_distribution<int>(0, state.range(0) * 2 + 1);
+    distribution_ =
+        std::uniform_int_distribution<int>(0, state.range(0) * 2 + 1);
   }
   std::default_random_engine generator_;
   std::uniform_int_distribution<int> distribution_;
