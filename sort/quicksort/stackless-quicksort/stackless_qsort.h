@@ -6,14 +6,14 @@
 
 // Stackless quicksort:
 //    sort the array A[2..end - 1], assuming A[0], A[1], and A[end]
-//    are modifiable.
+//    are modifiable and numeric_limits<T>::min() is smaller than all
+//    values in A.
 //
 // For example:
 // const int shift = 2;
 // int A[size + shift + 1];
-// StacklessQSort(A, size + shift + 1) will sort the A[shift]..A[shift + size -
-// 1] (inclusively),
-// assuming that A[0], A[1] and A[size] are modifiable.
+// StacklessQSort(A, size + shift + 1) will sort the 
+// A[shift..shift + size - 1] (inclusively).
 // The effect is the same as std::sort(A + shift, A + shift + size);
 //
 // This algorithm is from Lutz Michael Wegner's paper
