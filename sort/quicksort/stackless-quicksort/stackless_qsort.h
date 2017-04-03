@@ -12,7 +12,7 @@
 // For example:
 // const int shift = 2;
 // int A[size + shift + 1];
-// StacklessQSort(A, size + shift + 1) will sort the 
+// StacklessQSort(A, size + shift + 1) will sort the
 // A[shift..shift + size - 1] (inclusively).
 // The effect is the same as std::sort(A + shift, A + shift + size);
 //

@@ -2,7 +2,7 @@
 Traditional quicksort needs a stack either implicitly using recursion, or
 explicitly maintaining the stack. But there is a way to implement quick-sort
 in-place. The algorithm is from Lutz Michael Wegner's paper  
-A generalized, one-way, stackless quicksort,  
+[A generalized, one-way, stackless quicksort](https://dx.doi.org/10.1007/BF01937353)  
 BIT Numerical Mathematics 1987, Volume 27, Issue 1, pp 44-48  
 
 ## Behcnmark
