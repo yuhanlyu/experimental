@@ -46,7 +46,7 @@ int32_t Gelgi(int32_t n, int32_t m) {
     m = std::get<1>(r);
     if (std::get<2>(r) == 0) {
       if (n <= m) {
-				// Base case, use Woodhousea's algorithm.
+        // Base case, use Woodhousea's algorithm.
         for (int32_t i = 2; i <= n; ++i) {
           value = (value + m) % i;
         }
@@ -79,7 +79,7 @@ int32_t ImprovedGelgi(int32_t n, int32_t m) {
       mark.emplace(iterations);
     }
   }
-	// Base case, use Woodhousea's algorithm.
+  // Base case, use Woodhousea's algorithm.
   for (int32_t i = 2; i <= nn; ++i) {
     ans = (ans + m) % i;
   }

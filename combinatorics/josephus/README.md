@@ -1,8 +1,17 @@
-This is a comparions of different methods of solving [Josephus problem]
-(https://en.wikipedia.org/wiki/Josephus_problem).
-Note that the performance of Woodhousea method is very stable, 
-and is faster than Gelgi's method when m is close to n.
+# Josephus problem
+[Josephus problem](https://en.wikipedia.org/wiki/Josephus_problem) is a
+classic puzzle.
 
+This module contains six methods of solving Josephus problem.
+1. D. Woodhouse  
+   (Programming the Josephus Problem)[https://doi.org/10.1145/988906.988919]  
+2. Method from (Concrete Mathematics)[https://en.wikipedia.org/wiki/Concrete_Mathematics] 3.3.
+3. Method from (The Art of Computer Programming)[https://en.wikipedia.org/wiki/The_Art_of_Computer_Programming] 1.3.3 Exercise 31.
+4. Method from (The Art Of Computer Programming)[https://en.wikipedia.org/wiki/The_Art_of_Computer_Programming].
+5. Fatih Gelgi  
+   [Time Improvement on Josephus Problem](http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.5.177)
+6. My space-efficient version of Gelgi's method.
+   
 ## Benchmark
 <pre>
 ----------------------------------------------------------------
@@ -99,3 +108,6 @@ BM_ImprovedGelgi/531441    16758561 ns   16758219 ns        418
 BM_ImprovedGelgi/1594323   16764898 ns   16764532 ns        418
 BM_ImprovedGelgi/2097152   16756726 ns   16756368 ns        418
 </pre>
+
+Note that the performance of Woodhousea method is very stable, 
+and is faster than Gelgi's method when m is close to n.
