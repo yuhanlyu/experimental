@@ -1,12 +1,11 @@
 # Fibonacci numbers
 This module contains four methods of generating Fibonacci numbers.
 1. Iterative method.
-1. Joseph Shortt
+1. Joseph Shortt  
    [An Iterative Program to Calculate Fibonacci Numbers in O(log n) Arithmetic Operations](http://dx.doi.org/10.1016/0020-0190(78)90022-4).
-k
-1. L.F. Johnson
+1. L.F. Johnson  
    [Tumble, a fast simple iteration algorithm for Fibonacci](https://doi.org/10.1016/j.ipl.2003.10.012).
-1. [Q-Matrix](http://mathworld.wolfram.com/FibonacciQ-Matrix.html).
+1. [Fibonacci Q-Matrix](http://mathworld.wolfram.com/FibonacciQ-Matrix.html).
 
 In the unit test, some arithmetics may overflow and may trigger undefined behavior.
 
