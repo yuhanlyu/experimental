@@ -4,10 +4,10 @@ classic puzzle.
 
 This module contains six methods of solving Josephus problem.
 1. D. Woodhouse  
-   (Programming the Josephus Problem)[https://doi.org/10.1145/988906.988919]  
-2. Method from (Concrete Mathematics)[https://en.wikipedia.org/wiki/Concrete_Mathematics] 3.3.
-3. Method from (The Art of Computer Programming)[https://en.wikipedia.org/wiki/The_Art_of_Computer_Programming] 1.3.3 Exercise 31.
-4. Method from (The Art Of Computer Programming)[https://en.wikipedia.org/wiki/The_Art_of_Computer_Programming].
+   [Programming the Josephus Problem](https://doi.org/10.1145/988906.988919)
+2. Method from [Concrete Mathematics](https://en.wikipedia.org/wiki/Concrete_Mathematics) 3.3.
+3. Method from [The Art of Computer Programming](https://en.wikipedia.org/wiki/The_Art_of_Computer_Programming) 1.3.3 Exercise 31.
+4. Method from [The Art Of Computer Programming](https://en.wikipedia.org/wiki/The_Art_of_Computer_Programming).
 5. Fatih Gelgi  
    [Time Improvement on Josephus Problem](http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.5.177)
 6. My space-efficient version of Gelgi's method.
