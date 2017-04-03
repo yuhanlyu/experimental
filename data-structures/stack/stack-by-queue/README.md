@@ -1,6 +1,6 @@
 Using two queues to implement a stack.
-This solution is from Martin Hühne's paper
-“On the Power of Several Queues”.
+This solution is from Martin Hühne's paper  
+[On the Power of Several Queues](https://doi.org/10.1016/0304-3975(93)90211-B)  
 In: Theoretical Computer Science 113.1 (May 1993), pages 75–91.
 
 When use two queues to implement a stack, push and pop will take O(sqrt(n))
