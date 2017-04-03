@@ -1,5 +1,5 @@
-#ifndef STACKLESS_QSORT_H_
-#define STACKLESS_QSORT_H_
+#ifndef STACKLESS_QSORT_H
+#define STACKLESS_QSORT_H
 
 #include <limits>
 #include <utility>
