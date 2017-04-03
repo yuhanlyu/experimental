@@ -7,7 +7,8 @@ result of comparision is true with probability around .5. Thus, a better
 approach is to divide the array unevenly, which I call biased search method.
 
 I read this method from the following paper:
-Gerth Stølting Brodal, Gabriel Moruz,Skewed Binary Search Trees,
+Gerth Stølting Brodal, Gabriel Moruz,  
+[Skewed Binary Search Trees](https://www.doi.org/10.1007/11841036_63),  
 Lecture Notes in Computer Science Volume 4168, 2006, pp 708-719
 
 ## Test method
