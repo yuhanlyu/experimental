@@ -5,17 +5,18 @@ I compared the following algorithms for rotating an array.
    based on permutation cycle.
 1. Another algorithm (JugglingShene) based on permutation cycle from the 
    following paper:  
-   Ching-Kuang Shene, An Analysis of Two In-Place Array Rotation Algorithms  
+   Ching-Kuang Shene,  
+   [An Analysis of Two In-Place Array Rotation Algorithms](https://doi.org/10.1093/comjnl/40.9.541)  
    The Computer Journal (1997) 40 (9): 541-546.  
 1. An algorithm (BlockSwapShene) based on swapping sections from the following
    paper:  
    Ching-Kuang Shene,
-   An Analysis of Two In-Place Array Rotation Algorithms
+   [An Analysis of Two In-Place Array Rotation Algorithms](https://doi.org/10.1093/comjnl/40.9.541)  
    The Computer Journal (1997) 40 (9): 541-546.
 1. Another algorithm (BlockSwapGries) based on swapping sections from the
    following paper:  
    David Gries and Harlan Mills,
-   Swapping sections.
+   [Swapping sections](http://hdl.handle.net/1813/6292)  
    Technical Report TR 81-452, Cornell University.
 
 Algorithm that is designed based on swapping sections tends to move elements
