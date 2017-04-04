@@ -6,13 +6,13 @@
 namespace {
 
 // Number of bytes having at least n + 1 bits.
-inline uint64_t Bytes(uint64_t n) { return (n >> 4) + (((n >> 1) & 7) != 0); }
+inline int64_t Bytes(uint64_t n) { return (n >> 4) + (((n >> 1) & 7) != 0); }
 
 // Mapping from the number to the index in the byte array.
-inline uint32_t NumberToIndex(uint32_t n) { return (n - 2) >> 1; }
+inline int32_t NumberToIndex(uint32_t n) { return (n - 2) >> 1; }
 
 // Mapping from the number to the bit index.
-inline uint64_t NumberToBitIndex(uint64_t n) { return (n - 2) >> 1; }
+inline int64_t NumberToBitIndex(uint64_t n) { return (n - 2) >> 1; }
 
 // Get the x-th bit in the bitset.
 inline bool BitGet(uint64_t x, const uint32_t bitset[]) {
@@ -47,10 +47,13 @@ void ImprovedSieve(uint32_t n, bool prime[]) {
   const uint32_t bound = sqrt(n);
   for (uint32_t i = 3; i <= bound; i += 2) {
     if (prime[NumberToIndex(i)]) {
-      for (uint32_t k = n / i - (((n / i) & 1) == 0), j = i * k; k >= i;
+      for (uint32_t k = n / i - (((n / i) & 1) == 0), j = i * k;;
            k -= 2, j -= (i << 1)) {
         if (prime[NumberToIndex(k)]) {
           prime[NumberToIndex(j)] = false;
+          if (k == i) {
+            break;
+          }
         }
       }
     }
