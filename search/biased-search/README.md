@@ -11,6 +11,9 @@ Gerth Stølting Brodal, Gabriel Moruz,
 [Skewed Binary Search Trees](https://www.doi.org/10.1007/11841036_63),  
 Lecture Notes in Computer Science Volume 4168, 2006, pp 708-719
 
+I also implemented a binary search based on conditional move to remove all
+misprediction that is explained in the article -- [Retrospective on Binary Search and Comp{ress,ilat}ion](https://www.pvk.ca/Blog/2015/11/29/retrospective-on-binary-search-and-on-compression-slash-compilation/)
+
 ## Test method
 A set of integers is generated uniformly at random and sorted. Then, generate
 random number as target element to be searched in the sorted set. Since the
@@ -18,8 +21,8 @@ random number generation is included in the CPU time in the benchmark, I also
 measure the running time of random number generation.
 
 ## Result
-I compared my implementation of binary search, biased searhc with STL
-lower\_bound and bsearch in stdlib by measuring the running time of finding
+I compared my implementation of binary search, biased search, C++ STL
+lower\_bound, and bsearch in stdlib by measuring the running time of finding
 an element in a sorted integer array whose elements are drawn from a uniform
 distribution. The results are shown below:
 
@@ -78,21 +81,21 @@ time of BiasedSearch is 167 - 51 = 112. Hence, biased search method reduced
 the running time by 30$.
 
 ### Result of perf stat
-BinarySearch
 <pre>
-    33,727,490,135      cycles                                                        (38.27%)
-    30,103,989,563      instructions              #    0.89  insn per cycle           (45.94%)
-     5,153,853,506      branches                                                      (46.03%)
-       472,722,916      branch-misses             #    9.17% of all branches          (46.07%)
-     1,540,754,056      L1-dcache-load-misses     #   39.94% of all L1-dcache hits    (46.14%)
-     3,857,967,189      L1-dcache-loads                                               (46.40%)
-     2,729,834,992      L1-dcache-stores                                              (30.94%)
-       330,591,295      LLC-load-misses           #   32.48% of all LL-cache hits     (30.97%)
-     1,017,790,575      LLC-loads                                                     (30.91%)
-        50,594,832      LLC-store-misses                                              (15.35%)
-        82,602,102      LLC-stores                                                    (15.34%)
-       473,420,603      branch-load-misses                                            (22.98%)
-     5,134,284,618      branch-loads                                                  (30.61%)
+BinarySearch
+    33,540,985,687      cycles                                                        (30.70%)
+    42,242,826,933      instructions              #    1.26  insn per cycle           (38.39%)
+     5,152,687,213      branches                                                      (38.41%)
+           611,133      branch-misses             #    0.01% of all branches          (38.54%)
+       670,681,476      L1-dcache-load-misses     #   12.20% of all L1-dcache hits    (38.56%)
+     5,496,622,147      L1-dcache-loads                                               (38.55%)
+     2,752,714,197      L1-dcache-stores                                              (30.83%)
+        45,309,220      LLC-load-misses           #   21.97% of all LL-cache hits     (30.82%)
+       206,248,071      LLC-loads                                                     (30.81%)
+        62,647,222      LLC-store-misses                                              (15.44%)
+        97,472,863      LLC-stores                                                    (15.43%)
+           566,223      branch-load-misses                                            (23.09%)
+     5,246,602,875      branch-loads                                                  (30.75%)
 BiasedSearch
     37,477,990,530      cycles                                                        (38.35%)
     41,707,176,142      instructions              #    1.11  insn per cycle           (46.05%)
@@ -136,5 +139,3 @@ BSearch
        452,680,318      branch-load-misses                                            (23.05%)
      5,085,179,040      branch-loads                                                  (30.70%)
 </pre>
-
-BiasedSearch seems lower the branch misprediction rate and cache-miss rate.
