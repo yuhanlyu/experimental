@@ -1,4 +1,4 @@
-#include "biased_search.h"
+#include "binary_search.h"
 
 #include <algorithm>
 #include <cstdlib>
