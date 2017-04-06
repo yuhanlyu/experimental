@@ -28,16 +28,16 @@ distribution. The results are shown below:
 Benchmark                                       Time           CPU Iterations
 ------------------------------------------------------------------------------
 SearchBenchmark/Random/1048576                 15 ns         15 ns   45187055
-SearchBenchmark/BinarySearch/1024              67 ns         67 ns   10242740
-SearchBenchmark/BinarySearch/4096              76 ns         76 ns    9237733
-SearchBenchmark/BinarySearch/16384             88 ns         88 ns    7905816
-SearchBenchmark/BinarySearch/65536            105 ns        105 ns    6616125
-SearchBenchmark/BinarySearch/262144           150 ns        150 ns    4649888
-SearchBenchmark/BinarySearch/1048576          181 ns        181 ns    3838077
-SearchBenchmark/BinarySearch/4194304          389 ns        389 ns    1777741
-SearchBenchmark/BinarySearch/16777216         655 ns        655 ns    1141015
-SearchBenchmark/BinarySearch/67108864         851 ns        851 ns     873919
-SearchBenchmark/BinarySearch/268435456       1118 ns       1118 ns     645259
+SearchBenchmark/BinarySearch/1024              26 ns         26 ns   26619032
+SearchBenchmark/BinarySearch/4096              29 ns         29 ns   23832465
+SearchBenchmark/BinarySearch/16384             37 ns         37 ns   18973251
+SearchBenchmark/BinarySearch/65536             53 ns         53 ns   12880652
+SearchBenchmark/BinarySearch/262144           108 ns        108 ns    6573792
+SearchBenchmark/BinarySearch/1048576          167 ns        167 ns    4128847
+SearchBenchmark/BinarySearch/4194304          651 ns        651 ns    1134124
+SearchBenchmark/BinarySearch/16777216         982 ns        982 ns     724530
+SearchBenchmark/BinarySearch/67108864        1198 ns       1198 ns     593342
+SearchBenchmark/BinarySearch/268435456       1406 ns       1406 ns     504907
 SearchBenchmark/BiasedSearch/1024              59 ns         59 ns   11213908
 SearchBenchmark/BiasedSearch/4096              67 ns         67 ns   10378944
 SearchBenchmark/BiasedSearch/16384             76 ns         76 ns    9191853

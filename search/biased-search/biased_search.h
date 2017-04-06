@@ -6,17 +6,13 @@
 // last) must be ordered. This is a standard binary search algorithm.
 template <typename T>
 const T* BinarySearch(const T* first, const T* last, T x) {
-  for (int length = last - first; length > 0;) {
-    int half = length >> 1;
-    const T* middle = first + half;
-    if (*middle < x) {
-      length -= half + 1;
-      first = middle + 1;
-    } else {
-      length = half;
-    }
-  }
-  return first;
+	for (int length = last - first, half; length > 1; length -= half) {
+		half = length >> 1;
+		if (first[half] < x) {
+			first += half;
+		}
+	}
+	return first + (*first < x);
 }
 
 // Returns an iterator pointing to the first element in the range [first, last)
