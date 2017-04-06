@@ -3,16 +3,16 @@
 Ordinary binary search always compare the target element with the mid point
 and divide the array by the mid point. However, this approach will have high
 misprediction rate when the elements are uniformly distributed, since the
-result of comparision is true with probability around .5. Thus, a better
-approach is to divide the array unevenly, which I call biased search method.
+result of comparision is true with probability around .5.
 
-I read this method from the following paper:
+This module contains two variants of binary search:
+1. Use conditional move to remove branch.  
+Paul-Virak Khuong, Pat Morin  
+[Array Layouts for Comparison-Based Searching](https://arxiv.org/abs/1509.05053)
+1. Instead of picking the middle point, pick mid point of the first half.  
 Gerth Stølting Brodal, Gabriel Moruz,  
 [Skewed Binary Search Trees](https://www.doi.org/10.1007/11841036_63),  
 Lecture Notes in Computer Science Volume 4168, 2006, pp 708-719
-
-I also implemented a binary search based on conditional move to remove all
-misprediction that is explained in the article -- [Retrospective on Binary Search and Comp{ress,ilat}ion](https://www.pvk.ca/Blog/2015/11/29/retrospective-on-binary-search-and-on-compression-slash-compilation/)
 
 ## Test method
 A set of integers is generated uniformly at random and sorted. Then, generate
@@ -21,68 +21,68 @@ random number generation is included in the CPU time in the benchmark, I also
 measure the running time of random number generation.
 
 ## Result
-I compared my implementation of binary search, biased search, C++ STL
+I compared the branch-free binary search, skewed binary search, C++ STL
 lower\_bound, and bsearch in stdlib by measuring the running time of finding
 an element in a sorted integer array whose elements are drawn from a uniform
 distribution. The results are shown below:
 
 <pre>
-------------------------------------------------------------------------------
-Benchmark                                       Time           CPU Iterations
-------------------------------------------------------------------------------
-SearchBenchmark/Random/1048576                 15 ns         15 ns   45187055
-SearchBenchmark/BinarySearch/1024              26 ns         26 ns   26619032
-SearchBenchmark/BinarySearch/4096              29 ns         29 ns   23832465
-SearchBenchmark/BinarySearch/16384             37 ns         37 ns   18973251
-SearchBenchmark/BinarySearch/65536             53 ns         53 ns   12880652
-SearchBenchmark/BinarySearch/262144           108 ns        108 ns    6573792
-SearchBenchmark/BinarySearch/1048576          167 ns        167 ns    4128847
-SearchBenchmark/BinarySearch/4194304          651 ns        651 ns    1134124
-SearchBenchmark/BinarySearch/16777216         982 ns        982 ns     724530
-SearchBenchmark/BinarySearch/67108864        1198 ns       1198 ns     593342
-SearchBenchmark/BinarySearch/268435456       1406 ns       1406 ns     504907
-SearchBenchmark/BiasedSearch/1024              59 ns         59 ns   11213908
-SearchBenchmark/BiasedSearch/4096              67 ns         67 ns   10378944
-SearchBenchmark/BiasedSearch/16384             76 ns         76 ns    9191853
-SearchBenchmark/BiasedSearch/65536             86 ns         86 ns    8045438
-SearchBenchmark/BiasedSearch/262144           110 ns        110 ns    6347804
-SearchBenchmark/BiasedSearch/1048576          130 ns        130 ns    5276553
-SearchBenchmark/BiasedSearch/4194304          206 ns        206 ns    3389488
-SearchBenchmark/BiasedSearch/16777216         300 ns        300 ns    2326153
-SearchBenchmark/BiasedSearch/67108864         392 ns        392 ns    1757196
-SearchBenchmark/BiasedSearch/268435456        496 ns        496 ns    1420024
-SearchBenchmark/STLSearch/1024                 66 ns         66 ns   10349370
-SearchBenchmark/STLSearch/4096                 74 ns         74 ns    9450538
-SearchBenchmark/STLSearch/16384                86 ns         86 ns    8079243
-SearchBenchmark/STLSearch/65536               103 ns        103 ns    6753223
-SearchBenchmark/STLSearch/262144              144 ns        144 ns    4822735
-SearchBenchmark/STLSearch/1048576             177 ns        177 ns    3934067
-SearchBenchmark/STLSearch/4194304             386 ns        386 ns    1813994
-SearchBenchmark/STLSearch/16777216            640 ns        640 ns    1160343
-SearchBenchmark/STLSearch/67108864            826 ns        826 ns     901772
-SearchBenchmark/STLSearch/268435456          1092 ns       1092 ns     668420
-SearchBenchmark/BSearch/1024                   64 ns         64 ns   10430009
-SearchBenchmark/BSearch/4096                   72 ns         72 ns    9668074
-SearchBenchmark/BSearch/16384                  85 ns         85 ns    8238533
-SearchBenchmark/BSearch/65536                 101 ns        101 ns    6823913
-SearchBenchmark/BSearch/262144                143 ns        143 ns    4875428
-SearchBenchmark/BSearch/1048576               176 ns        176 ns    3913013
-SearchBenchmark/BSearch/4194304               382 ns        382 ns    1841604
-SearchBenchmark/BSearch/16777216              650 ns        650 ns    1146531
-SearchBenchmark/BSearch/67108864              847 ns        847 ns     869768
-SearchBenchmark/BSearch/268435456            1119 ns       1119 ns     642861
+----------------------------------------------------------------------------------------
+Benchmark                                                 Time           CPU Iterations
+----------------------------------------------------------------------------------------
+SearchBenchmark/Random/1048576                           15 ns         15 ns   45170766
+SearchBenchmark/BranchfreeBinarySearch/1024              26 ns         26 ns   27312222
+SearchBenchmark/BranchfreeBinarySearch/4096              29 ns         29 ns   24038807
+SearchBenchmark/BranchfreeBinarySearch/16384             36 ns         36 ns   19684983
+SearchBenchmark/BranchfreeBinarySearch/65536             51 ns         51 ns   13860796
+SearchBenchmark/BranchfreeBinarySearch/262144            98 ns         98 ns    7238086
+SearchBenchmark/BranchfreeBinarySearch/1048576          140 ns        140 ns    5091140
+SearchBenchmark/BranchfreeBinarySearch/4194304          586 ns        586 ns    1263702
+SearchBenchmark/BranchfreeBinarySearch/16777216         932 ns        932 ns     762211
+SearchBenchmark/BranchfreeBinarySearch/67108864        1150 ns       1150 ns     620953
+SearchBenchmark/BranchfreeBinarySearch/268435456       1363 ns       1363 ns     526331
+SearchBenchmark/SkewedBinarySearch/1024                  60 ns         60 ns   10355621
+SearchBenchmark/SkewedBinarySearch/4096                  68 ns         68 ns   10319222
+SearchBenchmark/SkewedBinarySearch/16384                 77 ns         77 ns    9153474
+SearchBenchmark/SkewedBinarySearch/65536                 88 ns         88 ns    7956752
+SearchBenchmark/SkewedBinarySearch/262144               110 ns        110 ns    6346699
+SearchBenchmark/SkewedBinarySearch/1048576              128 ns        128 ns    5253171
+SearchBenchmark/SkewedBinarySearch/4194304              211 ns        211 ns    3347311
+SearchBenchmark/SkewedBinarySearch/16777216             306 ns        306 ns    2266664
+SearchBenchmark/SkewedBinarySearch/67108864             402 ns        402 ns    1763126
+SearchBenchmark/SkewedBinarySearch/268435456            502 ns        502 ns    1000000
+SearchBenchmark/STLSearch/1024                           65 ns         65 ns   10432752
+SearchBenchmark/STLSearch/4096                           74 ns         74 ns    9568054
+SearchBenchmark/STLSearch/16384                          86 ns         86 ns    8151415
+SearchBenchmark/STLSearch/65536                         104 ns        104 ns    6618087
+SearchBenchmark/STLSearch/262144                        143 ns        143 ns    4899108
+SearchBenchmark/STLSearch/1048576                       174 ns        174 ns    4057186
+SearchBenchmark/STLSearch/4194304                       387 ns        387 ns    1827747
+SearchBenchmark/STLSearch/16777216                      639 ns        639 ns    1161262
+SearchBenchmark/STLSearch/67108864                      829 ns        829 ns     930193
+SearchBenchmark/STLSearch/268435456                    1100 ns       1100 ns     663793
+SearchBenchmark/BSearch/1024                             64 ns         64 ns   10489409
+SearchBenchmark/BSearch/4096                             72 ns         72 ns    9606502
+SearchBenchmark/BSearch/16384                            85 ns         85 ns    8283490
+SearchBenchmark/BSearch/65536                           103 ns        103 ns    6801083
+SearchBenchmark/BSearch/262144                          142 ns        142 ns    4948072
+SearchBenchmark/BSearch/1048576                         173 ns        173 ns    4092475
+SearchBenchmark/BSearch/4194304                         387 ns        387 ns    1829945
+SearchBenchmark/BSearch/16777216                        652 ns        652 ns    1143447
+SearchBenchmark/BSearch/67108864                        851 ns        851 ns     873622
+SearchBenchmark/BSearch/268435456                      1123 ns       1122 ns     632948
 </pre>
 
 The biased search is fastest method among all methods.
 
-Compare STLSearch with BiasedSearch when the set size is 1048576, the running
+Compare STLSearch with SkewedBinarySearch when the set size is 1048576, the running
 time of STLSearch is 210 - 51(random numbe generation) = 159, and the running
-time of BiasedSearch is 167 - 51 = 112. Hence, biased search method reduced
+time of SkewedBinarySearch is 167 - 51 = 112. Hence, biased search method reduced
 the running time by 30$.
 
 ### Result of perf stat
 <pre>
-BinarySearch
+BranchfreeBinarySearch
     33,540,985,687      cycles                                                        (30.70%)
     42,242,826,933      instructions              #    1.26  insn per cycle           (38.39%)
      5,152,687,213      branches                                                      (38.41%)
@@ -96,7 +96,7 @@ BinarySearch
         97,472,863      LLC-stores                                                    (15.43%)
            566,223      branch-load-misses                                            (23.09%)
      5,246,602,875      branch-loads                                                  (30.75%)
-BiasedSearch
+SkewedBinarySearch
     37,477,990,530      cycles                                                        (38.35%)
     41,707,176,142      instructions              #    1.11  insn per cycle           (46.05%)
      7,640,213,270      branches                                                      (46.09%)

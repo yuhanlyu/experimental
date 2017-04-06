@@ -33,24 +33,26 @@ BENCHMARK_DEFINE_F(SearchBenchmark, Random)(benchmark::State& state) {
 }
 BENCHMARK_REGISTER_F(SearchBenchmark, Random)->Arg(1 << 20);
 
-BENCHMARK_DEFINE_F(SearchBenchmark, BinarySearch)(benchmark::State& state) {
-  while (state.KeepRunning()) {
-    int r = distribution_(generator_);
-    benchmark::DoNotOptimize(BinarySearch(test, test + state.range(0), r));
-  }
-}
-BENCHMARK_REGISTER_F(SearchBenchmark, BinarySearch)
-    ->RangeMultiplier(4)
-    ->Range(1 << 10, size);
-
-BENCHMARK_DEFINE_F(SearchBenchmark, BiasedSearch)(benchmark::State& state) {
+BENCHMARK_DEFINE_F(SearchBenchmark, BranchfreeBinarySearch)
+(benchmark::State& state) {
   while (state.KeepRunning()) {
     int r = distribution_(generator_);
     benchmark::DoNotOptimize(
-        BiasedBinarySearch(test, test + state.range(0), r));
+        BranchfreeBinarySearch(test, test + state.range(0), r));
   }
 }
-BENCHMARK_REGISTER_F(SearchBenchmark, BiasedSearch)
+BENCHMARK_REGISTER_F(SearchBenchmark, BranchfreeBinarySearch)
+    ->RangeMultiplier(4)
+    ->Range(1 << 10, size);
+
+BENCHMARK_DEFINE_F(SearchBenchmark, SkewedBinarySearch)(benchmark::State& state) {
+  while (state.KeepRunning()) {
+    int r = distribution_(generator_);
+    benchmark::DoNotOptimize(
+        SkewedBinarySearch(test, test + state.range(0), r));
+  }
+}
+BENCHMARK_REGISTER_F(SearchBenchmark, SkewedBinarySearch)
     ->RangeMultiplier(4)
     ->Range(1 << 10, size);
 

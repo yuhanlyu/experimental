@@ -15,15 +15,15 @@ class SearchTest : public ::testing::Test {
   int test[size];
 };
 
-TEST_F(SearchTest, ValidateBinarySearch) {
+TEST_F(SearchTest, ValidateBranchfreeBinarySearch) {
   for (int i = 0; i <= 2 * size; ++i) {
-    EXPECT_EQ(BinarySearch(test, test + size, i), test + i / 2);
+    EXPECT_EQ(BranchfreeBinarySearch(test, test + size, i), test + i / 2);
   }
 }
 
-TEST_F(SearchTest, ValidateBiasedBinarySearch) {
+TEST_F(SearchTest, ValidateSkewedBinarySearch) {
   for (int i = 0; i <= 2 * size; ++i) {
-    EXPECT_EQ(BiasedBinarySearch(test, test + size, i), test + i / 2);
+    EXPECT_EQ(SkewedBinarySearch(test, test + size, i), test + i / 2);
   }
 }
 
