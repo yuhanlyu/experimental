@@ -1,11 +1,9 @@
 #ifndef SIEVE_H
 #define SIEVE_H
 
-#include <cstdint>
+#include "../common/common.h"
 
-// After use Sieve or ImprovedSieve to build a prime table, this function tests
-// whether n is a prime or not.
-bool IsPrime(uint32_t n, const bool prime[]);
+#include <cstdint>
 
 // Sieve of Eratosthenes.
 // Example usage:
@@ -22,10 +20,6 @@ void Sieve(uint32_t n, bool prime[]);
 // ImprovedSieve(size, prime);
 // IsPrime(n, prime);
 void ImprovedSieve(uint32_t n, bool prime[]);
-
-// After use SieveBit or ImprovedSieveBit to build a prime table, this function
-// tests whether n is a prime or not.
-bool IsPrimeBit(uint64_t n, const uint32_t bitset[]);
 
 // Use bitset to reduce the memory usege of sieve of Eratosthenes.
 // Example usage:

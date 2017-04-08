@@ -3,33 +3,6 @@
 #include <cmath>
 #include <cstring>
 
-namespace {
-
-// Number of bytes having at least n + 1 bits.
-inline int64_t Bytes(uint64_t n) { return (n >> 4) + (((n >> 1) & 7) != 0); }
-
-// Mapping from the number to the index in the byte array.
-inline int32_t NumberToIndex(uint32_t n) { return (n - 2) >> 1; }
-
-// Mapping from the number to the bit index.
-inline int64_t NumberToBitIndex(uint64_t n) { return (n - 2) >> 1; }
-
-// Get the x-th bit in the bitset.
-inline bool BitGet(uint64_t x, const uint32_t bitset[]) {
-  return (bitset[x >> 5] & (1 << (x & 31))) != 0;
-}
-
-// Clear the x-th bit in the bitset.
-inline void BitReset(uint64_t x, uint32_t bitset[]) {
-  bitset[x >> 5] &= ~(1 << (x & 31));
-}
-
-}  // namespace
-
-bool IsPrime(uint32_t n, const bool prime[]) {
-  return (n & 1) == 0 ? (n == 2) : prime[NumberToIndex(n)];
-}
-
 void Sieve(uint32_t n, bool prime[]) {
   std::memset(prime, 1, n >> 1);
   const uint32_t bound = sqrt(n);
@@ -55,10 +28,6 @@ void ImprovedSieve(uint32_t n, bool prime[]) {
       }
     }
   }
-}
-
-bool IsPrimeBit(uint64_t n, const uint32_t bitset[]) {
-  return (n & 1) == 0 ? (n == 2) : (BitGet(NumberToBitIndex(n), bitset) != 0);
 }
 
 void SieveBit(uint64_t n, uint32_t prime[]) {
