@@ -12,9 +12,8 @@ inline int GCD(int a, int b) {
 // Swap the subarray A[i..i+k-1] with A[j..j+k-1].
 template <typename T>
 inline void SwapSection(T A[], int i, int j, int k) {
-  while (k-- > 0) {
+  while (k-- > 0)
     std::swap(A[i++], A[j++]);
-  }
 }
 
 // Rotate an array circularly to the left by k positions
@@ -70,13 +69,11 @@ void BlockSwapShene(T A[], int n, int k) {
   for (int left = 0, right = k, middle = k;;) {
     std::swap(A[left++], A[right++]);
     if (left == middle) {
-      if (right == n) {
+      if (right == n)
         return;
-      }
       middle = right;
-    } else if (right == n) {
+    } else if (right == n)
       right = middle;
-    }
   }
 }
 
