@@ -6,7 +6,7 @@ namespace {
 
 class FibonacciTest : public ::testing::Test {
  protected:
-  virtual void SetUp() override {
+  void SetUp() override {
     for (int i = 1; i <= max; ++i) {
       ans[i] = Iterative(i);
     }

@@ -1,13 +1,10 @@
 #include "fib.h"
 
 int64_t Doubling(int32_t n) {
-  if (n == 0 || n == 1) {
-    return n;
-  }
+  if (n == 0 || n == 1) return n;
   int32_t j, nn = n;
-  for (j = 0; nn > 0; nn >>= 1, ++j) {
+  for (j = 0; nn > 0; nn >>= 1, ++j)
     ;
-  }
   int64_t s1 = 0, s2 = 1;
   for (int32_t k = j - 2; k >= 0; --k) {
     int64_t t = s2 * s2, s2k = s1 * s1 + t, s2k1 = t + ((s1 * s2) << 1);
@@ -36,11 +33,10 @@ int64_t Tumble(int32_t n) {
 }
 
 int64_t Iterative(int32_t n) {
-  int64_t first = 0, second = 1;
-  while (n-- > 0) {
-    int64_t t = first + second;
+  int64_t first = 0;
+  for (int64_t second = 1, t; n-- > 0; second = t) {
+    t = first + second;
     first = second;
-    second = t;
   }
   return first;
 }
