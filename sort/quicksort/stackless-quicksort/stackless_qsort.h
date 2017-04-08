@@ -41,13 +41,13 @@ void StacklessQSort(T A[], int end) {
         break;
       }
 
-      // A[j] is not a stopper.
-      if (A[j] >= A[i - 1]) {
-        // A[i] must be the maximum of the left part.
-        A[i] = A[j];
-      } else {
+      // A[j] is a stopper.
+      if (A[j] < A[i - 1]) {
         A[i] = A[i - 1];
         A[i - 1] = A[j];
+      } else {
+        // A[i] must be the maximum of the left part.
+        A[i] = A[j];
       }
       A[j] = A[++i];
     }
@@ -55,9 +55,8 @@ void StacklessQSort(T A[], int end) {
       A[left - 2] = A[j];
       A[j] = A[i - 1];
       left = i + 1;
-    } else {
+    } else
       std::swap(A[i - 1], A[j]);
-    }
   }
 }
 

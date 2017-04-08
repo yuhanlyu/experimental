@@ -51,8 +51,8 @@ BENCHMARK_F(QSortBenchmark, STLStableSort)(benchmark::State& state) {
 }
 
 int compare(const void* p, const void* q) {
-  int x = *(const int*)p;
-  int y = *(const int*)q;
+  int x = *reinterpret_cast<const int*>(p);
+  int y = *reinterpret_cast<const int*>(q);
   return (x == y) ? 0 : ((x < y) ? -1 : 1);
 }
 
