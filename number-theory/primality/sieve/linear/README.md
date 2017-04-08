@@ -5,7 +5,7 @@ Linear sieve can find all primes up to n in O(n) time.
 
 This module contains Paul Pritchard's linear sieve:  
 [Linear prime-number sieves: A family tree](https://doi.org/10.1016/0167-6423(87)90024-4)
-Science of Computer Programming  
+Science of Computer Programming   
 Volume 9, Issue 1, August 1987, Pages 17-35  
 
 ## Benchmark
