@@ -5,33 +5,25 @@
 
 int32_t ConcreteMath(int64_t n, int32_t m) {
   int64_t d = 1;
-  while (d <= (m - 1) * n) {
-    d = 1 + (d * m - 1) / (m - 1);
-  }
+  while (d <= (m - 1) * n) d = 1 + (d * m - 1) / (m - 1);
   return m * n + 1 - d;
 }
 
 int32_t TAOCP(int32_t n, int32_t m) {
-  int64_t answer = (int64_t)n * m;
-  while (answer > n) {
-    answer += (answer - n - 1) / (m - 1) - n;
-  }
+  int64_t answer = static_cast<int64_t>(n) * m;
+  while (answer > n) answer += (answer - n - 1) / (m - 1) - n;
   return answer;
 }
 
 int32_t TAOCPK(int32_t n, int32_t m, int32_t k) {
-  int64_t answer = (int64_t)k * m;
-  while (answer > n) {
-    answer = answer - n + (answer - n - 1) / (m - 1);
-  }
+  int64_t answer = static_cast<int64_t>(k) * m;
+  while (answer > n) answer = answer - n + (answer - n - 1) / (m - 1);
   return answer;
 }
 
 int32_t Woodhousea(int32_t n, int32_t m) {
   int32_t ans = 0;
-  for (int32_t i = 2; i <= n; ++i) {
-    ans = (ans + m) % i;
-  }
+  for (int32_t i = 2; i <= n; ++i) ans = (ans + m) % i;
   return ans + 1;
 }
 
@@ -47,18 +39,16 @@ int32_t Gelgi(int32_t n, int32_t m) {
     if (std::get<2>(r) == 0) {
       if (n <= m) {
         // Base case, use Woodhousea's algorithm.
-        for (int32_t i = 2; i <= n; ++i) {
-          value = (value + m) % i;
-        }
+        for (int32_t i = 2; i <= n; ++i) value = (value + m) % i;
         ++value;
       } else {
         stack.emplace(n, m, 1);
         stack.emplace(n - n / m, m, 0);
       }
     } else {
-      if (value <= n % m) {
+      if (value <= n % m)
         value += (n / m) * m;
-      } else {
+      else {
         value -= n % m;
         int32_t k = value % (m - 1);
         value = (value / (m - 1)) * m + (k == 0 ? -1 : k);
@@ -75,23 +65,19 @@ int32_t ImprovedGelgi(int32_t n, int32_t m) {
   for (iterations = 1; nn > (m << 3); ++iterations) {
     int p = nn;
     nn -= nn / m;
-    if (nn + nn / (m - 1) - p == 1) {
-      mark.emplace(iterations);
-    }
+    if (nn + nn / (m - 1) - p == 1) mark.emplace(iterations);
   }
   // Base case, use Woodhousea's algorithm.
-  for (int32_t i = 2; i <= nn; ++i) {
-    ans = (ans + m) % i;
-  }
+  for (int32_t i = 2; i <= nn; ++i) ans = (ans + m) % i;
   for (++ans, --iterations; nn != n; --iterations) {
     nn += nn / (m - 1);
     if (!mark.empty() && mark.top() == iterations) {
       mark.pop();
       --nn;
     }
-    if (ans <= nn % m) {
+    if (ans <= nn % m)
       ans += (nn / m) * m;
-    } else {
+    else {
       ans -= nn % m;
       int32_t k = ans % (m - 1);
       ans = (ans / (m - 1)) * m + (k == 0 ? -1 : k);

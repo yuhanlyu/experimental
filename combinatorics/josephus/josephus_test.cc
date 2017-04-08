@@ -35,4 +35,5 @@ TEST(JosephusTest, ValidateGelgiTAOCP) {
     EXPECT_EQ(TAOCP(n, m), TAOCPK(n, m, n));
   }
 }
+
 }  // namespace
