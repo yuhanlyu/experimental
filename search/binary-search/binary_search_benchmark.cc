@@ -45,7 +45,8 @@ BENCHMARK_REGISTER_F(SearchBenchmark, BranchfreeBinarySearch)
     ->RangeMultiplier(4)
     ->Range(1 << 10, size);
 
-BENCHMARK_DEFINE_F(SearchBenchmark, SkewedBinarySearch)(benchmark::State& state) {
+BENCHMARK_DEFINE_F(SearchBenchmark, SkewedBinarySearch)
+(benchmark::State& state) {
   while (state.KeepRunning()) {
     int r = distribution_(generator_);
     benchmark::DoNotOptimize(

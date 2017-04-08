@@ -8,9 +8,7 @@ template <typename T>
 const T* BranchfreeBinarySearch(const T* first, const T* last, T x) {
   for (int length = last - first, half; length > 1; length -= half) {
     half = length >> 1;
-    if (first[half] < x) {
-      first += half;
-    }
+    if (first[half] < x) first += half;
   }
   return first + (*first < x);
 }
@@ -28,9 +26,8 @@ const T* SkewedBinarySearch(const T* first, const T* last, T x) {
     if (*middle < x) {
       length -= half + 1;
       first = middle + 1;
-    } else {
+    } else
       length = half;
-    }
   }
   return first;
 }
