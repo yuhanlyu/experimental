@@ -7,6 +7,7 @@
 
 void LinearSieve(uint32_t n, bool prime[]) {
   std::memset(prime, 1, n >> 1);
+	if (n <= 3) return;
   uint32_t bound = sqrt(n);
   Sieve(bound, prime);
   uint32_t primes[UpperBoundOfPi(bound)], number_of_primes = 0;
@@ -23,6 +24,7 @@ void LinearSieve(uint32_t n, bool prime[]) {
 
 void LinearSieveBit(uint64_t n, uint32_t prime[]) {
   std::memset(prime, 0xFF, Bytes(n));
+	if (n <= 3) return;
   uint64_t bound = sqrtl(n);
   SieveBit(bound, prime);
   uint32_t primes[UpperBoundOfPi(bound)], number_of_primes = 0;
