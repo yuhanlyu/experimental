@@ -5,6 +5,29 @@
 
 #include "../common/bit_set.h"
 
+// Example usage:
+// constexpr int32_t size = 1 << 20;
+// bool prime[size / 2];
+// WheelSieve6::WheelSieve(size, prime);
+// WheelSieve6::IsPrime(n, prime);
+//
+// Example usage for segmented version:
+// constexpr int32_t size = 1 << 20;
+// bool prime[size / 2];
+// WheelSieve6::SegmentedWheelSieve(size, prime);
+// WheelSieve6::IsPrime(n, prime);
+//
+// Example usage for bitset version:
+// constexpr int32_t size = 1 << 20;
+// uint32_t prime[size / 64 + 1];
+// WheelSieve6::WheelSieveBit(size, prime);
+// WheelSieve6::IsPrimeBit(n, prime);
+//
+// Example usage for segmented bitset version:
+// constexpr int32_t size = 1 << 20;
+// uint32_t prime[size / 64 + 1];
+// WheelSieve6::SegmentedWheelSieveBit(size, prime);
+// WheelSieve6::IsPrimeBit(n, prime);
 struct WheelSieve6 {
   // Mapping from the number to the index.
   static inline uint64_t WheelIndex(uint64_t n) { return (n << 1) / 6; }
@@ -48,6 +71,29 @@ struct WheelSieve6 {
   static constexpr uint64_t increments[][number_of_coprimes] = {{1, 1}, {7, 3}};
 };
 
+// Example usage:
+// constexpr int32_t size = 1 << 20;
+// bool prime[size / 2];
+// WheelSieve30::WheelSieve(size, prime);
+// WheelSieve30::IsPrime(n, prime);
+//
+// Example usage for segmented version:
+// constexpr int32_t size = 1 << 20;
+// bool prime[size / 2];
+// WheelSieve30::SegmentedWheelSieve(size, prime);
+// WheelSieve30::IsPrime(n, prime);
+//
+// Example usage for bitset version:
+// constexpr int32_t size = 1 << 20;
+// uint32_t prime[size / 64 + 1];
+// WheelSieve30::WheelSieveBit(size, prime);
+// WheelSieve30::IsPrimeBit(n, prime);
+//
+// Example usage for segmented bitset version:
+// constexpr int32_t size = 1 << 20;
+// uint32_t prime[size / 64 + 1];
+// WheelSieve30::SegmentedWheelSieveBit(size, prime);
+// WheelSieve30::IsPrimeBit(n, prime);
 struct WheelSieve30 {
   // Mapping from the number to the index.
   static inline uint64_t WheelIndex(uint64_t n) { return (n << 2) / 15; }
@@ -99,6 +145,29 @@ struct WheelSieve30 {
       {36, 25, 12, 25, 12, 25, 36, 13}, {47, 31, 15, 31, 15, 31, 47, 15}};
 };
 
+// Example usage:
+// constexpr int32_t size = 1 << 20;
+// bool prime[size / 2];
+// WheelSieve210::WheelSieve(size, prime);
+// WheelSieve210::IsPrime(n, prime);
+//
+// Example usage for segmented version:
+// constexpr int32_t size = 1 << 20;
+// bool prime[size / 2];
+// WheelSieve210::SegmentedWheelSieve(size, prime);
+// WheelSieve210::IsPrime(n, prime);
+//
+// Example usage for bitset version:
+// constexpr int32_t size = 1 << 20;
+// uint32_t prime[size / 64 + 1];
+// WheelSieve210::WheelSieveBit(size, prime);
+// WheelSieve210::IsPrimeBit(n, prime);
+//
+// Example usage for segmented bitset version:
+// constexpr int32_t size = 1 << 20;
+// uint32_t prime[size / 64 + 1];
+// WheelSieve210::SegmentedWheelSieveBit(size, prime);
+// WheelSieve210::IsPrimeBit(n, prime);
 struct WheelSieve210 {
   // Mapping from the number to the index.
   static inline uint64_t WheelIndex(uint64_t n) {
