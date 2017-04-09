@@ -1,111 +1,113 @@
-# Linear sieve
+# Segmented sieve
 
-Sieve of Eratosthenes takes O(n lg lg n) time to find all primes up to n.
-Linear sieve can find all primes up to n in O(n) time.
+Sieve of Eratosthenes method tends to have high cache miss rate. One way to
+improve the cache performance is to partition the prime array into segments
+whose length is approximately equal to the L1 data cache and then sieve
+segments one by one. More details can be found on
+[primesieve.org](http://primesieve.org/segmented_sieve.html).
 
-This module contains Paul Pritchard's linear sieve:  
-[Linear prime-number sieves: A family tree](https://doi.org/10.1016/0167-6423(87)90024-4)
+The segmented sieve comes from the following paper.
+Carter Bays and Richard H. Hudson
+[The segmented sieve of eratosthenes and primes in arithmetic progressions to 10^12](https://dx.doi.org/10.1007/BF01932283)
 
 ## Benchmark
-Since the Google benchmark cannot take int64 as input range, the unit of input
-size of bitset version is 1024.
 
-Linear sieve is slower than improved sieve of Eratosthenes.
+Segmented sieve is faster than sieve of Eratosthenes method.
 
 <pre>
---------------------------------------------------------------------------
-Benchmark                                  Time             CPU Iterations
---------------------------------------------------------------------------
-BM_LinearSieve/1024                     1280 ns         1280 ns   10920630
-BM_LinearSieve/2048                     2659 ns         2659 ns    5263756
-BM_LinearSieve/4096                     5315 ns         5315 ns    2632858
-BM_LinearSieve/8192                    10809 ns        10809 ns    1291763
-BM_LinearSieve/16384                   22034 ns        22034 ns     634778
-BM_LinearSieve/32768                   45887 ns        45887 ns     304472
-BM_LinearSieve/65536                  101690 ns       101689 ns     138020
-BM_LinearSieve/131072                 216103 ns       216100 ns      64812
-BM_LinearSieve/262144                 437686 ns       437680 ns      31934
-BM_LinearSieve/524288                 876461 ns       876446 ns      15968
-BM_LinearSieve/1048576               1738929 ns      1738903 ns       8052
-BM_LinearSieve/2097152               3460441 ns      3460380 ns       4048
-BM_LinearSieve/4194304               6902038 ns      6901917 ns       2026
-BM_LinearSieve/8388608              13825933 ns     13825693 ns       1013
-BM_LinearSieve/16777216             27749716 ns     27749108 ns        505
-BM_LinearSieve/33554432             58830611 ns     58830123 ns        237
-BM_LinearSieve/67108864            128474101 ns    128472918 ns        109
-BM_LinearSieve/134217728           273103752 ns    273096203 ns         50
-BM_LinearSieve/268435456           551772600 ns    551767929 ns         25
-BM_LinearSieve/536870912          1115206698 ns   1115195784 ns         12
-BM_LinearSieve/1073741824         2252006303 ns   2251979769 ns          6
-BM_ImprovedSieve/1024                    411 ns          410 ns   34078862
-BM_ImprovedSieve/2048                    835 ns          835 ns   16784353
-BM_ImprovedSieve/4096                   1773 ns         1773 ns    7894106
-BM_ImprovedSieve/8192                   3811 ns         3811 ns    3739351
-BM_ImprovedSieve/16384                  7691 ns         7691 ns    1813801
-BM_ImprovedSieve/32768                 16498 ns        16498 ns     844054
-BM_ImprovedSieve/65536                 40924 ns        40924 ns     342567
-BM_ImprovedSieve/131072               100129 ns       100128 ns     100000
-BM_ImprovedSieve/262144               231333 ns       231331 ns      60535
-BM_ImprovedSieve/524288               503289 ns       503283 ns      27877
-BM_ImprovedSieve/1048576             1086053 ns      1086039 ns      12903
-BM_ImprovedSieve/2097152             2311209 ns      2311182 ns       6064
-BM_ImprovedSieve/4194304             4938349 ns      4938295 ns       2834
-BM_ImprovedSieve/8388608            10473630 ns     10473510 ns       1334
-BM_ImprovedSieve/16777216           22103592 ns     22103276 ns        634
-BM_ImprovedSieve/33554432           49283793 ns     49283133 ns        296
-BM_ImprovedSieve/67108864           98259961 ns     98258707 ns        143
-BM_ImprovedSieve/134217728         203428536 ns    203426011 ns         69
-BM_ImprovedSieve/268435456         417655208 ns    417650567 ns         34
-BM_ImprovedSieve/536870912         853932033 ns    853921966 ns         16
-BM_ImprovedSieve/1073741824       1741474780 ns   1741455403 ns          8
-BM_LinearSieveBitset/1                  3751 ns         3730 ns    3752026
-BM_LinearSieveBitset/2                  7683 ns         7659 ns    1827364
-BM_LinearSieveBitset/4                 15655 ns        15712 ns     891333
-BM_LinearSieveBitset/8                 32050 ns        32089 ns     436403
-BM_LinearSieveBitset/16                65400 ns        65370 ns     213976
-BM_LinearSieveBitset/32               133963 ns       133968 ns     104471
-BM_LinearSieveBitset/64               277331 ns       277395 ns      50483
-BM_LinearSieveBitset/128              569842 ns       569246 ns      24584
-BM_LinearSieveBitset/256             1152868 ns      1150353 ns      12168
-BM_LinearSieveBitset/512             2310787 ns      2308749 ns       6065
-BM_LinearSieveBitset/1024            4623175 ns      4621350 ns       3029
-BM_LinearSieveBitset/2048            9262891 ns      9267682 ns       1511
-BM_LinearSieveBitset/4096           18784771 ns     18789868 ns        752
-BM_LinearSieveBitset/8192           37378477 ns     37382514 ns        374
-BM_LinearSieveBitset/16384          75404076 ns     75404314 ns        184
-BM_LinearSieveBitset/32768         150973183 ns    150967650 ns         93
-BM_LinearSieveBitset/65536         303317744 ns    303298747 ns         46
-BM_LinearSieveBitset/131072        622283300 ns    622233962 ns         22
-BM_LinearSieveBitset/262144       1423445657 ns   1424090804 ns         10
-BM_LinearSieveBitset/524288       2945352274 ns   2946420294 ns          5
-BM_LinearSieveBitset/1048576      6008269684 ns   6009834845 ns          2
-BM_LinearSieveBitset/2097152     12193915943 ns  12196466916 ns          1
-BM_LinearSieveBitset/4194304     24642772885 ns  24646479795 ns          1
-BM_LinearSieveBitset/8388608     49733214224 ns  49736833116 ns          1
-BM_LinearSieveBitset/16777216   100991302514 ns 100991816089 ns          1
-BM_ImprovedSieveBitset/1                 756 ns          756 ns   18534934
-BM_ImprovedSieveBitset/2                1534 ns         1534 ns    9130662
-BM_ImprovedSieveBitset/4                3205 ns         3205 ns    4370439
-BM_ImprovedSieveBitset/8                6598 ns         6597 ns    2122873
-BM_ImprovedSieveBitset/16              13598 ns        13595 ns    1030129
-BM_ImprovedSieveBitset/32              28652 ns        28647 ns     487315
-BM_ImprovedSieveBitset/64              64782 ns        64771 ns     217648
-BM_ImprovedSieveBitset/128            148784 ns       148760 ns      91987
-BM_ImprovedSieveBitset/256            325310 ns       325262 ns      43039
-BM_ImprovedSieveBitset/512            692475 ns       692383 ns      20248
-BM_ImprovedSieveBitset/1024          1457249 ns      1457065 ns       9609
-BM_ImprovedSieveBitset/2048          3070995 ns      3070639 ns       4558
-BM_ImprovedSieveBitset/4096          6473797 ns      6473096 ns       2164
-BM_ImprovedSieveBitset/8192         13635850 ns     13634460 ns       1028
-BM_ImprovedSieveBitset/16384        28421569 ns     28418827 ns        493
-BM_ImprovedSieveBitset/32768        58861502 ns     58856181 ns        238
-BM_ImprovedSieveBitset/65536       121420731 ns    121409963 ns        115
-BM_ImprovedSieveBitset/131072      261715764 ns    261693484 ns         54
-BM_ImprovedSieveBitset/262144      710182405 ns    710123053 ns         20
-BM_ImprovedSieveBitset/524288     1528706710 ns   1528587537 ns          9
-BM_ImprovedSieveBitset/1048576    3189576401 ns   3189331013 ns          4
-BM_ImprovedSieveBitset/2097152    6603644786 ns   6603157035 ns          2
-BM_ImprovedSieveBitset/4194304   13587062697 ns  13586069827 ns          1
-BM_ImprovedSieveBitset/8388608   27910053563 ns  27908055983 ns          1
-BM_ImprovedSieveBitset/16777216  57483404191 ns  57479420369 ns          1
+-------------------------------------------------------------------------
+Benchmark                                  Time            CPU Iterations
+-------------------------------------------------------------------------
+BM_SegmentedSieve/1024                   449 ns         449 ns   31157310
+BM_SegmentedSieve/2048                   768 ns         768 ns   18233157
+BM_SegmentedSieve/4096                  1509 ns        1509 ns    9253594
+BM_SegmentedSieve/8192                  2977 ns        2977 ns    4700870
+BM_SegmentedSieve/16384                 5661 ns        5661 ns    2469611
+BM_SegmentedSieve/32768                11602 ns       11602 ns    1206986
+BM_SegmentedSieve/65536                22924 ns       22924 ns     609763
+BM_SegmentedSieve/131072               46803 ns       46802 ns     299214
+BM_SegmentedSieve/262144               95985 ns       95983 ns     145931
+BM_SegmentedSieve/524288              198138 ns      198135 ns      70740
+BM_SegmentedSieve/1048576             414259 ns      414270 ns      34124
+BM_SegmentedSieve/2097152             873765 ns      873785 ns      16139
+BM_SegmentedSieve/4194304            1803720 ns     1803763 ns       7790
+BM_SegmentedSieve/8388608            3735180 ns     3735259 ns       3747
+BM_SegmentedSieve/16777216           7765361 ns     7765504 ns       1803
+BM_SegmentedSieve/33554432          16416217 ns    16416477 ns        858
+BM_SegmentedSieve/67108864          34437018 ns    34437578 ns        394
+BM_SegmentedSieve/134217728         70940773 ns    70941861 ns        198
+BM_SegmentedSieve/268435456        148588979 ns   148591076 ns         95
+BM_SegmentedSieve/536870912        312386467 ns   312390638 ns         45
+BM_SegmentedSieve/1073741824       662669087 ns   662677992 ns         21
+BM_ImprovedSieve/1024                    439 ns         439 ns   31933064
+BM_ImprovedSieve/2048                    919 ns         919 ns   15220422
+BM_ImprovedSieve/4096                   1985 ns        1985 ns    7067046
+BM_ImprovedSieve/8192                   4304 ns        4304 ns    3381997
+BM_ImprovedSieve/16384                  8686 ns        8686 ns    1594098
+BM_ImprovedSieve/32768                 19138 ns       19138 ns     729259
+BM_ImprovedSieve/65536                 48169 ns       48169 ns     291802
+BM_ImprovedSieve/131072               121856 ns      121857 ns     115696
+BM_ImprovedSieve/262144               272817 ns      272818 ns      51497
+BM_ImprovedSieve/524288               577257 ns      577259 ns      24250
+BM_ImprovedSieve/1048576             1228311 ns     1228316 ns      11401
+BM_ImprovedSieve/2097152             2603557 ns     2603561 ns       5379
+BM_ImprovedSieve/4194304             5534131 ns     5534152 ns       2530
+BM_ImprovedSieve/8388608            11751196 ns    11751178 ns       1192
+BM_ImprovedSieve/16777216           24844932 ns    24844928 ns        564
+BM_ImprovedSieve/33554432           52551286 ns    52551056 ns        267
+BM_ImprovedSieve/67108864          109618545 ns   109618137 ns        127
+BM_ImprovedSieve/134217728         226395637 ns   226395090 ns         62
+BM_ImprovedSieve/268435456         464600897 ns   464599715 ns         30
+BM_ImprovedSieve/536870912         948955331 ns   948953018 ns         15
+BM_ImprovedSieve/1073741824       1932698181 ns  1932694531 ns          7
+BM_SegmentedSieveBitset/1                692 ns         692 ns   20217260
+BM_SegmentedSieveBitset/2               1252 ns        1252 ns   11172975
+BM_SegmentedSieveBitset/4               2452 ns        2452 ns    5709473
+BM_SegmentedSieveBitset/8               4828 ns        4828 ns    2900145
+BM_SegmentedSieveBitset/16              9671 ns        9671 ns    1447718
+BM_SegmentedSieveBitset/32             19913 ns       19913 ns     703893
+BM_SegmentedSieveBitset/64             40528 ns       40527 ns     345509
+BM_SegmentedSieveBitset/128            83192 ns       83191 ns     168228
+BM_SegmentedSieveBitset/256           171337 ns      171336 ns      81656
+BM_SegmentedSieveBitset/512           352474 ns      352473 ns      39724
+BM_SegmentedSieveBitset/1024          732334 ns      732330 ns      19114
+BM_SegmentedSieveBitset/2048         1510744 ns     1510734 ns       9257
+BM_SegmentedSieveBitset/4096         3119979 ns     3119958 ns       4484
+BM_SegmentedSieveBitset/8192         7456149 ns     7456089 ns       1877
+BM_SegmentedSieveBitset/16384       15167681 ns    15167585 ns        923
+BM_SegmentedSieveBitset/32768       30973205 ns    30972937 ns        452
+BM_SegmentedSieveBitset/65536       63441414 ns    63440888 ns        221
+BM_SegmentedSieveBitset/131072     130181919 ns   130180869 ns        108
+BM_SegmentedSieveBitset/262144     266553976 ns   266551616 ns         53
+BM_SegmentedSieveBitset/524288     545152766 ns   545148385 ns         26
+BM_SegmentedSieveBitset/1048576   1113901894 ns  1113890237 ns         13
+BM_SegmentedSieveBitset/2097152   2274592129 ns  2274572716 ns          6
+BM_SegmentedSieveBitset/4194304   4634879903 ns  4634833381 ns          3
+BM_SegmentedSieveBitset/8388608   9439250971 ns  9439161275 ns          2
+BM_SegmentedSieveBitset/16777216 19234261649 ns 19234081452 ns          1
+BM_ImprovedSieveBitset/1                 759 ns         759 ns   18527854
+BM_ImprovedSieveBitset/2                1534 ns        1534 ns    9129633
+BM_ImprovedSieveBitset/4                3204 ns        3204 ns    4366187
+BM_ImprovedSieveBitset/8                6599 ns        6598 ns    2121457
+BM_ImprovedSieveBitset/16              13622 ns       13622 ns    1026507
+BM_ImprovedSieveBitset/32              28520 ns       28519 ns     486262
+BM_ImprovedSieveBitset/64              64217 ns       64216 ns     218081
+BM_ImprovedSieveBitset/128            147560 ns      147558 ns      94890
+BM_ImprovedSieveBitset/256            325254 ns      325250 ns      43034
+BM_ImprovedSieveBitset/512            691382 ns      691373 ns      20249
+BM_ImprovedSieveBitset/1024          1458335 ns     1458317 ns       9606
+BM_ImprovedSieveBitset/2048          3076453 ns     3076415 ns       4554
+BM_ImprovedSieveBitset/4096          6478219 ns     6478139 ns       2162
+BM_ImprovedSieveBitset/8192         13656996 ns    13656817 ns       1027
+BM_ImprovedSieveBitset/16384        28485081 ns    28484781 ns        491
+BM_ImprovedSieveBitset/32768        58943714 ns    58942929 ns        237
+BM_ImprovedSieveBitset/65536       121584699 ns   121583169 ns        115
+BM_ImprovedSieveBitset/131072      254987589 ns   254983391 ns         55
+BM_ImprovedSieveBitset/262144      705740911 ns   705729370 ns         20
+BM_ImprovedSieveBitset/524288     1521943864 ns  1521926014 ns          9
+BM_ImprovedSieveBitset/1048576    3184760035 ns  3184712975 ns          4
+BM_ImprovedSieveBitset/2097152    6595908223 ns  6595805070 ns          2
+BM_ImprovedSieveBitset/4194304   13584652001 ns 13584441464 ns          1
+BM_ImprovedSieveBitset/8388608   27878920314 ns 27878533189 ns          1
+BM_ImprovedSieveBitset/16777216  57179037827 ns 57178259858 ns          1
 </pre>
