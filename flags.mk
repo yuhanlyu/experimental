@@ -12,7 +12,7 @@ CFLAGS = -std=c++14 -pedantic -Wall -Wextra
 SANITIZE_FLAGS = -fsanitize=address -fsanitize=undefined
 OPT_FLAGS = -O3 -march=native -flto -fipa-pta
 CLANG_FORMAT_FLAGS = -i -style=Google -sort-includes
-CLANG_TIDY_FLAGS = -checks=* -- -std=c++14 -I$(INCLUDE_DIR)
+CLANG_TIDY_FLAGS = -checks=*,-cppcoreguidelines-pro-bounds-array-to-pointer-decay,-cppcoreguidelines-pro-type-reinterpret-cast,-cppcoreguidelines-pro-bounds-pointer-arithmetic,-cppcoreguidelines-pro-bounds-constant-array-index,-llvm-header-guard,-cppcoreguidelines-pro-type-vararg,-readability-braces-around-statements,-google-readability-braces-around-statements -- -std=c++14 -I$(INCLUDE_DIR)
 CPPCHECK_FLAGS = --enable=all
 
 
