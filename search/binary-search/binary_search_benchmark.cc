@@ -9,8 +9,10 @@
 
 namespace {
 
-constexpr int size = 1 << 28;
-int test[size];
+constexpr int min_size = 1 << 10;
+constexpr int max_size = 1 << 28;
+constexpr int multiplier = 4;
+int test[max_size];
 
 class SearchBenchmark : public benchmark::Fixture {
  public:
@@ -42,8 +44,8 @@ BENCHMARK_DEFINE_F(SearchBenchmark, BranchfreeBinarySearch)
   }
 }
 BENCHMARK_REGISTER_F(SearchBenchmark, BranchfreeBinarySearch)
-    ->RangeMultiplier(4)
-    ->Range(1 << 10, size);
+    ->RangeMultiplier(multiplier)
+    ->Range(min_size, max_size);
 
 BENCHMARK_DEFINE_F(SearchBenchmark, SkewedBinarySearch)
 (benchmark::State& state) {
@@ -54,8 +56,8 @@ BENCHMARK_DEFINE_F(SearchBenchmark, SkewedBinarySearch)
   }
 }
 BENCHMARK_REGISTER_F(SearchBenchmark, SkewedBinarySearch)
-    ->RangeMultiplier(4)
-    ->Range(1 << 10, size);
+    ->RangeMultiplier(multiplier)
+    ->Range(min_size, max_size);
 
 BENCHMARK_DEFINE_F(SearchBenchmark, STLSearch)(benchmark::State& state) {
   while (state.KeepRunning()) {
@@ -64,8 +66,8 @@ BENCHMARK_DEFINE_F(SearchBenchmark, STLSearch)(benchmark::State& state) {
   }
 }
 BENCHMARK_REGISTER_F(SearchBenchmark, STLSearch)
-    ->RangeMultiplier(4)
-    ->Range(1 << 10, size);
+    ->RangeMultiplier(multiplier)
+    ->Range(min_size, max_size);
 
 int compare(const void* p, const void* q) {
   int x = *reinterpret_cast<const int*>(p);
@@ -81,8 +83,8 @@ BENCHMARK_DEFINE_F(SearchBenchmark, BSearch)(benchmark::State& state) {
   }
 }
 BENCHMARK_REGISTER_F(SearchBenchmark, BSearch)
-    ->RangeMultiplier(4)
-    ->Range(1 << 10, size);
+    ->RangeMultiplier(multiplier)
+    ->Range(min_size, max_size);
 }  // namespace
 
 BENCHMARK_MAIN()
