@@ -5,7 +5,9 @@ implementation of binary search tree.
 
 ## Benchmark
 The performance of iterative/recursive insertion/removal are compared. The
-iterative version seems slightly faster.
+iterative version uses only O(1) space while the recursive version uses O(h)
+space, where h is the height of the tree.  The iterative version seems slightly
+faster.
 <pre>
 --------------------------------------------------------------------------------------------
 Benchmark                                                     Time           CPU Iterations
