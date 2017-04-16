@@ -11,6 +11,7 @@ struct BinarySearchTree {
   struct Node {
     using value_type = T;
     explicit Node(const T& x) : value(x) {}
+		Node() = default;
     Node* left = nullptr;
     Node* right = nullptr;
     T value;
@@ -40,9 +41,11 @@ struct BinarySearchTree {
 
   ~BinarySearchTree() { FreeTree(root_); }
 
-  void InorderTraverse(std::vector<T>& result) {
+  void InorderTraverse(std::vector<T>& result) const {
     return ::InorderTraverse(root_, result);
   }
+
+	Node* root() const { return root_; }
 
  private:
   static bool InsertRec(Node*& node, const T& x) {
@@ -106,13 +109,6 @@ struct BinarySearchTree {
   static T FindMin(const Node* node) {
     while (node->left != nullptr) node = node->left;
     return node->value;
-  }
-
-  static void FreeTree(Node* node) {
-    if (node == nullptr) return;
-    FreeTree(node->left);
-    FreeTree(node->right);
-    delete node;
   }
 
   Node* root_ = nullptr;
