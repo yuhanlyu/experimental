@@ -104,8 +104,11 @@ struct BinarySearchTree {
     // value from the right tree and delete the minimum value in the right
     // tree.
     if (node->left != nullptr && node->right != nullptr) {
-      node->value = FindMin(node->right);
-      RemoveRec(node->right, node->value);
+      Node*& min_ptr = FindMinPtr(&node->right);
+      node->value = min_ptr->value;
+      Node* old_node = min_ptr;
+      min_ptr = min_ptr->right;
+      delete old_node;
     } else {
       // When the node needed to be removed has one child, move the non-null
       // subtree up. If both subtrees are null, then set the node to be null.
@@ -114,11 +117,6 @@ struct BinarySearchTree {
       delete old_node;
     }
     return true;
-  }
-
-  static T FindMin(const Node* node) {
-    while (node->left != nullptr) node = node->left;
-    return node->value;
   }
 
   Node* root_ = nullptr;
