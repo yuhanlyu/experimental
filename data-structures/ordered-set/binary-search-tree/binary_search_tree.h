@@ -5,13 +5,20 @@
 
 #include "../binary-search-tree-common/binary_search_tree_common.h"
 
+// Find the pointer from the parent to the node with the minimum value.
+template <typename T>
+T*& FindMinPtr(T** node) {
+  while ((*node)->left != nullptr) node = &(*node)->left;
+  return *node;
+}
+
 template <typename T>
 struct BinarySearchTree {
  public:
   struct Node {
     using value_type = T;
     explicit Node(const T& x) : value(x) {}
-		Node() = default;
+    Node() = default;
     Node* left = nullptr;
     Node* right = nullptr;
     T value;
@@ -45,7 +52,7 @@ struct BinarySearchTree {
     return ::InorderTraverse(root_, result);
   }
 
-	Node* root() const { return root_; }
+  Node* root() const { return root_; }
 
  private:
   static bool InsertRec(Node*& node, const T& x) {
@@ -75,8 +82,11 @@ struct BinarySearchTree {
     // value from the right tree and delete the minimum value in the right
     // tree.
     if (current.left != nullptr && current.right != nullptr) {
-      current.value = FindMin(current.right);
-      Remove(&current.right, current.value);
+      Node*& min_ptr = FindMinPtr(&current.right);
+      current.value = min_ptr->value;
+      Node* old_node = min_ptr;
+      min_ptr = min_ptr->right;
+      delete old_node;
     } else {
       // When the node needed to be removed has one child, move the non-null
       // subtree up. If both subtrees are null, then set the node to be null.
