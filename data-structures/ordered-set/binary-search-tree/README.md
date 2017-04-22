@@ -12,28 +12,28 @@ faster.
 --------------------------------------------------------------------------------------------
 Benchmark                                                     Time           CPU Iterations
 --------------------------------------------------------------------------------------------
-BSTBenchmark/BinarySearchTreeInsert/1024                  56349 ns      56341 ns      12251
-BSTBenchmark/BinarySearchTreeInsert/4096                 296901 ns     296935 ns       2336
-BSTBenchmark/BinarySearchTreeInsert/16384               2056376 ns    2056396 ns        338
-BSTBenchmark/BinarySearchTreeInsert/65536              12203142 ns   12203517 ns         57
-BSTBenchmark/BinarySearchTreeInsert/262144             78259334 ns   78256196 ns          9
-BSTBenchmark/BinarySearchTreeInsert/1048576           602241845 ns  602210200 ns          1
-BSTBenchmark/BinarySearchTreeInsertRec/1024               74012 ns      74029 ns       9566
-BSTBenchmark/BinarySearchTreeInsertRec/4096              366079 ns     366120 ns       1915
-BSTBenchmark/BinarySearchTreeInsertRec/16384            2335335 ns    2335460 ns        298
-BSTBenchmark/BinarySearchTreeInsertRec/65536           13343638 ns   13344237 ns         51
-BSTBenchmark/BinarySearchTreeInsertRec/262144          84520710 ns   84522262 ns          9
-BSTBenchmark/BinarySearchTreeInsertRec/1048576        619863815 ns  619856319 ns          1
-BSTRemoveBenchmark/BinarySearchTreeRemove/1024            56152 ns      56151 ns      12616
-BSTRemoveBenchmark/BinarySearchTreeRemove/4096           291736 ns     291756 ns       2422
-BSTRemoveBenchmark/BinarySearchTreeRemove/16384         1910740 ns    1910735 ns        369
-BSTRemoveBenchmark/BinarySearchTreeRemove/65536        11279579 ns   11279839 ns         63
-BSTRemoveBenchmark/BinarySearchTreeRemove/262144       69395364 ns   69399357 ns         10
-BSTRemoveBenchmark/BinarySearchTreeRemove/1048576     506222564 ns  506246647 ns          1
-BSTRemoveBenchmark/BinarySearchTreeRemoveRec/1024         56650 ns      56642 ns      12396
-BSTRemoveBenchmark/BinarySearchTreeRemoveRec/4096        292395 ns     292417 ns       2391
-BSTRemoveBenchmark/BinarySearchTreeRemoveRec/16384      1917014 ns    1917097 ns        365
-BSTRemoveBenchmark/BinarySearchTreeRemoveRec/65536     11381511 ns   11381837 ns         62
-BSTRemoveBenchmark/BinarySearchTreeRemoveRec/262144    71720763 ns   71716833 ns         10
-BSTRemoveBenchmark/BinarySearchTreeRemoveRec/1048576  520912216 ns  520922981 ns          1
+BSTBenchmark/BinarySearchTreeInsert/1024                  57136 ns      56729 ns      12152
+BSTBenchmark/BinarySearchTreeInsert/4096                 301564 ns     299168 ns       2334
+BSTBenchmark/BinarySearchTreeInsert/16384               2094872 ns    2081139 ns        334
+BSTBenchmark/BinarySearchTreeInsert/65536              12442364 ns   12440137 ns         55
+BSTBenchmark/BinarySearchTreeInsert/262144             92320142 ns   91906284 ns          9
+BSTBenchmark/BinarySearchTreeInsert/1048576           684404710 ns  676590828 ns          1
+BSTBenchmark/BinarySearchTreeInsertRec/1024               74793 ns      74247 ns       9384
+BSTBenchmark/BinarySearchTreeInsertRec/4096              373331 ns     371326 ns       1884
+BSTBenchmark/BinarySearchTreeInsertRec/16384            2376999 ns    2359025 ns        294
+BSTBenchmark/BinarySearchTreeInsertRec/65536           13705912 ns   13584831 ns         51
+BSTBenchmark/BinarySearchTreeInsertRec/262144          95658629 ns   95207039 ns          8
+BSTBenchmark/BinarySearchTreeInsertRec/1048576        691794371 ns  686559304 ns          1
+BSTRemoveBenchmark/BinarySearchTreeRemove/1024            42717 ns      42373 ns      16488
+BSTRemoveBenchmark/BinarySearchTreeRemove/4096           230172 ns     228521 ns       3078
+BSTRemoveBenchmark/BinarySearchTreeRemove/16384         1693828 ns    1688887 ns        415
+BSTRemoveBenchmark/BinarySearchTreeRemove/65536        10353592 ns   10258887 ns         69
+BSTRemoveBenchmark/BinarySearchTreeRemove/262144       80447525 ns   79505002 ns         11
+BSTRemoveBenchmark/BinarySearchTreeRemove/1048576     570871472 ns  564397771 ns          1
+BSTRemoveBenchmark/BinarySearchTreeRemoveRec/1024         57588 ns      57104 ns      12302
+BSTRemoveBenchmark/BinarySearchTreeRemoveRec/4096        296922 ns     294658 ns       2366
+BSTRemoveBenchmark/BinarySearchTreeRemoveRec/16384      1962740 ns    1947541 ns        359
+BSTRemoveBenchmark/BinarySearchTreeRemoveRec/65536     11733916 ns   11623410 ns         60
+BSTRemoveBenchmark/BinarySearchTreeRemoveRec/262144    84001732 ns   83021441 ns         10
+BSTRemoveBenchmark/BinarySearchTreeRemoveRec/1048576  595244754 ns  592433928 ns          1
 </pre>
