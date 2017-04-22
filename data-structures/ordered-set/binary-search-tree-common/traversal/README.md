@@ -1,4 +1,4 @@
-## Binary search tree common routines
+## Binary search tree traversal
 This module contains several [tree traversal](https://en.wikipedia.org/wiki/Tree_traversal)
 methods, including inorder/preorder/postorder/levelorder traversal.
 
