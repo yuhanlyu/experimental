@@ -12,7 +12,7 @@ using testing::ElementsAreArray;
 
 constexpr int max_test_size = 7;
 
-TEST(BinarySearchTreeCommon, InorderTraverse) {
+TEST(BinarySearchTreeTraversal, InorderTraverse) {
   for (int size = 1; size <= max_test_size; ++size) {
     std::vector<int> expected_result;
     for (int i = 0; i < size; ++i) expected_result.push_back(i + 1);
@@ -28,7 +28,7 @@ TEST(BinarySearchTreeCommon, InorderTraverse) {
   }
 }
 
-TEST(BinarySearchTreeCommon, InorderTraverseArray) {
+TEST(BinarySearchTreeTraversal, InorderTraverseArray) {
   for (int size = 1; size <= max_test_size; ++size) {
     std::vector<int> expected_result;
     for (int i = 0; i < size; ++i) expected_result.push_back(i + 1);
@@ -44,7 +44,7 @@ TEST(BinarySearchTreeCommon, InorderTraverseArray) {
   }
 }
 
-TEST(BinarySearchTreeCommon, InorderTraverseMorris) {
+TEST(BinarySearchTreeTraversal, InorderTraverseMorris) {
   for (int size = 1; size <= max_test_size; ++size) {
     std::vector<int> expected_result;
     for (int i = 0; i < size; ++i) expected_result.push_back(i + 1);
@@ -60,7 +60,7 @@ TEST(BinarySearchTreeCommon, InorderTraverseMorris) {
   }
 }
 
-TEST(BinarySearchTreeCommon, PreorderTraverse) {
+TEST(BinarySearchTreeTraversal, PreorderTraverse) {
   for (int size = 1; size <= max_test_size; ++size) {
     std::vector<int> inserted_elements;
     for (int i = 0; i < size; ++i) inserted_elements.push_back(i + 1);
@@ -77,7 +77,7 @@ TEST(BinarySearchTreeCommon, PreorderTraverse) {
   }
 }
 
-TEST(BinarySearchTreeCommon, PreorderTraverseArray) {
+TEST(BinarySearchTreeTraversal, PreorderTraverseArray) {
   for (int size = 1; size <= max_test_size; ++size) {
     std::vector<int> inserted_elements;
     for (int i = 0; i < size; ++i) inserted_elements.push_back(i + 1);
@@ -94,7 +94,7 @@ TEST(BinarySearchTreeCommon, PreorderTraverseArray) {
   }
 }
 
-TEST(BinarySearchTreeCommon, PreorderTraverseMorris) {
+TEST(BinarySearchTreeTraversal, PreorderTraverseMorris) {
   for (int size = 1; size <= max_test_size; ++size) {
     std::vector<int> inserted_elements;
     for (int i = 0; i < size; ++i) inserted_elements.push_back(i + 1);
@@ -111,7 +111,7 @@ TEST(BinarySearchTreeCommon, PreorderTraverseMorris) {
   }
 }
 
-TEST(BinarySearchTreeCommon, PostorderTraverse) {
+TEST(BinarySearchTreeTraversal, PostorderTraverse) {
   for (int size = 1; size <= max_test_size; ++size) {
     std::vector<int> inserted_elements;
     for (int i = 0; i < size; ++i) inserted_elements.push_back(i + 1);
@@ -128,7 +128,7 @@ TEST(BinarySearchTreeCommon, PostorderTraverse) {
   }
 }
 
-TEST(BinarySearchTreeCommon, PostorderTraverseArray) {
+TEST(BinarySearchTreeTraversal, PostorderTraverseArray) {
   for (int size = 1; size <= max_test_size; ++size) {
     std::vector<int> inserted_elements;
     for (int i = 0; i < size; ++i) inserted_elements.push_back(i + 1);
@@ -145,7 +145,7 @@ TEST(BinarySearchTreeCommon, PostorderTraverseArray) {
   }
 }
 
-TEST(BinarySearchTreeCommon, PostorderTraverseMorris) {
+TEST(BinarySearchTreeTraversal, PostorderTraverseMorris) {
   for (int size = 1; size <= max_test_size; ++size) {
     std::vector<int> inserted_elements;
     for (int i = 0; i < size; ++i) inserted_elements.push_back(i + 1);
@@ -162,7 +162,7 @@ TEST(BinarySearchTreeCommon, PostorderTraverseMorris) {
   }
 }
 
-TEST(BinarySearchTreeCommon, LevelOrderTraverse) {
+TEST(BinarySearchTreeTraversal, LevelOrderTraverse) {
   for (int size = 1; size <= max_test_size; ++size) {
     std::vector<int> inserted_elements;
     for (int i = 0; i < size; ++i) inserted_elements.push_back(i + 1);

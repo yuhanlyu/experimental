@@ -15,7 +15,7 @@ constexpr int max_size = 1 << 20;
 constexpr int multiplier = 4;
 int test[max_size];
 
-class BSTCommonBenchmark : public benchmark::Fixture {
+class BSTTraversalBenchmark : public benchmark::Fixture {
  public:
   void SetUp(const ::benchmark::State& state) override {
     for (int i = 0; i < state.range(0); ++i) test[i] = 2 * i + 1;
@@ -30,7 +30,7 @@ class BSTCommonBenchmark : public benchmark::Fixture {
   }
 };
 
-BENCHMARK_DEFINE_F(BSTCommonBenchmark, InorderTraverseRec)
+BENCHMARK_DEFINE_F(BSTTraversalBenchmark, InorderTraverseRec)
 (benchmark::State& state) {
   while (state.KeepRunning()) {
     state.PauseTiming();
@@ -42,11 +42,11 @@ BENCHMARK_DEFINE_F(BSTCommonBenchmark, InorderTraverseRec)
     InorderTraverseRec(tree.root(), result);
   }
 }
-BENCHMARK_REGISTER_F(BSTCommonBenchmark, InorderTraverseRec)
+BENCHMARK_REGISTER_F(BSTTraversalBenchmark, InorderTraverseRec)
     ->RangeMultiplier(multiplier)
     ->Range(min_size, max_size);
 
-BENCHMARK_DEFINE_F(BSTCommonBenchmark, InorderTraverse)
+BENCHMARK_DEFINE_F(BSTTraversalBenchmark, InorderTraverse)
 (benchmark::State& state) {
   while (state.KeepRunning()) {
     state.PauseTiming();
@@ -58,11 +58,11 @@ BENCHMARK_DEFINE_F(BSTCommonBenchmark, InorderTraverse)
     InorderTraverse(tree.root(), result);
   }
 }
-BENCHMARK_REGISTER_F(BSTCommonBenchmark, InorderTraverse)
+BENCHMARK_REGISTER_F(BSTTraversalBenchmark, InorderTraverse)
     ->RangeMultiplier(multiplier)
     ->Range(min_size, max_size);
 
-BENCHMARK_DEFINE_F(BSTCommonBenchmark, InorderTraverseArray)
+BENCHMARK_DEFINE_F(BSTTraversalBenchmark, InorderTraverseArray)
 (benchmark::State& state) {
   while (state.KeepRunning()) {
     state.PauseTiming();
@@ -73,11 +73,11 @@ BENCHMARK_DEFINE_F(BSTCommonBenchmark, InorderTraverseArray)
     InorderTraverse(tree.root(), result);
   }
 }
-BENCHMARK_REGISTER_F(BSTCommonBenchmark, InorderTraverseArray)
+BENCHMARK_REGISTER_F(BSTTraversalBenchmark, InorderTraverseArray)
     ->RangeMultiplier(multiplier)
     ->Range(min_size, max_size);
 
-BENCHMARK_DEFINE_F(BSTCommonBenchmark, InorderTraverseMorris)
+BENCHMARK_DEFINE_F(BSTTraversalBenchmark, InorderTraverseMorris)
 (benchmark::State& state) {
   while (state.KeepRunning()) {
     state.PauseTiming();
@@ -88,11 +88,11 @@ BENCHMARK_DEFINE_F(BSTCommonBenchmark, InorderTraverseMorris)
     InorderTraverseMorris(tree.root(), result);
   }
 }
-BENCHMARK_REGISTER_F(BSTCommonBenchmark, InorderTraverseMorris)
+BENCHMARK_REGISTER_F(BSTTraversalBenchmark, InorderTraverseMorris)
     ->RangeMultiplier(multiplier)
     ->Range(min_size, max_size);
 
-BENCHMARK_DEFINE_F(BSTCommonBenchmark, PreorderTraverseRec)
+BENCHMARK_DEFINE_F(BSTTraversalBenchmark, PreorderTraverseRec)
 (benchmark::State& state) {
   while (state.KeepRunning()) {
     state.PauseTiming();
@@ -104,11 +104,11 @@ BENCHMARK_DEFINE_F(BSTCommonBenchmark, PreorderTraverseRec)
     PreorderTraverseRec(tree.root(), result);
   }
 }
-BENCHMARK_REGISTER_F(BSTCommonBenchmark, PreorderTraverseRec)
+BENCHMARK_REGISTER_F(BSTTraversalBenchmark, PreorderTraverseRec)
     ->RangeMultiplier(multiplier)
     ->Range(min_size, max_size);
 
-BENCHMARK_DEFINE_F(BSTCommonBenchmark, PreorderTraverse)
+BENCHMARK_DEFINE_F(BSTTraversalBenchmark, PreorderTraverse)
 (benchmark::State& state) {
   while (state.KeepRunning()) {
     state.PauseTiming();
@@ -120,11 +120,11 @@ BENCHMARK_DEFINE_F(BSTCommonBenchmark, PreorderTraverse)
     PreorderTraverse(tree.root(), result);
   }
 }
-BENCHMARK_REGISTER_F(BSTCommonBenchmark, PreorderTraverse)
+BENCHMARK_REGISTER_F(BSTTraversalBenchmark, PreorderTraverse)
     ->RangeMultiplier(multiplier)
     ->Range(min_size, max_size);
 
-BENCHMARK_DEFINE_F(BSTCommonBenchmark, PreorderTraverseArray)
+BENCHMARK_DEFINE_F(BSTTraversalBenchmark, PreorderTraverseArray)
 (benchmark::State& state) {
   while (state.KeepRunning()) {
     state.PauseTiming();
@@ -135,11 +135,11 @@ BENCHMARK_DEFINE_F(BSTCommonBenchmark, PreorderTraverseArray)
     PreorderTraverse(tree.root(), result);
   }
 }
-BENCHMARK_REGISTER_F(BSTCommonBenchmark, PreorderTraverseArray)
+BENCHMARK_REGISTER_F(BSTTraversalBenchmark, PreorderTraverseArray)
     ->RangeMultiplier(multiplier)
     ->Range(min_size, max_size);
 
-BENCHMARK_DEFINE_F(BSTCommonBenchmark, PreorderTraverseMorris)
+BENCHMARK_DEFINE_F(BSTTraversalBenchmark, PreorderTraverseMorris)
 (benchmark::State& state) {
   while (state.KeepRunning()) {
     state.PauseTiming();
@@ -150,11 +150,11 @@ BENCHMARK_DEFINE_F(BSTCommonBenchmark, PreorderTraverseMorris)
     PreorderTraverseMorris(tree.root(), result);
   }
 }
-BENCHMARK_REGISTER_F(BSTCommonBenchmark, PreorderTraverseMorris)
+BENCHMARK_REGISTER_F(BSTTraversalBenchmark, PreorderTraverseMorris)
     ->RangeMultiplier(multiplier)
     ->Range(min_size, max_size);
 
-BENCHMARK_DEFINE_F(BSTCommonBenchmark, PostorderTraverseRec)
+BENCHMARK_DEFINE_F(BSTTraversalBenchmark, PostorderTraverseRec)
 (benchmark::State& state) {
   while (state.KeepRunning()) {
     state.PauseTiming();
@@ -166,11 +166,11 @@ BENCHMARK_DEFINE_F(BSTCommonBenchmark, PostorderTraverseRec)
     PostorderTraverseRec(tree.root(), result);
   }
 }
-BENCHMARK_REGISTER_F(BSTCommonBenchmark, PostorderTraverseRec)
+BENCHMARK_REGISTER_F(BSTTraversalBenchmark, PostorderTraverseRec)
     ->RangeMultiplier(multiplier)
     ->Range(min_size, max_size);
 
-BENCHMARK_DEFINE_F(BSTCommonBenchmark, PostorderTraverse)
+BENCHMARK_DEFINE_F(BSTTraversalBenchmark, PostorderTraverse)
 (benchmark::State& state) {
   while (state.KeepRunning()) {
     state.PauseTiming();
@@ -182,11 +182,11 @@ BENCHMARK_DEFINE_F(BSTCommonBenchmark, PostorderTraverse)
     PostorderTraverse(tree.root(), result);
   }
 }
-BENCHMARK_REGISTER_F(BSTCommonBenchmark, PostorderTraverse)
+BENCHMARK_REGISTER_F(BSTTraversalBenchmark, PostorderTraverse)
     ->RangeMultiplier(multiplier)
     ->Range(min_size, max_size);
 
-BENCHMARK_DEFINE_F(BSTCommonBenchmark, PostorderTraverseArray)
+BENCHMARK_DEFINE_F(BSTTraversalBenchmark, PostorderTraverseArray)
 (benchmark::State& state) {
   while (state.KeepRunning()) {
     state.PauseTiming();
@@ -197,11 +197,11 @@ BENCHMARK_DEFINE_F(BSTCommonBenchmark, PostorderTraverseArray)
     PostorderTraverse(tree.root(), result);
   }
 }
-BENCHMARK_REGISTER_F(BSTCommonBenchmark, PostorderTraverseArray)
+BENCHMARK_REGISTER_F(BSTTraversalBenchmark, PostorderTraverseArray)
     ->RangeMultiplier(multiplier)
     ->Range(min_size, max_size);
 
-BENCHMARK_DEFINE_F(BSTCommonBenchmark, PostorderTraverseMorris)
+BENCHMARK_DEFINE_F(BSTTraversalBenchmark, PostorderTraverseMorris)
 (benchmark::State& state) {
   while (state.KeepRunning()) {
     state.PauseTiming();
@@ -212,11 +212,11 @@ BENCHMARK_DEFINE_F(BSTCommonBenchmark, PostorderTraverseMorris)
     PostorderTraverseMorris(tree.root(), result);
   }
 }
-BENCHMARK_REGISTER_F(BSTCommonBenchmark, PostorderTraverseMorris)
+BENCHMARK_REGISTER_F(BSTTraversalBenchmark, PostorderTraverseMorris)
     ->RangeMultiplier(multiplier)
     ->Range(min_size, max_size);
 
-BENCHMARK_DEFINE_F(BSTCommonBenchmark, LevelOrderTraverseQueue)
+BENCHMARK_DEFINE_F(BSTTraversalBenchmark, LevelOrderTraverseQueue)
 (benchmark::State& state) {
   while (state.KeepRunning()) {
     state.PauseTiming();
@@ -228,11 +228,11 @@ BENCHMARK_DEFINE_F(BSTCommonBenchmark, LevelOrderTraverseQueue)
     LevelOrderTraverseQueue(tree.root(), result);
   }
 }
-BENCHMARK_REGISTER_F(BSTCommonBenchmark, LevelOrderTraverseQueue)
+BENCHMARK_REGISTER_F(BSTTraversalBenchmark, LevelOrderTraverseQueue)
     ->RangeMultiplier(multiplier)
     ->Range(min_size, max_size);
 
-BENCHMARK_DEFINE_F(BSTCommonBenchmark, LevelOrderTraverse)
+BENCHMARK_DEFINE_F(BSTTraversalBenchmark, LevelOrderTraverse)
 (benchmark::State& state) {
   while (state.KeepRunning()) {
     state.PauseTiming();
@@ -244,7 +244,7 @@ BENCHMARK_DEFINE_F(BSTCommonBenchmark, LevelOrderTraverse)
     LevelOrderTraverse(tree.root(), result);
   }
 }
-BENCHMARK_REGISTER_F(BSTCommonBenchmark, LevelOrderTraverse)
+BENCHMARK_REGISTER_F(BSTTraversalBenchmark, LevelOrderTraverse)
     ->RangeMultiplier(multiplier)
     ->Range(min_size, max_size);
 
