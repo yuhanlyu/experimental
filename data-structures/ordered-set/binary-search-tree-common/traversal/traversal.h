@@ -239,7 +239,8 @@ void LevelOrderTraverseQueue(const Node* node,
 }
 
 // Use two vectors to traverse the tree in level order.
-// Nodehe nodes in the current level are stored in vector current. Nodehe nodes in
+// Nodehe nodes in the current level are stored in vector current. Nodehe nodes
+// in
 // the next level are stored in vector next.
 template <typename Node>
 void LevelOrderTraverse(const Node* node,
