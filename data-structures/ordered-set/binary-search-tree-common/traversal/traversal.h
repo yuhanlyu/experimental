@@ -5,19 +5,19 @@
 #include <stack>
 #include <vector>
 
-template <typename T>
-void InorderTraverseRec(const T* root,
-                        std::vector<typename T::value_type>& result) {
+template <typename Node>
+void InorderTraverseRec(const Node* root,
+                        std::vector<typename Node::value_type>& result) {
   if (root == nullptr) return;
   InorderTraverse(root->left, result);
   result.push_back(root->value);
   InorderTraverse(root->right, result);
 }
 
-template <typename T>
-void InorderTraverse(const T* node,
-                     std::vector<typename T::value_type>& result) {
-  for (std::stack<const T*> stack; !stack.empty() || node != nullptr;) {
+template <typename Node>
+void InorderTraverse(const Node* node,
+                     std::vector<typename Node::value_type>& result) {
+  for (std::stack<const Node*> stack; !stack.empty() || node != nullptr;) {
     if (node != nullptr) {
       stack.push(node);
       node = node->left;
@@ -29,10 +29,10 @@ void InorderTraverse(const T* node,
   }
 }
 
-template <typename T>
-void InorderTraverse(const T* node, typename T::value_type* result) {
+template <typename Node>
+void InorderTraverse(const Node* node, typename Node::value_type* result) {
   int last = 0;
-  for (std::stack<const T*> stack; !stack.empty() || node != nullptr;) {
+  for (std::stack<const Node*> stack; !stack.empty() || node != nullptr;) {
     if (node != nullptr) {
       stack.push(node);
       node = node->left;
@@ -44,11 +44,11 @@ void InorderTraverse(const T* node, typename T::value_type* result) {
   }
 }
 
-template <typename T>
-void InorderTraverseMorris(T* node, typename T::value_type* result) {
+template <typename Node>
+void InorderTraverseMorris(Node* node, typename Node::value_type* result) {
   for (int last = 0; node != nullptr;) {
     if (node->left != nullptr) {
-      T* previous = node->left;
+      Node* previous = node->left;
       while (previous->right != nullptr && previous->right != node)
         previous = previous->right;
       if (previous->right != nullptr) {
@@ -66,20 +66,20 @@ void InorderTraverseMorris(T* node, typename T::value_type* result) {
   }
 }
 
-template <typename T>
-void PreorderTraverseRec(const T* root,
-                         std::vector<typename T::value_type>& result) {
+template <typename Node>
+void PreorderTraverseRec(const Node* root,
+                         std::vector<typename Node::value_type>& result) {
   if (root == nullptr) return;
   result.push_back(root->value);
   PreorderTraverse(root->left, result);
   PreorderTraverse(root->right, result);
 }
 
-template <typename T>
-void PreorderTraverse(const T* node,
-                      std::vector<typename T::value_type>& result) {
+template <typename Node>
+void PreorderTraverse(const Node* node,
+                      std::vector<typename Node::value_type>& result) {
   if (node == nullptr) return;
-  std::stack<const T*> stack;
+  std::stack<const Node*> stack;
   for (stack.push(node); !stack.empty(); result.push_back(node->value)) {
     node = stack.top();
     stack.pop();
@@ -89,11 +89,11 @@ void PreorderTraverse(const T* node,
   }
 }
 
-template <typename T>
-void PreorderTraverse(const T* node, typename T::value_type* result) {
+template <typename Node>
+void PreorderTraverse(const Node* node, typename Node::value_type* result) {
   if (node == nullptr) return;
   int last = 0;
-  std::stack<const T*> stack;
+  std::stack<const Node*> stack;
   for (stack.push(node); !stack.empty(); result[last++] = node->value) {
     node = stack.top();
     stack.pop();
@@ -103,11 +103,11 @@ void PreorderTraverse(const T* node, typename T::value_type* result) {
   }
 }
 
-template <typename T>
-void PreorderTraverseMorris(T* node, typename T::value_type* result) {
+template <typename Node>
+void PreorderTraverseMorris(Node* node, typename Node::value_type* result) {
   for (int last = 0; node != nullptr;) {
     if (node->left != nullptr) {
-      T* previous = node->left;
+      Node* previous = node->left;
       while (previous->right != nullptr && previous->right != node)
         previous = previous->right;
       if (previous->right != nullptr) {
@@ -125,26 +125,26 @@ void PreorderTraverseMorris(T* node, typename T::value_type* result) {
   }
 }
 
-template <typename T>
-void PostorderTraverseRec(const T* root,
-                          std::vector<typename T::value_type>& result) {
+template <typename Node>
+void PostorderTraverseRec(const Node* root,
+                          std::vector<typename Node::value_type>& result) {
   if (root == nullptr) return;
   PostorderTraverse(root->left, result);
   PostorderTraverse(root->right, result);
   result.push_back(root->value);
 }
 
-template <typename T>
-void PostorderTraverse(const T* node,
-                       std::vector<typename T::value_type>& result) {
-  std::stack<const T*> stack;
-  for (const T* previous = nullptr; !stack.empty() || node != nullptr;) {
+template <typename Node>
+void PostorderTraverse(const Node* node,
+                       std::vector<typename Node::value_type>& result) {
+  std::stack<const Node*> stack;
+  for (const Node* previous = nullptr; !stack.empty() || node != nullptr;) {
     // Keep moving left.
     if (node != nullptr) {
       stack.push(node);
       node = node->left;
     } else {
-      const T* top = stack.top();
+      const Node* top = stack.top();
       // If right child exists and backtrack from left, traverse right subtree.
       if (top->right != nullptr && top->right != previous) {
         node = top->right;
@@ -158,17 +158,17 @@ void PostorderTraverse(const T* node,
   }
 }
 
-template <typename T>
-void PostorderTraverse(const T* node, typename T::value_type* result) {
+template <typename Node>
+void PostorderTraverse(const Node* node, typename Node::value_type* result) {
   int last = 0;
-  std::stack<const T*> stack;
-  for (const T* previous = nullptr; !stack.empty() || node != nullptr;) {
+  std::stack<const Node*> stack;
+  for (const Node* previous = nullptr; !stack.empty() || node != nullptr;) {
     // Keep moving left.
     if (node != nullptr) {
       stack.push(node);
       node = node->left;
     } else {
-      const T* top = stack.top();
+      const Node* top = stack.top();
       // If right child exists and backtrack from left, traverse right subtree.
       if (top->right != nullptr && top->right != previous) {
         node = top->right;
@@ -182,28 +182,28 @@ void PostorderTraverse(const T* node, typename T::value_type* result) {
   }
 }
 
-template <typename T>
-void reverse(T* begin, T* end) {
-  for (T *current = begin, *next = begin->right; current != end;) {
-    T* temp = next->right;
+template <typename Node>
+void reverse(Node* begin, Node* end) {
+  for (Node *current = begin, *next = begin->right; current != end;) {
+    Node* temp = next->right;
     next->right = current;
     current = next;
     next = temp;
   }
 }
 
-template <typename T>
-void PostorderTraverseMorris(T* node, typename T::value_type* result) {
+template <typename Node>
+void PostorderTraverseMorris(Node* node, typename Node::value_type* result) {
   int last = 0;
-  // Use dummy node to simplify the program assuming T has a default
+  // Use dummy node to simplify the program assuming Node has a default
   // constructor.
-  T dummy;
+  Node dummy;
   dummy.left = node;
   for (node = &dummy; node != nullptr;) {
     if (node->left == nullptr) {
       node = node->right;
     } else {
-      T* previous = node->left;
+      Node* previous = node->left;
       while (previous->right != nullptr && previous->right != node)
         previous = previous->right;
       if (previous->right == nullptr) {
@@ -211,7 +211,7 @@ void PostorderTraverseMorris(T* node, typename T::value_type* result) {
         node = node->left;
       } else {
         reverse(node->left, previous);
-        for (T* current = previous;; current = current->right) {
+        for (Node* current = previous;; current = current->right) {
           result[last++] = current->value;
           if (current == node->left) break;
         }
@@ -223,11 +223,11 @@ void PostorderTraverseMorris(T* node, typename T::value_type* result) {
   }
 }
 
-template <typename T>
-void LevelOrderTraverseQueue(const T* node,
-                             std::vector<typename T::value_type>& result) {
+template <typename Node>
+void LevelOrderTraverseQueue(const Node* node,
+                             std::vector<typename Node::value_type>& result) {
   if (node == nullptr) return;
-  std::queue<const T*> queue;
+  std::queue<const Node*> queue;
   queue.push(node);
   while (!queue.empty()) {
     node = queue.front();
@@ -239,15 +239,15 @@ void LevelOrderTraverseQueue(const T* node,
 }
 
 // Use two vectors to traverse the tree in level order.
-// The nodes in the current level are stored in vector current. The nodes in
+// Nodehe nodes in the current level are stored in vector current. Nodehe nodes in
 // the next level are stored in vector next.
-template <typename T>
-void LevelOrderTraverse(const T* node,
-                        std::vector<typename T::value_type>& result) {
+template <typename Node>
+void LevelOrderTraverse(const Node* node,
+                        std::vector<typename Node::value_type>& result) {
   if (node == nullptr) return;
-  for (std::vector<const T *> current{node}, next; !current.empty();
+  for (std::vector<const Node *> current{node}, next; !current.empty();
        current.clear(), current.swap(next)) {
-    for (const T* node : current) {
+    for (const Node* node : current) {
       result.push_back(node->value);
       if (node->left != nullptr) next.push_back(node->left);
       if (node->right != nullptr) next.push_back(node->right);
@@ -255,8 +255,8 @@ void LevelOrderTraverse(const T* node,
   }
 }
 
-template <typename T>
-void FreeTree(T* root) {
+template <typename Node>
+void FreeTree(Node* root) {
   if (root == nullptr) return;
   FreeTree(root->left);
   FreeTree(root->right);
