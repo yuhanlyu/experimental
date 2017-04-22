@@ -1,11 +1,11 @@
-#include "binary_search_tree_common.h"
+#include "traversal.h"
 
 #include <algorithm>
 #include <cstdlib>
 #include <limits>
 #include <random>
 
-#include "../binary-search-tree/binary_search_tree.h"
+#include "../../binary-search-tree/binary_search_tree.h"
 #include "benchmark/benchmark_api.h"
 
 namespace {

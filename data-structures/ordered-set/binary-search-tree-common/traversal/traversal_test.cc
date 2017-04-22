@@ -1,8 +1,8 @@
-#include "binary_search_tree_common.h"
+#include "traversal.h"
 
 #include <vector>
 
-#include "../binary-search-tree/binary_search_tree.h"
+#include "../../binary-search-tree/binary_search_tree.h"
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
