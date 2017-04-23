@@ -5,13 +5,6 @@
 
 #include "../binary-search-tree-common/binary_search_tree_common.h"
 
-// Find the pointer from the parent to the node with the minimum value.
-template <typename T>
-T*& FindMinPtr(T** node) {
-  while ((*node)->left != nullptr) node = &(*node)->left;
-  return *node;
-}
-
 template <typename T>
 struct BinarySearchTree {
  public:
