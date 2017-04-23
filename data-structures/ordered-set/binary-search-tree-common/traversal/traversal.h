@@ -197,8 +197,7 @@ void PostorderTraverseMorris(Node* node, typename Node::value_type* result) {
   int last = 0;
   // Use dummy node to simplify the program assuming Node has a default
   // constructor.
-  Node dummy;
-  dummy.left = node;
+  Node dummy(node, nullptr);
   for (node = &dummy; node != nullptr;) {
     if (node->left == nullptr) {
       node = node->right;
