@@ -1,7 +1,6 @@
 #ifndef BINARY_SEARCH_TREE_REBALANCE_H
 #define BINARY_SEARCH_TREE_REBALANCE_H
 
-#include <iostream>
 #include <stack>
 #include <vector>
 
@@ -42,6 +41,7 @@ std::vector<Node*> ConvertTreeToVector(Node* node) {
 }
 
 // Rebalance the tree by flatten the tree and rebuild.
+// TODO: implement the iterative version in the thesis.
 template <typename Node>
 void RebalanceByFlatten(Node*& root) {
   if (root == nullptr) return;

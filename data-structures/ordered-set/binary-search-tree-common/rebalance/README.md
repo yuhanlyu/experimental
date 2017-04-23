@@ -18,7 +18,7 @@ in the tree height. Day–Stout–Warren algorithm uses only constant number of
 variables.
 
 Timothy J. Rolfe wrote a good summary of this topic:  
-Timothy J. Rolfe
+Timothy J. Rolfe  
 [One-time binary search tree balancing: the Day/Stout/Warren (DSW) algorithm](https://dx.doi.org/10.1145%2F820127.820173)
 
 ## Benchmark
