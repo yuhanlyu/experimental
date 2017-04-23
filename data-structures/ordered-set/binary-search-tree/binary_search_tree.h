@@ -87,6 +87,8 @@ struct BinarySearchTree {
 
   Node* root() const { return root_; }
 
+  Node*& root() { return root_; }
+
  private:
   static bool InsertRec(Node*& node, const T& x) {
     // When the tree is empty, create the node at root;
@@ -107,11 +109,13 @@ struct BinarySearchTree {
     // value from the right tree and delete the minimum value in the right
     // tree.
     if (node->left != nullptr && node->right != nullptr) {
-      Node*& min_ptr = FindMinPtr(&node->right);
-      node->value = min_ptr->value;
-      Node* old_node = min_ptr;
-      min_ptr = min_ptr->right;
-      delete old_node;
+      Node *parent = node, *min = node->right;
+      for (; min->left != nullptr; min = min->left) {
+        parent = min;
+      }
+      node->value = min->value;
+      (parent->left == min ? parent->left : parent->right) = min->right;
+      delete min;
     } else {
       // When the node needed to be removed has one child, move the non-null
       // subtree up. If both subtrees are null, then set the node to be null.
