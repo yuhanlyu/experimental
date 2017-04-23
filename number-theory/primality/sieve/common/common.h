@@ -3,7 +3,17 @@
 
 #include "bit_set.h"
 
+#include <cmath>
 #include <cstdint>
+
+// The upper bound of the number of primes at most n.
+// This formula is from the following paper:
+// Pierre Dusart,
+// The $k^{th}$ prime is greater than $k(\ln k +\ln\ln k -1)$ for $k\geq 2$,
+// Mathematics of Computation, 8(225): 411-415 (1999)
+inline uint32_t UpperBoundOfPi(uint32_t n) {
+  return (n / log(n)) * (1 + 1.2762 / log(n));
+}
 
 // Number of bytes having at least n + 1 bits.
 inline int64_t Bytes(uint64_t n) { return (n >> 4) + (((n >> 1) & 7) != 0); }
