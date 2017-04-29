@@ -139,6 +139,8 @@ int TreeToVine(Node* root) {
   return size;
 }
 
+// The size of the largest perfect binar tree with number of nodes bounded by
+// size.
 int FullSize(int size) {
   int result = 1;
   while (result <= size) result += result + 1;
