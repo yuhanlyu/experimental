@@ -95,8 +95,6 @@ BENCHMARK_REGISTER_F(BSTRebalanceBenchmark, RebalanceDSW)
     ->RangeMultiplier(multiplier)
     ->Range(min_size, max_size);
 
-
-
 }  // namespace
 
 BENCHMARK_MAIN()
