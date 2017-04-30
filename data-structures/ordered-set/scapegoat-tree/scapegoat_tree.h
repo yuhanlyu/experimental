@@ -7,8 +7,8 @@
 #include "../binary-search-tree-common/binary_search_tree_common.h"
 
 static int height_alpha(int size) {
-  static constexpr float log_sqrt2 = 0.34657359028f;
-  return std::floor(std::log(size) / log_sqrt2);
+  static constexpr double log_sqrt2 = 2.88539008178;
+  return std::floor(std::log(size) * log_sqrt2);
 }
 
 template <typename T>
@@ -110,7 +110,7 @@ struct ScapegoatTree {
   Node* root_ = nullptr;
   int size = 0;
   int max_size = 0;
-  static constexpr float alpha = 0.707106781186548f; // 1 / sqrt(2.0).
+  static constexpr double alpha = 0.707106781186548; // 1 / sqrt(2.0).
 };
 
 #endif
