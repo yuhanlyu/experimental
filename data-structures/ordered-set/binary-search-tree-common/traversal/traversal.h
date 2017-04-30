@@ -253,13 +253,4 @@ void LevelOrderTraverse(const Node* node,
     }
   }
 }
-
-template <typename Node>
-void FreeTree(Node* root) {
-  if (root == nullptr) return;
-  FreeTree(root->left);
-  FreeTree(root->right);
-  delete root;
-}
-
 #endif
