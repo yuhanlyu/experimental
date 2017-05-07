@@ -34,7 +34,7 @@ TEST(ScapegoatTree, Insert) {
   }
 }
 
-TEST(BinarySearchTree, Remove) {
+TEST(ScapegoatTree, Remove) {
   for (int size = 1; size <= max_test_size; ++size) {
     std::vector<int> inserted_elements;
     for (int i = 0; i < size; ++i) inserted_elements.push_back(i + 1);
