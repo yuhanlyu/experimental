@@ -8,7 +8,10 @@ without storing any additional information. The amortized cost is O(1).
 Although original weight-balanced tree can be tuned by specifying different
 balance parameters, the invariants maintained in this implementation is
 3 * size(subtree) >= size(sibling), which is the only feasible integer
-parameter proved in [Balancing weight-balanced trees](https://doi.org/10.1017/S0956796811000104).
+parameter proved in the following papaer  
+
+Yoichi Hirai, Kazuhiko Yamamoto  
+[Balancing weight-balanced trees](https://doi.org/10.1017/S0956796811000104).
 
 ## Benchmark
 <pre>
