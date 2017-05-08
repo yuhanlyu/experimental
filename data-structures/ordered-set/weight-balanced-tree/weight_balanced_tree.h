@@ -91,7 +91,7 @@ struct WeightBalancedTree {
         parent_pointer = &(*parent_pointer)->right;
       }
     }
-		if (current == nullptr) return;
+    if (current == nullptr) return;
     // When the node needed to be removed has two children, pull the minimum
     // value from the right tree and delete the minimum value in the right
     // tree.
