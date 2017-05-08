@@ -52,7 +52,7 @@ struct ScapegoatTree {
     return true;
   }
 
-  bool Remove(const T& x) {
+  bool Delete(const T& x) {
     Node *parent = nullptr, *current = root_;
     // Find the node to be deleted;
     while (current != nullptr) {

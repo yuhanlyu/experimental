@@ -34,7 +34,7 @@ TEST(ScapegoatTree, Insert) {
   }
 }
 
-TEST(ScapegoatTree, Remove) {
+TEST(ScapegoatTree, Delete) {
   for (int size = 1; size <= max_test_size; ++size) {
     std::vector<int> inserted_elements;
     for (int i = 0; i < size; ++i) inserted_elements.push_back(i + 1);
@@ -42,8 +42,8 @@ TEST(ScapegoatTree, Remove) {
     do {
       ScapegoatTree<int> tree;
       for (int value : temp) ASSERT_TRUE(tree.Insert(value));
-      EXPECT_TRUE(tree.Remove(temp[0]));
-      EXPECT_FALSE(tree.Remove(temp[0]));
+      EXPECT_TRUE(tree.Delete(temp[0]));
+      EXPECT_FALSE(tree.Delete(temp[0]));
       std::vector<int> expected_result(temp);
       expected_result.erase(expected_result.begin());
       std::sort(expected_result.begin(), expected_result.end());

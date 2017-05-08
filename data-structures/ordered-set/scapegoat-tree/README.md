@@ -7,19 +7,19 @@ memory.
 
 ## Benchmark
 <pre>
---------------------------------------------------------------------------------------------
-Benchmark                                                     Time           CPU Iterations
---------------------------------------------------------------------------------------------
-ScapegoatBenchmark/ScapegoatTreeInsert/1024              238407 ns     238422 ns       2967
-ScapegoatBenchmark/ScapegoatTreeInsert/4096              985186 ns     985179 ns        670
-ScapegoatBenchmark/ScapegoatTreeInsert/16384            4837468 ns    4837385 ns        145
-ScapegoatBenchmark/ScapegoatTreeInsert/65536           23697194 ns   23696501 ns         29
-ScapegoatBenchmark/ScapegoatTreeInsert/262144         131309239 ns  131305851 ns          6
-ScapegoatBenchmark/ScapegoatTreeInsert/1048576        752963802 ns  752907476 ns          1
-ScapegoatRemoveBenchmark/ScapegoatTreeRemove/1024         79323 ns      79320 ns       8850
-ScapegoatRemoveBenchmark/ScapegoatTreeRemove/4096        367183 ns     367136 ns       1907
-ScapegoatRemoveBenchmark/ScapegoatTreeRemove/16384      2210633 ns    2210515 ns        317
-ScapegoatRemoveBenchmark/ScapegoatTreeRemove/65536     12070100 ns   12069734 ns         56
-ScapegoatRemoveBenchmark/ScapegoatTreeRemove/262144    81056429 ns   81054228 ns          9
-ScapegoatRemoveBenchmark/ScapegoatTreeRemove/1048576  760496967 ns  760478449 ns          1
+--------------------------------------------------------------------------------------
+Benchmark                                               Time           CPU Iterations
+--------------------------------------------------------------------------------------
+ScapegoatBenchmark/ScapegoatTreeInsert/1024        239379 ns     239415 ns       2894
+ScapegoatBenchmark/ScapegoatTreeInsert/4096       1039618 ns    1039698 ns        662
+ScapegoatBenchmark/ScapegoatTreeInsert/16384      4969833 ns    4969980 ns        139
+ScapegoatBenchmark/ScapegoatTreeInsert/65536     23637328 ns   23637636 ns         29
+ScapegoatBenchmark/ScapegoatTreeInsert/262144   134152579 ns  134155854 ns          6
+ScapegoatBenchmark/ScapegoatTreeInsert/1048576  796125741 ns  796139129 ns          1
+ScapegoatBenchmark/ScapegoatTreeDelete/1024         77442 ns      77446 ns       9036
+ScapegoatBenchmark/ScapegoatTreeDelete/4096        357997 ns     357991 ns       1966
+ScapegoatBenchmark/ScapegoatTreeDelete/16384      2159288 ns    2159144 ns        325
+ScapegoatBenchmark/ScapegoatTreeDelete/65536     11727373 ns   11727392 ns         60
+ScapegoatBenchmark/ScapegoatTreeDelete/262144    83622994 ns   83551017 ns          9
+ScapegoatBenchmark/ScapegoatTreeDelete/1048576  756575396 ns  756573682 ns          1
 </pre>

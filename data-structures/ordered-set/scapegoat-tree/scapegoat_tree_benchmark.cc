@@ -25,6 +25,14 @@ class ScapegoatBenchmark : public benchmark::Fixture {
     std::mt19937 g(rd());
     std::shuffle(test, test + state.range(0), g);
   }
+	static void BuildTree(const ::benchmark::State& state,
+                        ScapegoatTree<int>& tree) {
+    std::random_device rd;
+    std::mt19937 g(rd());
+    std::shuffle(test, test + state.range(0), g);
+    for (int i = 0; i < state.range(0); ++i) tree.Insert(test[i]);
+    std::shuffle(test, test + state.range(0), g);
+  }
 };
 
 BENCHMARK_DEFINE_F(ScapegoatBenchmark, ScapegoatTreeInsert)
@@ -43,22 +51,7 @@ BENCHMARK_REGISTER_F(ScapegoatBenchmark, ScapegoatTreeInsert)
     ->RangeMultiplier(multiplier)
     ->Range(min_size, max_size);
 
-class ScapegoatRemoveBenchmark : public benchmark::Fixture {
- public:
-  void SetUp(const ::benchmark::State& state) override {
-    for (int i = 0; i < state.range(0); ++i) test[i] = 2 * i + 1;
-  }
-  static void BuildTree(const ::benchmark::State& state,
-                        ScapegoatTree<int>& tree) {
-    std::random_device rd;
-    std::mt19937 g(rd());
-    std::shuffle(test, test + state.range(0), g);
-    for (int i = 0; i < state.range(0); ++i) tree.Insert(test[i]);
-    std::shuffle(test, test + state.range(0), g);
-  }
-};
-
-BENCHMARK_DEFINE_F(ScapegoatRemoveBenchmark, ScapegoatTreeRemove)
+BENCHMARK_DEFINE_F(ScapegoatBenchmark, ScapegoatTreeDelete)
 (benchmark::State& state) {
   while (state.KeepRunning()) {
     state.PauseTiming();
@@ -66,11 +59,11 @@ BENCHMARK_DEFINE_F(ScapegoatRemoveBenchmark, ScapegoatTreeRemove)
     BuildTree(state, tree);
     state.ResumeTiming();
     for (int i = 0; i < state.range(0); ++i) {
-      benchmark::DoNotOptimize(tree.Remove(test[i]));
+      benchmark::DoNotOptimize(tree.Delete(test[i]));
     }
   }
 }
-BENCHMARK_REGISTER_F(ScapegoatRemoveBenchmark, ScapegoatTreeRemove)
+BENCHMARK_REGISTER_F(ScapegoatBenchmark, ScapegoatTreeDelete)
     ->RangeMultiplier(multiplier)
     ->Range(min_size, max_size);
 
