@@ -110,7 +110,7 @@ struct ScapegoatTree {
   Node* root_ = nullptr;
   int size = 0;
   int max_size = 0;
-  static constexpr double alpha = 0.707106781186548; // 1 / sqrt(2.0).
+  static constexpr double alpha = 0.707106781186548;  // 1 / sqrt(2.0).
 };
 
 #endif

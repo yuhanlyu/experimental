@@ -25,7 +25,7 @@ class ScapegoatBenchmark : public benchmark::Fixture {
     std::mt19937 g(rd());
     std::shuffle(test, test + state.range(0), g);
   }
-	static void BuildTree(const ::benchmark::State& state,
+  static void BuildTree(const ::benchmark::State& state,
                         ScapegoatTree<int>& tree) {
     std::random_device rd;
     std::mt19937 g(rd());
