@@ -56,7 +56,7 @@ TEST(BinarySearchTree, InsertRec) {
   }
 }
 
-TEST(BinarySearchTree, Remove) {
+TEST(BinarySearchTree, Delete) {
   for (int size = 1; size <= max_test_size; ++size) {
     std::vector<int> inserted_elements;
     for (int i = 0; i < size; ++i) inserted_elements.push_back(i + 1);
@@ -64,8 +64,8 @@ TEST(BinarySearchTree, Remove) {
     do {
       BinarySearchTree<int> tree;
       for (int value : temp) ASSERT_TRUE(tree.InsertRec(value));
-      EXPECT_TRUE(tree.Remove(temp[0]));
-      EXPECT_FALSE(tree.Remove(temp[0]));
+      EXPECT_TRUE(tree.Delete(temp[0]));
+      EXPECT_FALSE(tree.Delete(temp[0]));
       std::vector<int> expected_result(temp);
       expected_result.erase(expected_result.begin());
       std::sort(expected_result.begin(), expected_result.end());
@@ -76,7 +76,7 @@ TEST(BinarySearchTree, Remove) {
   }
 }
 
-TEST(BinarySearchTree, RemoveRec) {
+TEST(BinarySearchTree, DeleteRec) {
   for (int size = 1; size <= max_test_size; ++size) {
     std::vector<int> inserted_elements;
     for (int i = 0; i < size; ++i) inserted_elements.push_back(i + 1);
@@ -84,8 +84,8 @@ TEST(BinarySearchTree, RemoveRec) {
     do {
       BinarySearchTree<int> tree;
       for (int value : temp) ASSERT_TRUE(tree.InsertRec(value));
-      EXPECT_TRUE(tree.RemoveRec(temp[0]));
-      EXPECT_FALSE(tree.RemoveRec(temp[0]));
+      EXPECT_TRUE(tree.DeleteRec(temp[0]));
+      EXPECT_FALSE(tree.DeleteRec(temp[0]));
       std::vector<int> expected_result(temp);
       expected_result.erase(expected_result.begin());
       std::sort(expected_result.begin(), expected_result.end());

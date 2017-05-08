@@ -25,6 +25,14 @@ class BSTBenchmark : public benchmark::Fixture {
     std::mt19937 g(rd());
     std::shuffle(test, test + state.range(0), g);
   }
+  static void BuildTree(const ::benchmark::State& state,
+                        BinarySearchTree<int>& tree) {
+    std::random_device rd;
+    std::mt19937 g(rd());
+    std::shuffle(test, test + state.range(0), g);
+    for (int i = 0; i < state.range(0); ++i) tree.Insert(test[i]);
+    std::shuffle(test, test + state.range(0), g);
+  }
 };
 
 BENCHMARK_DEFINE_F(BSTBenchmark, BinarySearchTreeInsert)
@@ -59,22 +67,7 @@ BENCHMARK_REGISTER_F(BSTBenchmark, BinarySearchTreeInsertRec)
     ->RangeMultiplier(multiplier)
     ->Range(min_size, max_size);
 
-class BSTRemoveBenchmark : public benchmark::Fixture {
- public:
-  void SetUp(const ::benchmark::State& state) override {
-    for (int i = 0; i < state.range(0); ++i) test[i] = 2 * i + 1;
-  }
-  static void BuildTree(const ::benchmark::State& state,
-                        BinarySearchTree<int>& tree) {
-    std::random_device rd;
-    std::mt19937 g(rd());
-    std::shuffle(test, test + state.range(0), g);
-    for (int i = 0; i < state.range(0); ++i) tree.Insert(test[i]);
-    std::shuffle(test, test + state.range(0), g);
-  }
-};
-
-BENCHMARK_DEFINE_F(BSTRemoveBenchmark, BinarySearchTreeRemove)
+BENCHMARK_DEFINE_F(BSTBenchmark, BinarySearchTreeDelete)
 (benchmark::State& state) {
   while (state.KeepRunning()) {
     state.PauseTiming();
@@ -82,15 +75,15 @@ BENCHMARK_DEFINE_F(BSTRemoveBenchmark, BinarySearchTreeRemove)
     BuildTree(state, tree);
     state.ResumeTiming();
     for (int i = 0; i < state.range(0); ++i) {
-      benchmark::DoNotOptimize(tree.Remove(test[i]));
+      benchmark::DoNotOptimize(tree.Delete(test[i]));
     }
   }
 }
-BENCHMARK_REGISTER_F(BSTRemoveBenchmark, BinarySearchTreeRemove)
+BENCHMARK_REGISTER_F(BSTBenchmark, BinarySearchTreeDelete)
     ->RangeMultiplier(multiplier)
     ->Range(min_size, max_size);
 
-BENCHMARK_DEFINE_F(BSTRemoveBenchmark, BinarySearchTreeRemoveRec)
+BENCHMARK_DEFINE_F(BSTBenchmark, BinarySearchTreeDeleteRec)
 (benchmark::State& state) {
   while (state.KeepRunning()) {
     state.PauseTiming();
@@ -98,10 +91,10 @@ BENCHMARK_DEFINE_F(BSTRemoveBenchmark, BinarySearchTreeRemoveRec)
     BuildTree(state, tree);
     state.ResumeTiming();
     for (int i = 0; i < state.range(0); ++i)
-      benchmark::DoNotOptimize(tree.RemoveRec(test[i]));
+      benchmark::DoNotOptimize(tree.DeleteRec(test[i]));
   }
 }
-BENCHMARK_REGISTER_F(BSTRemoveBenchmark, BinarySearchTreeRemoveRec)
+BENCHMARK_REGISTER_F(BSTBenchmark, BinarySearchTreeDeleteRec)
     ->RangeMultiplier(multiplier)
     ->Range(min_size, max_size);
 

@@ -36,7 +36,7 @@ struct BinarySearchTree {
 
   bool InsertRec(const T& x) { return InsertRec(root_, x); }
 
-  bool Remove(const T& x) {
+  bool Delete(const T& x) {
     Node *parent = nullptr, *current = root_;
     // Find the node to be deleted;
     while (current != nullptr) {
@@ -71,7 +71,7 @@ struct BinarySearchTree {
     return true;
   }
 
-  bool RemoveRec(const T& x) { return RemoveRec(root_, x); }
+  bool DeleteRec(const T& x) { return DeleteRec(root_, x); }
 
   ~BinarySearchTree() { FreeTree(root_); }
 
@@ -95,10 +95,10 @@ struct BinarySearchTree {
                              : InsertRec(node->right, x);
   }
 
-  static bool RemoveRec(Node*& node, const T& x) {
+  static bool DeleteRec(Node*& node, const T& x) {
     if (node == nullptr) return false;
-    if (x < node->value) return RemoveRec(node->left, x);
-    if (x > node->value) return RemoveRec(node->right, x);
+    if (x < node->value) return DeleteRec(node->left, x);
+    if (x > node->value) return DeleteRec(node->right, x);
     // When the node needed to be removed has two children, pull the minimum
     // value from the right tree and delete the minimum value in the right
     // tree.
