@@ -4,8 +4,6 @@
 #include <stack>
 #include <vector>
 
-#include "../binary_search_tree_common.h"
-
 // Rebalance the tree by copying all nodes to a vector and rebuild.
 template <typename Node>
 void NaiveRebalance(Node*& root) {
