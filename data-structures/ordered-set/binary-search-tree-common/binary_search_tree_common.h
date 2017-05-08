@@ -4,6 +4,9 @@
 #include "rebalance/rebalance.h"
 #include "traversal/traversal.h"
 
+#include <iostream>
+#include <string>
+
 template <typename Node>
 void FreeTree(Node* root) {
   if (root == nullptr) return;
@@ -13,7 +16,20 @@ void FreeTree(Node* root) {
 }
 
 template <typename Node>
-int TreeSize(Node* root) {
+void PrintTree(const Node* root) {
+  PrintTree(root, "root");
+}
+
+template <typename Node>
+void PrintTree(const Node* root, std::string prefix) {
+  if (root == nullptr) return;
+  PrintTree(root->left, prefix + "->left");
+  std::cerr << prefix << " = " << root->value << '\n';
+  PrintTree(root->right, prefix + "->right");
+}
+
+template <typename Node>
+int TreeSize(const Node* root) {
   if (root == nullptr) return 0;
   return 1 + TreeSize(root->left) + TreeSize(root->right);
 }
@@ -25,11 +41,11 @@ int TreeSize(Node* root) {
 //       / \     /  \     |
 //      b    c  a    b    |
 template <typename Node>
-Node* LeftRotation(Node* root) {
+void LeftRotation(Node*& root) {
   Node* x = root->right;
   root->right = x->left;
   x->left = root;
-  return x;
+  root = x;
 }
 
 // Right rotation:
@@ -39,11 +55,11 @@ Node* LeftRotation(Node* root) {
 //  / \              /  \   |
 // a   b            b    c  |
 template <typename Node>
-Node* RightRotation(Node* root) {
+void RightRotation(Node*& root) {
   Node* x = root->left;
   root->left = x->right;
   x->right = root;
-  return x;
+  root = x;
 }
 
 // LR rotation:
@@ -55,13 +71,13 @@ Node* RightRotation(Node* root) {
 //    / \                        |
 //   b   c                       |
 template <typename Node>
-Node* LRRotation(Node* root) {
-  Node *x = root->left, y = x->right;
+void LRRotation(Node*& root) {
+  Node *x = root->left, *y = x->right;
   x->right = y->left;
-  y->left = x;
   root->left = y->right;
+  y->left = x;
   y->right = root;
-  return y;
+  root = y;
 }
 
 // RL rotation:
@@ -73,13 +89,13 @@ Node* LRRotation(Node* root) {
 //     / \                       |
 //    b   c                      |
 template <typename Node>
-Node* RLRotation(Node* root) {
-  Node *x = root->right, y = x->left;
+void RLRotation(Node*& root) {
+  Node *x = root->right, *y = x->left;
   x->left = y->right;
-  y->right = x;
   root->right = y->left;
+  y->right = x;
   y->left = root;
-  return y;
+  root = y;
 }
 
 #endif
