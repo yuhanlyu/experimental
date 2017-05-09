@@ -124,7 +124,7 @@ struct WeightBalancedTree {
   Node*& root() { return root_; }
 
  private:
-  bool IsBalanced(Node* node) const {
+  static bool IsBalanced(Node* node) {
     if (node == nullptr) return true;
     return delta * weight(node->left) >= weight(node->right) &&
            delta * weight(node->right) >= weight(node->left) &&
@@ -171,7 +171,7 @@ struct WeightBalancedTree {
 
   // Rotate the subtree when necessary during the insert.
   template <bool mode>
-  void InsertHelper(const T& x, Node* current, Node*& parent_pointer) {
+  static void InsertHelper(const T& x, Node* current, Node*& parent_pointer) {
     if (!is_balanced_after_insert(Right<mode>(current), Left<mode>(current))) {
       Node* child = Right<mode>(current);
       bool test = !(mode ^ (x < child->value));
@@ -184,7 +184,7 @@ struct WeightBalancedTree {
 
   // Rotate the subtree when necessary during the delete.
   template <bool mode>
-  void DeleteHelper(Node* current, Node*& parent_pointer) {
+  static void DeleteHelper(Node* current, Node*& parent_pointer) {
     if (!is_balanced_after_remove(Left<mode>(current), Right<mode>(current))) {
       Node* child = Right<mode>(current);
       need_single_rotation_after_remove(Left<mode>(child), Right<mode>(child))
@@ -202,7 +202,7 @@ struct WeightBalancedTree {
   // The case of mode=false is symmetric for finding the maximum value of the
   // left subtree of current.
   template <bool mode>
-  void DeleteMin(Node*& current, Node**& parent_pointer) {
+  static void DeleteMin(Node*& current, Node**& parent_pointer) {
     Node* min = Right<mode>(current);
     for (parent_pointer = &Right<mode>(current); Left<mode>(min) != nullptr;) {
       if (!is_balanced_after_remove(Left<mode>(min), Right<mode>(min))) {
@@ -225,7 +225,7 @@ struct WeightBalancedTree {
   // When less_than_x is false, current will be (*parent_pointer)->right and
   // parent_pointer will be &(*parent_pointer)->right.
   template <bool less_than_x>
-  void UpdateCurrent(Node*& current, Node**& parent_pointer) {
+  static void UpdateCurrent(Node*& current, Node**& parent_pointer) {
     current = Left<less_than_x>(*parent_pointer);
     parent_pointer = &Left<less_than_x>(*parent_pointer);
   }
