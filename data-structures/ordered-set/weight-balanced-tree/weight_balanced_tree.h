@@ -174,6 +174,9 @@ struct WeightBalancedTree {
   static void InsertHelper(const T& x, Node* current, Node*& parent_pointer) {
     if (!is_balanced_after_insert(Right<mode>(current), Left<mode>(current))) {
       Node* child = Right<mode>(current);
+			// When mode is true and x < child->value, then x will be inserted to
+			// inner. Similarly, when mode is false and x > child->value, then x will
+			// be inserted to inner.
       need_single_rotation_after_insert(Left<mode>(child), Right<mode>(child),
                                         mode == (x < child->value))
           ? LeftRotation<mode>(parent_pointer)
