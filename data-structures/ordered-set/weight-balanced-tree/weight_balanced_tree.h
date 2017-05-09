@@ -174,9 +174,8 @@ struct WeightBalancedTree {
   static void InsertHelper(const T& x, Node* current, Node*& parent_pointer) {
     if (!is_balanced_after_insert(Right<mode>(current), Left<mode>(current))) {
       Node* child = Right<mode>(current);
-      bool test = !(mode ^ (x < child->value));
       need_single_rotation_after_insert(Left<mode>(child), Right<mode>(child),
-                                        test)
+                                        mode == (x < child->value))
           ? LeftRotation<mode>(parent_pointer)
           : RLRotation<mode>(parent_pointer);
     }
@@ -195,10 +194,10 @@ struct WeightBalancedTree {
 
   // When mode is true, find the minimum value of the right subtree of current
   // and assign the minimum value to the current. Then, set the current to be
-	// the minimum node. During the traversal, rotate the tree if the tree will
-	// become imbalanced after the minimum node is deleted. In the end of the
-	// function, the parent_pointer will be the pointer in the parent of minimum
-	// node pointing to the minimum node.
+  // the minimum node. During the traversal, rotate the tree if the tree will
+  // become imbalanced after the minimum node is deleted. In the end of the
+  // function, the parent_pointer will be the pointer in the parent of minimum
+  // node pointing to the minimum node.
   // The case of mode=false is symmetric for finding the maximum value of the
   // left subtree of current.
   template <bool mode>
