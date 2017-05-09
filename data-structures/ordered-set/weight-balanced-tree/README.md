@@ -18,16 +18,16 @@ Yoichi Hirai, Kazuhiko Yamamoto
 ----------------------------------------------------------------------
 Benchmark                               Time           CPU Iterations
 ----------------------------------------------------------------------
-WBTBenchmark/WBTInsert/1024         78403 ns      78411 ns       8863
-WBTBenchmark/WBTInsert/4096        368693 ns     368731 ns       1904
-WBTBenchmark/WBTInsert/16384      2145944 ns    2146060 ns        326
-WBTBenchmark/WBTInsert/65536     11903842 ns   11904446 ns         58
-WBTBenchmark/WBTInsert/262144    77241870 ns   77245337 ns         10
-WBTBenchmark/WBTInsert/1048576  544668097 ns  544691254 ns          1
-WBTBenchmark/WBTDelete/1024         72338 ns      72345 ns       9610
-WBTBenchmark/WBTDelete/4096        423205 ns     423205 ns       1660
-WBTBenchmark/WBTDelete/16384      2439063 ns    2439157 ns        286
-WBTBenchmark/WBTDelete/65536     15461887 ns   15462566 ns         45
-WBTBenchmark/WBTDelete/262144    99484386 ns   99489832 ns          7
-WBTBenchmark/WBTDelete/1048576  559750124 ns  559773981 ns          1
+WBTBenchmark/WBTInsert/1024         82298 ns      81546 ns       8545
+WBTBenchmark/WBTInsert/4096        388157 ns     386046 ns       1815
+WBTBenchmark/WBTInsert/16384      2235231 ns    2235472 ns        315
+WBTBenchmark/WBTInsert/65536     12449182 ns   12413894 ns         56
+WBTBenchmark/WBTInsert/262144    85185498 ns   84993356 ns         10
+WBTBenchmark/WBTInsert/1048576  587460463 ns  587498820 ns          1
+WBTBenchmark/WBTDelete/1024         75817 ns      75290 ns       9227
+WBTBenchmark/WBTDelete/4096        449998 ns     444627 ns       1588
+WBTBenchmark/WBTDelete/16384      2601133 ns    2601317 ns        271
+WBTBenchmark/WBTDelete/65536     16668906 ns   16563780 ns         42
+WBTBenchmark/WBTDelete/262144   104218228 ns  103911254 ns          7
+WBTBenchmark/WBTDelete/1048576  585950666 ns  585988729 ns          1
 </pre>
