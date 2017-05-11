@@ -118,117 +118,106 @@ struct WeightBalancedTree {
     }
 
     Node** parent_pointer = &root_;
-    for (Node* current = root_; current != nullptr;) {
+    while (*parent_pointer != nullptr) {
+      Node*& current = *parent_pointer;
       // Rotate the tree when the size is imbalanced.
       if (x < current->value) {
         if (!is_balanced_after_insert(current->left, current->right)) {
           Node* child = current->left;
           need_single_rotation_after_insert(child->right, child->left,
                                             x > child->value)
-              ? RightRotation(*parent_pointer)
-              : LRRotation(*parent_pointer);
+              ? RightRotation(current)
+              : LRRotation(current);
         }
       } else {
         if (!is_balanced_after_insert(current->right, current->left)) {
           Node* child = current->right;
           need_single_rotation_after_insert(child->left, child->right,
                                             x < child->value)
-              ? LeftRotation(*parent_pointer)
-              : RLRotation(*parent_pointer);
+              ? LeftRotation(current)
+              : RLRotation(current);
         }
       }
       // Since the tree might be rotated, the subtree needed to be inserted
       // might change.
-      ++(*parent_pointer)->size;
-      if (x < (*parent_pointer)->value) {
-        current = (*parent_pointer)->left;
-        parent_pointer = &(*parent_pointer)->left;
-      } else {
-        current = (*parent_pointer)->right;
-        parent_pointer = &(*parent_pointer)->right;
-      }
+      ++current->size;
+      parent_pointer = x < current->value ? &current->left : &current->right;
     }
     *parent_pointer = new Node(x);
   }
 
   void Delete(const T& x) {
-    Node **parent_pointer = &root_, *current = root_;
-    while (current != nullptr) {
+    Node** parent_pointer = &root_;
+    while (*parent_pointer != nullptr) {
+      Node*& current = *parent_pointer;
       if (current->value == x) break;
       // Rotate the tree when the size is imbalanced.
       if (x < current->value) {
         if (!is_balanced_after_remove(current->left, current->right)) {
           Node* child = current->right;
           need_single_rotation_after_remove(child->left, child->right)
-              ? LeftRotation(*parent_pointer)
-              : RLRotation(*parent_pointer);
+              ? LeftRotation(current)
+              : RLRotation(current);
         }
       } else {
         if (!is_balanced_after_remove(current->right, current->left)) {
           Node* child = current->left;
           need_single_rotation_after_remove(child->right, child->left)
-              ? RightRotation(*parent_pointer)
-              : LRRotation(*parent_pointer);
+              ? RightRotation(current)
+              : LRRotation(current);
         }
       }
       // Since the tree might be rotated, the subtree needed to be removed
       // might change.
-      --(*parent_pointer)->size;
-      if (x < (*parent_pointer)->value) {
-        current = (*parent_pointer)->left;
-        parent_pointer = &(*parent_pointer)->left;
-      } else {
-        current = (*parent_pointer)->right;
-        parent_pointer = &(*parent_pointer)->right;
-      }
+      --current->size;
+      parent_pointer = x < current->value ? &current->left : &current->right;
     }
-    if (current == nullptr) return;
+    Node* to_be_delete = *parent_pointer;
+    if (to_be_delete == nullptr) return;
     // When the node needed to be removed has two children, pull the minimum
     // value from the right tree and delete the minimum value in the right
     // tree.
-    if (current->left != nullptr && current->right != nullptr) {
-      --current->size;
+    if (to_be_delete->left != nullptr && to_be_delete->right != nullptr) {
+      --to_be_delete->size;
       // If the right subtree size is larger, then promote the minimum of the
       // right subtree.
-      if (size(current->right) > size(current->left)) {
-        Node* min = current->right;
-        for (parent_pointer = &current->right; min->left != nullptr;) {
-          if (!is_balanced_after_remove(min->left, min->right)) {
-            Node* child = min->right;
+      if (size(to_be_delete->right) > size(to_be_delete->left)) {
+				parent_pointer = &to_be_delete->right;
+        while ((*parent_pointer)->left != nullptr) {
+          Node*& current = *parent_pointer;
+          if (!is_balanced_after_remove(current->left, current->right)) {
+            Node* child = current->right;
             need_single_rotation_after_remove(child->left, child->right)
-                ? LeftRotation(*parent_pointer)
-                : RLRotation(*parent_pointer);
+                ? LeftRotation(current)
+                : RLRotation(current);
           }
-          --(*parent_pointer)->size;
-          min = (*parent_pointer)->left;
-          parent_pointer = &(*parent_pointer)->left;
+          --current->size;
+          parent_pointer = &current->left;
         }
-        current->value = min->value;
-        current = min;
       } else {
         // If the left subtree size is larger, then promote the maximum of the
         // left subtree.
-        Node* max = current->left;
-        for (parent_pointer = &current->left; max->right != nullptr;) {
-          if (!is_balanced_after_remove(max->right, max->left)) {
-            Node* child = max->left;
+				parent_pointer = &to_be_delete->left;
+        while ((*parent_pointer)->right != nullptr) {
+          Node*& current = *parent_pointer;
+          if (!is_balanced_after_remove(current->right, current->left)) {
+            Node* child = current->left;
             need_single_rotation_after_remove(child->right, child->left)
-                ? RightRotation(*parent_pointer)
-                : LRRotation(*parent_pointer);
+                ? RightRotation(current)
+                : LRRotation(current);
           }
-          --(*parent_pointer)->size;
-          max = (*parent_pointer)->right;
-          parent_pointer = &(*parent_pointer)->right;
+          --current->size;
+          parent_pointer = &current->right;
         }
-        current->value = max->value;
-        current = max;
       }
+      to_be_delete->value = (*parent_pointer)->value;
+      to_be_delete = *parent_pointer;
     }
     // When the node needed to be removed has one child, move the non-null
     // subtree up. If both subtrees are null, then set the node to be null.
-    *parent_pointer =
-        (current->left != nullptr ? current->left : current->right);
-    delete current;
+    *parent_pointer = (to_be_delete->left != nullptr ? to_be_delete->left
+                                                     : to_be_delete->right);
+    delete to_be_delete;
   }
 
   void InsertTemplate(const T& x) {
