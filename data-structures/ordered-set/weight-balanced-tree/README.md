@@ -22,46 +22,44 @@ length by exploiting the symmetry of cases.
 * InsertMacro/DeleteMacro: use macro to reduce code length by exploiting the  
 symmetry of cases.
 
-Ordinary implementation seems faster than other implementations.
-
 <pre>
 ------------------------------------------------------------------------------
 Benchmark                                       Time           CPU Iterations
 ------------------------------------------------------------------------------
-WBTBenchmark/WBTInsert/1024                 79978 ns      79706 ns       8788
-WBTBenchmark/WBTInsert/4096                381760 ns     381798 ns       1837
-WBTBenchmark/WBTInsert/16384              2186649 ns    2183238 ns        324
-WBTBenchmark/WBTInsert/65536             12085291 ns   12068219 ns         58
-WBTBenchmark/WBTInsert/262144            83402499 ns   83240016 ns         10
-WBTBenchmark/WBTInsert/1048576          566386180 ns  566404013 ns          1
-WBTBenchmark/WBTDelete/1024                 73730 ns      73742 ns       9421
-WBTBenchmark/WBTDelete/4096                424968 ns     424987 ns       1645
-WBTBenchmark/WBTDelete/16384              2518844 ns    2518971 ns        279
-WBTBenchmark/WBTDelete/65536             16143975 ns   16144579 ns         44
-WBTBenchmark/WBTDelete/262144            99880838 ns   99885170 ns          7
-WBTBenchmark/WBTDelete/1048576          569535171 ns  569555585 ns          1
-WBTBenchmark/WBTInsertTemplate/1024         95449 ns      95492 ns       7353
-WBTBenchmark/WBTInsertTemplate/4096        562032 ns     562190 ns       1289
-WBTBenchmark/WBTInsertTemplate/16384      3069998 ns    3070369 ns        224
-WBTBenchmark/WBTInsertTemplate/65536     20914682 ns   20915833 ns         33
-WBTBenchmark/WBTInsertTemplate/262144   126250882 ns  126256677 ns          6
-WBTBenchmark/WBTInsertTemplate/1048576  696301506 ns  696300011 ns          1
-WBTBenchmark/WBTDeleteTemplate/1024         75504 ns      75526 ns       9249
-WBTBenchmark/WBTDeleteTemplate/4096        433844 ns     433877 ns       1610
-WBTBenchmark/WBTDeleteTemplate/16384      2553921 ns    2553995 ns        276
-WBTBenchmark/WBTDeleteTemplate/65536     16325331 ns   16325996 ns         44
-WBTBenchmark/WBTDeleteTemplate/262144    99717652 ns   99721441 ns          7
-WBTBenchmark/WBTDeleteTemplate/1048576  572063007 ns  572086817 ns          1
-WBTBenchmark/WBTInsertMacro/1024            94033 ns      94088 ns       7449
-WBTBenchmark/WBTInsertMacro/4096           540904 ns     541058 ns       1253
-WBTBenchmark/WBTInsertMacro/16384         3079201 ns    3079565 ns        223
-WBTBenchmark/WBTInsertMacro/65536        21141152 ns   21142437 ns         32
-WBTBenchmark/WBTInsertMacro/262144      126114211 ns  126119037 ns          5
-WBTBenchmark/WBTInsertMacro/1048576     690795217 ns  690786190 ns          1
-WBTBenchmark/WBTDeleteMacro/1024            73720 ns      73726 ns       9554
-WBTBenchmark/WBTDeleteMacro/4096           426959 ns     426979 ns       1642
-WBTBenchmark/WBTDeleteMacro/16384         2557933 ns    2557986 ns        278
-WBTBenchmark/WBTDeleteMacro/65536        16176713 ns   16177322 ns         43
-WBTBenchmark/WBTDeleteMacro/262144      100013756 ns  100017992 ns          7
-WBTBenchmark/WBTDeleteMacro/1048576     574537764 ns  574554626 ns          1
+WBTBenchmark/WBTInsert/1024                 81077 ns      81094 ns       8516
+WBTBenchmark/WBTInsert/4096                380446 ns     380486 ns       1842
+WBTBenchmark/WBTInsert/16384              2210276 ns    2210431 ns        318
+WBTBenchmark/WBTInsert/65536             12479760 ns   12480180 ns         57
+WBTBenchmark/WBTInsert/262144            87849126 ns   87848852 ns          9
+WBTBenchmark/WBTInsert/1048576          608921807 ns  608915691 ns          1
+WBTBenchmark/WBTDelete/1024                 80611 ns      80624 ns       8782
+WBTBenchmark/WBTDelete/4096                456610 ns     456641 ns       1533
+WBTBenchmark/WBTDelete/16384              2770414 ns    2770348 ns        254
+WBTBenchmark/WBTDelete/65536             17725830 ns   17725765 ns         40
+WBTBenchmark/WBTDelete/262144           109494499 ns  109493891 ns          6
+WBTBenchmark/WBTDelete/1048576          618577935 ns  618571133 ns          1
+WBTBenchmark/WBTInsertTemplate/1024        100121 ns     100165 ns       6946
+WBTBenchmark/WBTInsertTemplate/4096        565160 ns     565285 ns       1231
+WBTBenchmark/WBTInsertTemplate/16384      3412350 ns    3412698 ns        207
+WBTBenchmark/WBTInsertTemplate/65536     23015936 ns   23016189 ns         31
+WBTBenchmark/WBTInsertTemplate/262144   137637692 ns  137637030 ns          5
+WBTBenchmark/WBTInsertTemplate/1048576  734915852 ns  734875425 ns          1
+WBTBenchmark/WBTDeleteTemplate/1024         81077 ns      81086 ns       8699
+WBTBenchmark/WBTDeleteTemplate/4096        459981 ns     459970 ns       1525
+WBTBenchmark/WBTDeleteTemplate/16384      2752497 ns    2752425 ns        254
+WBTBenchmark/WBTDeleteTemplate/65536     17735955 ns   17735570 ns         38
+WBTBenchmark/WBTDeleteTemplate/262144   110334076 ns  110333094 ns          7
+WBTBenchmark/WBTDeleteTemplate/1048576  626197913 ns  626201579 ns          1
+WBTBenchmark/WBTInsertMacro/1024            96765 ns      96822 ns       7192
+WBTBenchmark/WBTInsertMacro/4096           551068 ns     551208 ns       1272
+WBTBenchmark/WBTInsertMacro/16384         3333989 ns    3334281 ns        213
+WBTBenchmark/WBTInsertMacro/65536        22584893 ns   22585177 ns         31
+WBTBenchmark/WBTInsertMacro/262144      134254057 ns  134253556 ns          5
+WBTBenchmark/WBTInsertMacro/1048576     733587893 ns  733572320 ns          1
+WBTBenchmark/WBTDeleteMacro/1024            79595 ns      79602 ns       8826
+WBTBenchmark/WBTDeleteMacro/4096           455200 ns     455174 ns       1533
+WBTBenchmark/WBTDeleteMacro/16384         2724934 ns    2724728 ns        254
+WBTBenchmark/WBTDeleteMacro/65536        17717313 ns   17717062 ns         40
+WBTBenchmark/WBTDeleteMacro/262144      109757553 ns  109757165 ns          6
+WBTBenchmark/WBTDeleteMacro/1048576     613966219 ns  613963167 ns          1
 </pre>
