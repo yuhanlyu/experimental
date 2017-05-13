@@ -42,7 +42,7 @@ TEST(WeightBalancedTree, DeleteAndRank) {
       WeightBalancedTree<int> tree;
       for (int value : temp) tree.Insert(value);
       tree.Delete(temp[0]);
-      ASSERT_TRUE(tree.IsBalanced());
+      EXPECT_TRUE(tree.IsBalanced());
       std::vector<int> expected_result(temp);
       expected_result.erase(expected_result.begin());
       std::sort(expected_result.begin(), expected_result.end());
@@ -84,7 +84,7 @@ TEST(WeightBalancedTree, DeleteTemplateAndRank) {
       WeightBalancedTree<int> tree;
       for (int value : temp) tree.InsertTemplate(value);
       tree.DeleteTemplate(temp[0]);
-      ASSERT_TRUE(tree.IsBalanced());
+      EXPECT_TRUE(tree.IsBalanced());
       std::vector<int> expected_result(temp);
       expected_result.erase(expected_result.begin());
       std::sort(expected_result.begin(), expected_result.end());
@@ -126,7 +126,7 @@ TEST(WeightBalancedTree, DeleteMacroAndRank) {
       WeightBalancedTree<int> tree;
       for (int value : temp) tree.InsertMacro(value);
       tree.DeleteMacro(temp[0]);
-      ASSERT_TRUE(tree.IsBalanced());
+      EXPECT_TRUE(tree.IsBalanced());
       std::vector<int> expected_result(temp);
       expected_result.erase(expected_result.begin());
       std::sort(expected_result.begin(), expected_result.end());

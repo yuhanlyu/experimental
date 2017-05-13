@@ -8,10 +8,10 @@
 #include <string>
 
 template <typename Node>
-void FreeTree(Node* root) {
-  if (root == nullptr) return;
-  FreeTree(root->left);
-  FreeTree(root->right);
+void FreeTree(Node* root, Node* sentinel = nullptr) {
+  if (root == sentinel) return;
+  FreeTree(root->left, sentinel);
+  FreeTree(root->right, sentinel);
   delete root;
 }
 

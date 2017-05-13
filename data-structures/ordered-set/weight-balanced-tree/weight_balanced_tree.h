@@ -53,7 +53,7 @@
 #define DELETE_MIN(to_be_delete, parent_pointer, left, right)                 \
   do {                                                                        \
     (parent_pointer) = &(to_be_delete)->right;                                \
-    while ((*(parent_pointer))->left != nullptr) {                            \
+    while ((*(parent_pointer))->left != sentinel) {                           \
       Node*& current = *(parent_pointer);                                     \
       if (!is_balanced_after_remove((current)->left, (current)->right)) {     \
         Node* child = (current)->right;                                       \
@@ -74,9 +74,10 @@ struct WeightBalancedTree {
     using value_type = T;
     explicit Node(const T& x) : value(x) {}
     explicit Node(Node* l, Node* r) : left(l), right(r) {}
+    explicit Node(const T& x, int sz) : size(sz), value(x) {}
     Node() = default;
-    Node* left = nullptr;
-    Node* right = nullptr;
+    Node* left = sentinel;
+    Node* right = sentinel;
     int size = 1;
     T value;
   };
@@ -104,13 +105,13 @@ struct WeightBalancedTree {
 
   void Insert(const T& x) {
     // When the tree is empty, create the node at root;
-    if (root_ == nullptr) {
+    if (root_ == sentinel) {
       root_ = new Node(x);
       return;
     }
 
     Node** parent_pointer = &root_;
-    while (*parent_pointer != nullptr) {
+    while (*parent_pointer != sentinel) {
       Node*& current = *parent_pointer;
       // Rotate the tree when the size is imbalanced.
       if (x < current->value) {
@@ -140,7 +141,7 @@ struct WeightBalancedTree {
 
   void Delete(const T& x) {
     Node** parent_pointer = &root_;
-    while (*parent_pointer != nullptr) {
+    while (*parent_pointer != sentinel) {
       Node*& current = *parent_pointer;
       if (current->value == x) break;
       // Rotate the tree when the size is imbalanced.
@@ -165,17 +166,17 @@ struct WeightBalancedTree {
       parent_pointer = x < current->value ? &current->left : &current->right;
     }
     Node* to_be_delete = *parent_pointer;
-    if (to_be_delete == nullptr) return;
+    if (to_be_delete == sentinel) return;
     // When the node needed to be removed has two children, pull the minimum
     // value from the right tree and delete the minimum value in the right
     // tree.
-    if (to_be_delete->left != nullptr && to_be_delete->right != nullptr) {
+    if (to_be_delete->left != sentinel && to_be_delete->right != sentinel) {
       --to_be_delete->size;
       // If the right subtree size is larger, then promote the minimum of the
       // right subtree.
       if (size(to_be_delete->right) > size(to_be_delete->left)) {
         parent_pointer = &to_be_delete->right;
-        while ((*parent_pointer)->left != nullptr) {
+        while ((*parent_pointer)->left != sentinel) {
           Node*& current = *parent_pointer;
           if (!is_balanced_after_remove(current->left, current->right)) {
             Node* child = current->right;
@@ -190,7 +191,7 @@ struct WeightBalancedTree {
         // If the left subtree size is larger, then promote the maximum of the
         // left subtree.
         parent_pointer = &to_be_delete->left;
-        while ((*parent_pointer)->right != nullptr) {
+        while ((*parent_pointer)->right != sentinel) {
           Node*& current = *parent_pointer;
           if (!is_balanced_after_remove(current->right, current->left)) {
             Node* child = current->left;
@@ -207,20 +208,20 @@ struct WeightBalancedTree {
     }
     // When the node needed to be removed has one child, move the non-null
     // subtree up. If both subtrees are null, then set the node to be null.
-    *parent_pointer = (to_be_delete->left != nullptr ? to_be_delete->left
-                                                     : to_be_delete->right);
+    *parent_pointer = (to_be_delete->left != sentinel ? to_be_delete->left
+                                                      : to_be_delete->right);
     delete to_be_delete;
   }
 
   void InsertTemplate(const T& x) {
     // When the tree is empty, create the node at root;
-    if (root_ == nullptr) {
+    if (root_ == sentinel) {
       root_ = new Node(x);
       return;
     }
 
     Node** parent_pointer = &root_;
-    while (*parent_pointer != nullptr) {
+    while (*parent_pointer != sentinel) {
       Node*& current = *parent_pointer;
       // Rotate the tree when the size is imbalanced.
       x < current->value ? InsertHelper<false>(x, current)
@@ -235,7 +236,7 @@ struct WeightBalancedTree {
 
   void DeleteTemplate(const T& x) {
     Node** parent_pointer = &root_;
-    while (*parent_pointer != nullptr) {
+    while (*parent_pointer != sentinel) {
       Node*& current = *parent_pointer;
       if (current->value == x) break;
       // Rotate the tree when the size is imbalanced.
@@ -247,11 +248,11 @@ struct WeightBalancedTree {
       parent_pointer = x < current->value ? &current->left : &current->right;
     }
     Node* to_be_delete = *parent_pointer;
-    if (to_be_delete == nullptr) return;
+    if (to_be_delete == sentinel) return;
     // When the node needed to be removed has two children, pull the minimum
     // value from the right tree and delete the minimum value in the right
     // tree.
-    if (to_be_delete->left != nullptr && to_be_delete->right != nullptr) {
+    if (to_be_delete->left != sentinel && to_be_delete->right != sentinel) {
       --to_be_delete->size;
       // If the right subtree size is larger, then promote the minimum of the
       // right subtree. Otherwise, promote the maximum of the left subtree.
@@ -263,20 +264,20 @@ struct WeightBalancedTree {
     }
     // When the node needed to be removed has one child, move the non-null
     // subtree up. If both subtrees are null, then set the node to be null.
-    *parent_pointer = (to_be_delete->left != nullptr ? to_be_delete->left
-                                                     : to_be_delete->right);
+    *parent_pointer = (to_be_delete->left != sentinel ? to_be_delete->left
+                                                      : to_be_delete->right);
     delete to_be_delete;
   }
 
   void InsertMacro(const T& x) {
     // When the tree is empty, create the node at root;
-    if (root_ == nullptr) {
+    if (root_ == sentinel) {
       root_ = new Node(x);
       return;
     }
 
     Node** parent_pointer = &root_;
-    while (*parent_pointer != nullptr) {
+    while (*parent_pointer != sentinel) {
       Node*& current = *parent_pointer;
       // Rotate the tree when the size is imbalanced.
       if (x < current->value)
@@ -293,7 +294,7 @@ struct WeightBalancedTree {
 
   void DeleteMacro(const T& x) {
     Node** parent_pointer = &root_;
-    while (*parent_pointer != nullptr) {
+    while (*parent_pointer != sentinel) {
       Node*& current = *parent_pointer;
       if (current->value == x) break;
       // Rotate the tree when the size is imbalanced.
@@ -307,11 +308,11 @@ struct WeightBalancedTree {
       parent_pointer = x < current->value ? &current->left : &current->right;
     }
     Node* to_be_delete = *parent_pointer;
-    if (to_be_delete == nullptr) return;
+    if (to_be_delete == sentinel) return;
     // When the node needed to be removed has two children, pull the minimum
     // value from the right tree and delete the minimum value in the right
     // tree.
-    if (to_be_delete->left != nullptr && to_be_delete->right != nullptr) {
+    if (to_be_delete->left != sentinel && to_be_delete->right != sentinel) {
       --to_be_delete->size;
       // If the right subtree size is larger, then promote the minimum of the
       // right subtree. Otherwise, promote the maximum of the left subtree.
@@ -324,15 +325,15 @@ struct WeightBalancedTree {
     }
     // When the node needed to be removed has one child, move the non-null
     // subtree up. If both subtrees are null, then set the node to be null.
-    *parent_pointer = (to_be_delete->left != nullptr ? to_be_delete->left
-                                                     : to_be_delete->right);
+    *parent_pointer = (to_be_delete->left != sentinel ? to_be_delete->left
+                                                      : to_be_delete->right);
     delete to_be_delete;
   }
 
   // Compute the number of elements in the tree that is smaller than x.
   int rank(const T& x) const {
     int rank = 0;
-    for (Node* current = root_; current != nullptr;) {
+    for (Node* current = root_; current != sentinel;) {
       if (x == current->value) return rank + size(current->left);
       if (x < current->value) {
         current = current->left;
@@ -346,19 +347,20 @@ struct WeightBalancedTree {
 
   bool IsBalanced() const { return IsBalanced(root_); }
 
-  ~WeightBalancedTree() { FreeTree(root_); }
+  ~WeightBalancedTree() { FreeTree(root_, sentinel); }
 
   void InorderTraverse(std::vector<T>& result) const {
-    return ::InorderTraverse(root_, result);
+    return ::InorderTraverse(root_, result, sentinel);
   }
 
   Node* root() const { return root_; }
 
   Node*& root() { return root_; }
+  static Node* sentinel;
 
  private:
   static bool IsBalanced(Node* node) {
-    if (node == nullptr) return true;
+    if (node == sentinel) return true;
     return delta * weight(node->left) >= weight(node->right) &&
            delta * weight(node->right) >= weight(node->left) &&
            IsBalanced(node->left) && IsBalanced(node->right);
@@ -366,7 +368,7 @@ struct WeightBalancedTree {
 
   static int weight(Node* node) { return size(node) + 1; }
 
-  static int size(Node* node) { return node == nullptr ? 0 : node->size; }
+  static int size(Node* node) { return node->size; }
 
   // Calaulte the size for a given node.
   static void calculate_size(Node* node) {
@@ -439,7 +441,7 @@ struct WeightBalancedTree {
   template <bool mode>
   static void DeleteMin(Node*& to_be_delete, Node**& parent_pointer) {
     parent_pointer = &Right<mode>(to_be_delete);
-    while (Left<mode>(*parent_pointer) != nullptr) {
+    while (Left<mode>(*parent_pointer) != sentinel) {
       Node*& current = *parent_pointer;
       if (!is_balanced_after_remove(Left<mode>(current),
                                     Right<mode>(current))) {
@@ -570,9 +572,13 @@ struct WeightBalancedTree {
     calculate_size2(root);
   }
 
-  Node* root_ = nullptr;
+  Node* root_ = sentinel;
   static constexpr int delta = 3;
   static constexpr int gamma = 2;
 };
+
+template <typename T>
+typename WeightBalancedTree<T>::Node* WeightBalancedTree<T>::sentinel =
+    new WeightBalancedTree<T>::Node(T(), 0);
 
 #endif

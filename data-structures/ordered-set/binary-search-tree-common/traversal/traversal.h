@@ -16,9 +16,10 @@ void InorderTraverseRec(const Node* root,
 
 template <typename Node>
 void InorderTraverse(const Node* node,
-                     std::vector<typename Node::value_type>& result) {
-  for (std::stack<const Node*> stack; !stack.empty() || node != nullptr;) {
-    if (node != nullptr) {
+                     std::vector<typename Node::value_type>& result,
+										 Node* sentinel = nullptr) {
+  for (std::stack<const Node*> stack; !stack.empty() || node != sentinel;) {
+    if (node != sentinel) {
       stack.push(node);
       node = node->left;
     } else {
