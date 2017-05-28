@@ -73,8 +73,7 @@ struct WeightBalancedTree {
   struct Node {
     using value_type = T;
     explicit Node(const T& x) : value(x) {}
-    explicit Node(Node* l, Node* r) : left(l), right(r) {}
-    explicit Node(const T& x, int sz) : size(sz), value(x) {}
+    Node(Node* l, Node* r) : left(l), right(r) {}
     Node() = default;
     Node* left = sentinel;
     Node* right = sentinel;
@@ -572,6 +571,14 @@ struct WeightBalancedTree {
     calculate_size2(root);
   }
 
+  // Create the sentinel node.
+  static Node* InitializeSentinel() {
+    Node* sentinel = new Node();
+    sentinel->size = 0;
+    sentinel->left = sentinel->right = sentinel;
+    return sentinel;
+  }
+
   Node* root_ = sentinel;
   static constexpr int delta = 3;
   static constexpr int gamma = 2;
@@ -579,6 +586,6 @@ struct WeightBalancedTree {
 
 template <typename T>
 typename WeightBalancedTree<T>::Node* WeightBalancedTree<T>::sentinel =
-    new WeightBalancedTree<T>::Node(T(), 0);
+    InitializeSentinel();
 
 #endif
