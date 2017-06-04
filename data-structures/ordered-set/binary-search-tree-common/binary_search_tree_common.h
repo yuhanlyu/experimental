@@ -41,7 +41,7 @@ int TreeSize(const Node* root) {
 //       / \     /  \     |
 //      b    c  a    b    |
 template <typename Node>
-void LeftRotation(Node*& root) {
+void LeftRotate(Node*& root) {
   Node* x = root->right;
   root->right = x->left;
   x->left = root;
@@ -55,7 +55,7 @@ void LeftRotation(Node*& root) {
 //  / \              /  \   |
 // a   b            b    c  |
 template <typename Node>
-void RightRotation(Node*& root) {
+void RightRotate(Node*& root) {
   Node* x = root->left;
   root->left = x->right;
   x->right = root;
@@ -71,7 +71,7 @@ void RightRotation(Node*& root) {
 //    / \                        |
 //   b   c                       |
 template <typename Node>
-void LRRotation(Node*& root) {
+void LRRotate(Node*& root) {
   Node *x = root->left, *y = x->right;
   x->right = y->left;
   root->left = y->right;
@@ -89,7 +89,7 @@ void LRRotation(Node*& root) {
 //     / \                       |
 //    b   c                      |
 template <typename Node>
-void RLRotation(Node*& root) {
+void RLRotate(Node*& root) {
   Node *x = root->right, *y = x->left;
   x->left = y->right;
   root->right = y->left;
