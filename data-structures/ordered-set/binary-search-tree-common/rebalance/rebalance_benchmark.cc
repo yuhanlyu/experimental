@@ -37,8 +37,6 @@ BENCHMARK_DEFINE_F(BSTRebalanceBenchmark, NaiveRebalance)
     state.PauseTiming();
     BinarySearchTree<int> tree;
     BuildTree(state, tree);
-    std::vector<int> result;
-    result.reserve(state.range(0));
     state.ResumeTiming();
     NaiveRebalance(tree.root());
   }
@@ -53,8 +51,6 @@ BENCHMARK_DEFINE_F(BSTRebalanceBenchmark, RebalanceByFlatten)
     state.PauseTiming();
     BinarySearchTree<int> tree;
     BuildTree(state, tree);
-    std::vector<int> result;
-    result.reserve(state.range(0));
     state.ResumeTiming();
     RebalanceByFlatten(tree.root());
   }
@@ -69,8 +65,6 @@ BENCHMARK_DEFINE_F(BSTRebalanceBenchmark, RebalanceDay)
     state.PauseTiming();
     BinarySearchTree<int> tree;
     BuildTree(state, tree);
-    std::vector<int> result;
-    result.reserve(state.range(0));
     state.ResumeTiming();
     RebalanceDay(tree.root());
   }
@@ -85,8 +79,6 @@ BENCHMARK_DEFINE_F(BSTRebalanceBenchmark, RebalanceDSW)
     state.PauseTiming();
     BinarySearchTree<int> tree;
     BuildTree(state, tree);
-    std::vector<int> result;
-    result.reserve(state.range(0));
     state.ResumeTiming();
     RebalanceDSW(tree.root());
   }
