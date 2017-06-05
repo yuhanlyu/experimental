@@ -139,5 +139,5 @@ struct AATree {
 };
 
 template <typename T>
-typename AATree<T>::Node AATree<T>::dummy = AATree<T>::Node(&dummy, &dummy, 0);
+typename AATree<T>::Node AATree<T>::dummy{&dummy, &dummy, 0};
 #endif
