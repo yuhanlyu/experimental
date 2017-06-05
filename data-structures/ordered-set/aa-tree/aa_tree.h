@@ -11,6 +11,7 @@ struct AATree {
   struct Node {
     using value_type = T;
     explicit Node(const T& x) : value(x) {}
+    Node(Node* l, Node* r, int lv) : left(l), right(r), level(lv) {}
     Node(Node* l, Node* r) : left(l), right(r) {}
     Node() = default;
     Node* left = sentinel;
@@ -34,8 +35,6 @@ struct AATree {
   Node* root() const { return root_; }
 
   Node*& root() { return root_; }
-
-  static Node* sentinel;
 
  private:
   static bool IsBalanced(Node* node) {
@@ -134,17 +133,11 @@ struct AATree {
     }
   }
 
-  // Create the sentinel node.
-  static Node* InitializeSentinel() {
-    Node* sentinel = new Node();
-    sentinel->level = 0;
-    sentinel->left = sentinel->right = sentinel;
-    return sentinel;
-  }
-
+  static Node dummy;
+  static constexpr Node* sentinel{&dummy};
   Node* root_ = sentinel;
 };
 
 template <typename T>
-typename AATree<T>::Node* AATree<T>::sentinel = AATree<T>::InitializeSentinel();
+typename AATree<T>::Node AATree<T>::dummy = AATree<T>::Node(&dummy, &dummy, 0);
 #endif
