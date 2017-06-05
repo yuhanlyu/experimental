@@ -7,16 +7,16 @@
 #include "../binary-search-tree-common/binary_search_tree_common.h"
 
 #define ROTATE(root, left, right) \
-  do {                              \
-    Node* x = (root)->right;        \
-    (root)->right = x->left;        \
-    x->left = (root);               \
-    (root) = x;                     \
-    calculate_size(x->left);        \
-    calculate_size(root);           \
+  do {                            \
+    Node* x = (root)->right;      \
+    (root)->right = x->left;      \
+    x->left = (root);             \
+    (root) = x;                   \
+    calculate_size(x->left);      \
+    calculate_size(root);         \
   } while (false)
 
-#define DOUBLE_ROTATE(root, left, right) \
+#define DOUBLE_ROTATE(root, left, right)   \
   do {                                     \
     Node *x = (root)->right, *y = x->left; \
     x->left = y->right;                    \
@@ -33,9 +33,9 @@
       Node* child = (current)->right;                                        \
       if (need_single_rotation_after_insert(child->left, child->right,       \
                                             (mode) == ((x) < child->value))) \
-        ROTATE(current, left, right);                                      \
+        ROTATE(current, left, right);                                        \
       else                                                                   \
-        DOUBLE_ROTATE(current, left, right);                               \
+        DOUBLE_ROTATE(current, left, right);                                 \
     }                                                                        \
   } while (false)
 
@@ -44,9 +44,9 @@
     if (!is_balanced_after_remove((current)->left, (current)->right)) {     \
       Node* child = (current)->right;                                       \
       if (need_single_rotation_after_remove((child)->left, (child)->right)) \
-        ROTATE(current, left, right);                                     \
+        ROTATE(current, left, right);                                       \
       else                                                                  \
-        DOUBLE_ROTATE(current, left, right);                              \
+        DOUBLE_ROTATE(current, left, right);                                \
     }                                                                       \
   } while (false)
 
@@ -58,9 +58,9 @@
       if (!is_balanced_after_remove((current)->left, (current)->right)) {     \
         Node* child = (current)->right;                                       \
         if (need_single_rotation_after_remove((child)->left, (child)->right)) \
-          ROTATE(current, left, right);                                     \
+          ROTATE(current, left, right);                                       \
         else                                                                  \
-          DOUBLE_ROTATE(current, left, right);                              \
+          DOUBLE_ROTATE(current, left, right);                                \
       }                                                                       \
       --(current)->size;                                                      \
       (parent_pointer) = &(current)->left;                                    \
@@ -74,6 +74,7 @@ struct WeightBalancedTree {
     using value_type = T;
     explicit Node(const T& x) : value(x) {}
     Node(Node* l, Node* r) : left(l), right(r) {}
+    Node(Node* l, Node* r, int s) : left(l), right(r), size(s) {}
     Node() = default;
     Node* left = sentinel;
     Node* right = sentinel;
@@ -355,7 +356,6 @@ struct WeightBalancedTree {
   Node* root() const { return root_; }
 
   Node*& root() { return root_; }
-  static Node* sentinel;
 
  private:
   static bool IsBalanced(Node* node) {
@@ -571,21 +571,14 @@ struct WeightBalancedTree {
     calculate_size2(root);
   }
 
-  // Create the sentinel node.
-  static Node* InitializeSentinel() {
-    Node* sentinel = new Node();
-    sentinel->size = 0;
-    sentinel->left = sentinel->right = sentinel;
-    return sentinel;
-  }
-
-  Node* root_ = sentinel;
+  static Node dummy;
+  static constexpr Node* sentinel{&dummy};
   static constexpr int delta = 3;
   static constexpr int gamma = 2;
+  Node* root_ = sentinel;
 };
 
 template <typename T>
-typename WeightBalancedTree<T>::Node* WeightBalancedTree<T>::sentinel =
-    InitializeSentinel();
-
+typename WeightBalancedTree<T>::Node WeightBalancedTree<T>::dummy{&dummy,
+                                                                  &dummy, 0};
 #endif
