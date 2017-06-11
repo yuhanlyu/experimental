@@ -26,6 +26,7 @@ struct SplayTree {
     Splay(root_, x);
     if (root_->value == x) return false;
     Node* new_node = new Node(x);
+    // Attach the old tree to new_node and set root_ to the new_node.
     if (x < root_->value) {
       new_node->right = root_;
       new_node->left = root_->left;
@@ -44,10 +45,11 @@ struct SplayTree {
     Splay(root_, x);
     if (root_->value != x) return false;
     Node* new_tree;
+    // Combine the two subtrees and delete the node.
     if (root_->left == nullptr) {
       new_tree = root_->right;
     } else {
-      SplayRec(root_->left, x);
+      Splay(root_->left, x);
       new_tree = root_->left;
       new_tree->right = root_->right;
     }
@@ -64,6 +66,7 @@ struct SplayTree {
     SplayRec(root_, x);
     if (root_->value == x) return false;
     Node* new_node = new Node(x);
+    // Attach the old tree to new_node and set root_ to the new_node.
     if (x < root_->value) {
       new_node->right = root_;
       new_node->left = root_->left;
@@ -81,6 +84,7 @@ struct SplayTree {
     if (root_ == nullptr) return false;
     SplayRec(root_, x);
     Node* new_tree;
+    // Combine the two subtrees and delete the node.
     if (root_->left == nullptr) {
       new_tree = root_->right;
     } else {
