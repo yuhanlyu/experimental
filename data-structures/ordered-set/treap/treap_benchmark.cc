@@ -67,6 +67,38 @@ BENCHMARK_REGISTER_F(TreapBenchmark, TreapDelete)
     ->RangeMultiplier(multiplier)
     ->Range(min_size, max_size);
 
+BENCHMARK_DEFINE_F(TreapBenchmark, TreapInsertWithoutRotation)
+(benchmark::State& state) {
+  while (state.KeepRunning()) {
+    state.PauseTiming();
+    Shuffle(state);
+    state.ResumeTiming();
+    Treap<int> tree;
+    for (int i = 0; i < state.range(0); ++i) {
+      tree.InsertWithoutRotation(test[i]);
+    }
+  }
+}
+BENCHMARK_REGISTER_F(TreapBenchmark, TreapInsertWithoutRotation)
+    ->RangeMultiplier(multiplier)
+    ->Range(min_size, max_size);
+
+BENCHMARK_DEFINE_F(TreapBenchmark, TreapDeleteWithoutRotation)
+(benchmark::State& state) {
+  while (state.KeepRunning()) {
+    state.PauseTiming();
+    Treap<int> tree;
+    BuildTree(state, tree);
+    state.ResumeTiming();
+    for (int i = 0; i < state.range(0); ++i) {
+      tree.DeleteWithoutRotation(test[i]);
+    }
+  }
+}
+BENCHMARK_REGISTER_F(TreapBenchmark, TreapDeleteWithoutRotation)
+    ->RangeMultiplier(multiplier)
+    ->Range(min_size, max_size);
+
 }  // namespace
 
 BENCHMARK_MAIN()

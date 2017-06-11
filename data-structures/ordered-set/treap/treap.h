@@ -57,6 +57,34 @@ struct Treap {
     return true;
   }
 
+  // Insert a value without using rotation.
+  void InsertWithoutRotation(const T& x) {
+    Node* new_node = new Node(x);
+    Node** parent_pointer = &root_;
+    while (*parent_pointer != nullptr &&
+           new_node->priority > (*parent_pointer)->priority) {
+      Node*& current = *parent_pointer;
+      parent_pointer = (x < current->value) ? &current->left : &current->right;
+    }
+    if (*parent_pointer != nullptr)
+      Split(*parent_pointer, x, new_node->left, new_node->right);
+    *parent_pointer = new_node;
+  }
+
+  // Delete a value without using rotation.
+  bool DeleteWithoutRotation(const T& x) {
+    Node** parent_pointer = &root_;
+    while (*parent_pointer != nullptr && (*parent_pointer)->value != x) {
+      Node*& current = *parent_pointer;
+      parent_pointer = (x < current->value) ? &current->left : &current->right;
+    }
+    if (*parent_pointer == nullptr) return false;
+    Node* to_be_delete = *parent_pointer;
+    Join(*parent_pointer, (*parent_pointer)->left, (*parent_pointer)->right);
+    delete to_be_delete;
+    return true;
+  }
+
   ~Treap() { FreeTree(root_); }
 
   void InorderTraverse(std::vector<T>& result) const {
@@ -92,7 +120,42 @@ struct Treap {
       return false;
     if (node->right != nullptr && node->priority > node->right->priority)
       return false;
-    return true;
+    return IsHeap(node->left) && IsHeap(node->right);
+  }
+
+  // Split the subtree rooted at node, so that all nodes that are smaller than
+  // x is rooted at left, and other nodes are rooted at right.
+  static void Split(Node* node, const T& x, Node*& left, Node*& right) {
+    Node **left_pointer = &left, **right_pointer = &right;
+    while (node != nullptr && x != node->value) {
+      if (x < node->value) {
+        *right_pointer = node;
+        right_pointer = &node->left;
+        node = node->left;
+      } else {
+        *left_pointer = node;
+        left_pointer = &node->right;
+        node = node->right;
+      }
+    }
+    *left_pointer = *right_pointer = nullptr;
+  }
+
+  // Merge the trees that are rooted at left and right as root.
+  static void Join(Node*& root, Node* left, Node* right) {
+    Node** parent_pointer = &root;
+    while (left != nullptr && right != nullptr) {
+      if (left->priority < right->priority) {
+        *parent_pointer = left;
+        parent_pointer = &left->right;
+        left = left->right;
+      } else {
+        *parent_pointer = right;
+        parent_pointer = &right->left;
+        right = right->left;
+      }
+    }
+    *parent_pointer = left != nullptr ? left : right;
   }
 
   Node* root_ = nullptr;
