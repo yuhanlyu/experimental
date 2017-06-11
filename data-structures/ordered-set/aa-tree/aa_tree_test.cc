@@ -21,12 +21,13 @@ TEST(AATree, Insert) {
     do {
       AATree<int> tree;
       for (int value : inserted_elements) {
-        tree.Insert(value);
+        EXPECT_TRUE(tree.Insert(value));
         EXPECT_TRUE(tree.IsBalanced());
       }
       std::vector<int> actual_result;
       tree.InorderTraverse(actual_result);
       EXPECT_THAT(actual_result, ElementsAreArray(expected_result));
+      for (int value : inserted_elements) EXPECT_FALSE(tree.Insert(value));
     } while (std::next_permutation(inserted_elements.begin(),
                                    inserted_elements.end()));
   }
@@ -39,8 +40,8 @@ TEST(AATree, Delete) {
     std::vector<int> temp(inserted_elements);
     do {
       AATree<int> tree;
-      for (int value : temp) tree.Insert(value);
-      tree.Delete(temp[0]);
+      for (int value : temp) ASSERT_TRUE(tree.Insert(value));
+      EXPECT_TRUE(tree.Delete(temp[0]));
       EXPECT_TRUE(tree.IsBalanced());
       std::vector<int> expected_result(temp);
       expected_result.erase(expected_result.begin());
@@ -48,6 +49,7 @@ TEST(AATree, Delete) {
       std::vector<int> actual_result;
       tree.InorderTraverse(actual_result);
       EXPECT_THAT(actual_result, ElementsAreArray(expected_result));
+			EXPECT_FALSE(tree.Delete(temp[0]));
     } while (std::next_permutation(temp.begin(), temp.end()));
   }
 }
