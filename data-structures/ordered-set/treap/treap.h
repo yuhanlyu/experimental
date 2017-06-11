@@ -1,0 +1,100 @@
+#ifndef TREAP_H
+#define TREAP_H
+
+#include <limits>
+#include <random>
+#include <vector>
+
+#include "../binary-search-tree-common/binary_search_tree_common.h"
+
+template <typename T>
+struct Treap {
+ public:
+  struct Node {
+    using value_type = T;
+    explicit Node(const T& x) : value(x) {}
+    Node(Node* l, Node* r) : left(l), right(r) {}
+    Node() = default;
+    Node* left = nullptr;
+    Node* right = nullptr;
+    double priority = random();
+    T value;
+
+    // Generate random priority.
+    static double random() {
+      static std::random_device random_device;
+      static std::default_random_engine generator{random_device()};
+      static std::uniform_real_distribution<> distribution;
+      return distribution(generator);
+    }
+  };
+
+  bool Insert(const T& x) { return Insert(root_, x); }
+
+  bool Delete(const T& x) {
+    Node** parent_pointer = &root_;
+    while (*parent_pointer != nullptr && !(x == (*parent_pointer)->value)) {
+      parent_pointer = (x < (*parent_pointer)->value)
+                           ? &(*parent_pointer)->left
+                           : &(*parent_pointer)->right;
+    }
+    if (*parent_pointer == nullptr) return false;
+    // Rotate the node until the node does not have two children.
+    while ((*parent_pointer)->left && (*parent_pointer)->right) {
+      Node*& current = *parent_pointer;
+      if (current->left->priority < current->right->priority) {
+        RightRotate(current);
+        parent_pointer = &current->right;
+      } else {
+        LeftRotate(current);
+        parent_pointer = &current->left;
+      }
+    }
+    Node* to_be_delete = *parent_pointer;
+    *parent_pointer = (to_be_delete->left != nullptr) ? to_be_delete->left
+                                                      : to_be_delete->right;
+    delete to_be_delete;
+    return true;
+  }
+
+  ~Treap() { FreeTree(root_); }
+
+  void InorderTraverse(std::vector<T>& result) const {
+    return ::InorderTraverse(root_, result);
+  }
+
+  bool IsHeap() { return IsHeap(root_); }
+
+  Node* root() const { return root_; }
+
+  Node*& root() { return root_; }
+
+ private:
+  static bool Insert(Node*& node, const T& x) {
+    if (node == nullptr) {
+      node = new Node(x);
+      return true;
+    }
+    if (x == node->value) return false;
+    if (x < node->value) {
+      if (Insert(node->left, x) == false) return false;
+      if (node->left->priority < node->priority) RightRotate(node);
+    } else {
+      if (Insert(node->right, x) == false) return false;
+      if (node->right->priority < node->priority) LeftRotate(node);
+    }
+    return true;
+  }
+
+  static bool IsHeap(const Node* node) {
+    if (node == nullptr) return true;
+    if (node->left != nullptr && node->priority > node->left->priority)
+      return false;
+    if (node->right != nullptr && node->priority > node->right->priority)
+      return false;
+    return true;
+  }
+
+  Node* root_ = nullptr;
+};
+#endif
