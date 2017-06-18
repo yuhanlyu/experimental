@@ -141,9 +141,9 @@ struct Treap {
     *left_pointer = *right_pointer = nullptr;
   }
 
-  // Merge the trees that are rooted at left and right as root.
-  static void Join(Node*& root, Node* left, Node* right) {
-    Node** parent_pointer = &root;
+  // Merge the trees that are rooted at left and right as node.
+  static void Join(Node*& node, Node* left, Node* right) {
+    Node** parent_pointer = &node;
     while (left != nullptr && right != nullptr) {
       if (left->priority < right->priority) {
         *parent_pointer = left;
