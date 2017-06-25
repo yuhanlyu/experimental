@@ -90,7 +90,7 @@ struct Treap {
     return ::InorderTraverse(root_, result);
   }
 
-  bool IsHeap() { return IsHeap(root_); }
+  bool IsHeap() const { return IsHeap(root_); }
 
   Node* root() const { return root_; }
 
