@@ -1,6 +1,7 @@
 #ifndef SKIP_LIST_H
 #define SKIP_LIST_H
 
+#include <cstdlib>
 #include <random>
 #include <vector>
 
@@ -47,7 +48,7 @@ struct SkipList {
       }
     }
     if (to_be_deleted == nullptr) return false;
-    free(to_be_deleted);
+    std::free(to_be_deleted);
     return true;
   }
 
@@ -77,7 +78,7 @@ struct SkipList {
 
   static Node* NewNode(const T& x, int level) {
     Node* new_node =
-        static_cast<Node*>(malloc(sizeof(Node) + sizeof(Node*) * level));
+        static_cast<Node*>(std::malloc(sizeof(Node) + sizeof(Node*) * level));
     new_node->value = x;
     return new_node;
   }
@@ -85,7 +86,7 @@ struct SkipList {
   // This is only used for the header.
   constexpr static int max_level = 33;
   Node* header = static_cast<Node*>(
-      calloc(sizeof(Node) + max_level * sizeof(Node*), sizeof(char)));
+      std::calloc(sizeof(Node) + max_level * sizeof(Node*), sizeof(char)));
   int level = 1;
 };
 #endif
