@@ -60,10 +60,9 @@ struct SkipList {
   }
 
   ~SkipList() {
-    for (Node* cur = header; cur != nullptr;) {
-      Node* next = cur->forward[0];
+    for (Node* cur = header, *next; cur != nullptr; cur = next) {
+      next = cur->forward[0];
       free(cur);
-      cur = next;
     }
   }
 
@@ -73,7 +72,7 @@ struct SkipList {
     static std::default_random_engine generator{random_device()};
     static std::uniform_int_distribution<unsigned int> distribution;
     unsigned int r{distribution(generator)};
-    return 1 + (r == 0 ? 32 : __builtin_ctz(r));
+    return r == 0 ? 33 : (__builtin_ctz(r) + 1);
   }
 
   static Node* NewNode(const T& x, int level) {
