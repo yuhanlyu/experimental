@@ -5,8 +5,6 @@
 #include <random>
 #include <vector>
 
-#include "../binary-search-tree-common/binary_search_tree_common.h"
-
 template <typename T>
 struct SkipList {
  public:
