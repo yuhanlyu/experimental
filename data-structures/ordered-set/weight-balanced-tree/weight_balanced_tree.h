@@ -578,6 +578,7 @@ struct WeightBalancedTree {
   Node* root_ = sentinel;
 };
 
+// TODO(C++17): use inline variable.
 template <typename T>
 typename WeightBalancedTree<T>::Node WeightBalancedTree<T>::dummy{&dummy,
                                                                   &dummy, 0};

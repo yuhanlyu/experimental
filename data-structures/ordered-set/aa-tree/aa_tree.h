@@ -138,6 +138,7 @@ struct AATree {
   Node* root_ = sentinel;
 };
 
+// TODO(C++17): use inline variable.
 template <typename T>
 typename AATree<T>::Node AATree<T>::dummy{&dummy, &dummy, 0};
 #endif

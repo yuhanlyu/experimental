@@ -132,16 +132,14 @@ struct DSL {
   }
 
  private:
-  static Node bottom_node;
   static Node tail_node;
-  static constexpr Node* bottom = &bottom_node;
   static constexpr Node* tail = &tail_node;
+  Node bottom_node;
+  Node* bottom = &bottom_node;
   Node* header = new Node(tail, bottom);
 };
 
 // TODO(C++17): use inline variables.
-template <typename T>
-typename DSL<T>::Node DSL<T>::bottom_node;
 template <typename T>
 typename DSL<T>::Node DSL<T>::tail_node;
 #endif
