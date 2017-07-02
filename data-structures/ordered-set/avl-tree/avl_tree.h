@@ -281,8 +281,6 @@ struct AVLTree {
     root = y;
   }
 
-  static void UpdateBalanceFactor(Node* root, Node* x, Node* y) {}
-
   Node* root_ = nullptr;
 };
 #endif
