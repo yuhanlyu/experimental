@@ -53,6 +53,7 @@ TEST(AVLTree, Insert) {
                                    inserted_elements.end()));
   }
 }
+
 TEST(AVLTree, Delete) {
   for (int size = 1; size <= max_test_size; ++size) {
     std::vector<int> inserted_elements;
