@@ -30,7 +30,7 @@ class RBTreeBenchmark : public benchmark::Fixture {
     std::random_device rd;
     std::mt19937 g(rd());
     std::shuffle(test, test + state.range(0), g);
-    for (int i = 0; i < state.range(0); ++i) tree.RecursiveInsert(test[i]);
+    for (int i = 0; i < state.range(0); ++i) tree.Insert(test[i]);
     std::shuffle(test, test + state.range(0), g);
   }
 
