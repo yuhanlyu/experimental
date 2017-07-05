@@ -1,7 +1,6 @@
 #include "avl_tree.h"
 
 #include <algorithm>
-#include <cstdlib>
 #include <limits>
 #include <random>
 
