@@ -148,22 +148,10 @@ struct RBTree {
   }
 
   bool IsBalanced() const {
-    if (sentinel->red) {
-      std::cout << "Sentinel color is wrong\n";
-      return false;
-    }
-    if (sentinel->right != sentinel) {
-      std::cout << "Sentinel right is wrong\n";
-      return false;
-    }
-    if (sentinel->left != sentinel) {
-      std::cout << "Sentinel left is wrong\n";
-      return false;
-    }
-    if (root_->red) {
-      std::cout << "Root color is wrong\n";
-      return false;
-    }
+    if (sentinel->red) return false;
+    if (sentinel->right != sentinel) return false;
+    if (sentinel->left != sentinel) return false;
+    if (root_->red) return false;
     return BlackHeight(root_) != -1;
   }
 

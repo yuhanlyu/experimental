@@ -1,9 +1,9 @@
 #include "red_black_tree.h"
 
 #include <algorithm>
-#include <cstdlib>
 #include <limits>
 #include <random>
+#include <set>
 
 #include "benchmark/benchmark_api.h"
 
@@ -33,7 +33,31 @@ class RBTreeBenchmark : public benchmark::Fixture {
     for (int i = 0; i < state.range(0); ++i) tree.RecursiveInsert(test[i]);
     std::shuffle(test, test + state.range(0), g);
   }
+
+	static void BuildTree(const ::benchmark::State& state, std::set<int>& tree) {
+    std::random_device rd;
+    std::mt19937 g(rd());
+    std::shuffle(test, test + state.range(0), g);
+    for (int i = 0; i < state.range(0); ++i) tree.insert(test[i]);
+    std::shuffle(test, test + state.range(0), g);
+  }
 };
+
+BENCHMARK_DEFINE_F(RBTreeBenchmark, STLInsert)
+(benchmark::State& state) {
+  while (state.KeepRunning()) {
+    state.PauseTiming();
+    Shuffle(state);
+    state.ResumeTiming();
+		std::set<int> tree;
+    for (int i = 0; i < state.range(0); ++i) {
+      tree.insert(test[i]);
+    }
+  }
+}
+BENCHMARK_REGISTER_F(RBTreeBenchmark, STLInsert)
+    ->RangeMultiplier(multiplier)
+    ->Range(min_size, max_size);
 
 BENCHMARK_DEFINE_F(RBTreeBenchmark, RBTreeInsert)
 (benchmark::State& state) {
@@ -64,6 +88,22 @@ BENCHMARK_DEFINE_F(RBTreeBenchmark, RBTreeRecursiveInsert)
   }
 }
 BENCHMARK_REGISTER_F(RBTreeBenchmark, RBTreeRecursiveInsert)
+    ->RangeMultiplier(multiplier)
+    ->Range(min_size, max_size);
+
+BENCHMARK_DEFINE_F(RBTreeBenchmark, STLDelete)
+(benchmark::State& state) {
+  while (state.KeepRunning()) {
+    state.PauseTiming();
+		std::set<int> tree;
+    BuildTree(state, tree);
+    state.ResumeTiming();
+    for (int i = 0; i < state.range(0); ++i) {
+      tree.erase(test[i]);
+    }
+  }
+}
+BENCHMARK_REGISTER_F(RBTreeBenchmark, STLDelete)
     ->RangeMultiplier(multiplier)
     ->Range(min_size, max_size);
 
