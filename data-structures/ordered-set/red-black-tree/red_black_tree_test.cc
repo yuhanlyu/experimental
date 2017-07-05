@@ -27,7 +27,11 @@ TEST(RBTree, Insert) {
       std::vector<int> actual_result;
       tree.InorderTraverse(actual_result);
       EXPECT_THAT(actual_result, ElementsAreArray(expected_result));
-      for (int value : inserted_elements) EXPECT_FALSE(tree.Insert(value));
+      for (int value : inserted_elements) {
+        EXPECT_FALSE(tree.Insert(value));
+        EXPECT_THAT(actual_result, ElementsAreArray(expected_result));
+        EXPECT_TRUE(tree.IsBalanced());
+      }
     } while (std::next_permutation(inserted_elements.begin(),
                                    inserted_elements.end()));
   }
@@ -47,8 +51,11 @@ TEST(RBTree, RecursiveInsert) {
       std::vector<int> actual_result;
       tree.InorderTraverse(actual_result);
       EXPECT_THAT(actual_result, ElementsAreArray(expected_result));
-      for (int value : inserted_elements)
+      for (int value : inserted_elements) {
         EXPECT_FALSE(tree.RecursiveInsert(value));
+        EXPECT_TRUE(tree.IsBalanced());
+        EXPECT_THAT(actual_result, ElementsAreArray(expected_result));
+      }
     } while (std::next_permutation(inserted_elements.begin(),
                                    inserted_elements.end()));
   }
@@ -71,6 +78,8 @@ TEST(RBTree, Delete) {
       tree.InorderTraverse(actual_result);
       EXPECT_THAT(actual_result, ElementsAreArray(expected_result));
       EXPECT_FALSE(tree.Delete(temp[0]));
+      ASSERT_TRUE(tree.IsBalanced());
+      EXPECT_THAT(actual_result, ElementsAreArray(expected_result));
     } while (std::next_permutation(temp.begin(), temp.end()));
   }
 }
@@ -92,6 +101,8 @@ TEST(RBTree, RecursiveDelete) {
       tree.InorderTraverse(actual_result);
       EXPECT_THAT(actual_result, ElementsAreArray(expected_result));
       EXPECT_FALSE(tree.RecursiveDelete(temp[0]));
+      EXPECT_TRUE(tree.IsBalanced());
+      EXPECT_THAT(actual_result, ElementsAreArray(expected_result));
     } while (std::next_permutation(temp.begin(), temp.end()));
   }
 }

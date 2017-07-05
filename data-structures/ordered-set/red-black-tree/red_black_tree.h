@@ -35,7 +35,7 @@ struct RBTree {
       if (current == sentinel)
         current = *parent = new Node(x);
       else if (x == current->value)
-        return false;
+        return root_->red = false;
       else if (current->left->red && current->right->red) {
         // Flip color.
         current->red = true;
@@ -90,11 +90,12 @@ struct RBTree {
         next = &current->right;
         next_sibling = &current->left;
       }
-      // Rebalance is required only when the current and the next node are black.
-			if (current->red || (*next)->red) continue;
+      // Rebalance is required only when the current and the next node are
+      // black.
+      if (current->red || (*next)->red) continue;
       // When next sibling is red, rotate.
       if ((*next_sibling)->red) {
-				current->red = true;
+        current->red = true;
         (*next_sibling)->red = false;
         if (x < current->value) {
           LeftRotate(*parent);
@@ -103,12 +104,12 @@ struct RBTree {
           RightRotate(*parent);
           parent = &(*parent)->right;
         }
-				continue;
+        continue;
       }
       // Current has two black children.
       // If sibling has two black children, flip the color.
       if (!sibling->right->red && !sibling->left->red) {
-      	(*g_parent)->red = false;
+        (*g_parent)->red = false;
         current->red = sibling->red = true;
         continue;
       }
@@ -124,7 +125,7 @@ struct RBTree {
       current->red = (*g_parent)->red = true;
       (*g_parent)->left->red = (*g_parent)->right->red = false;
     }
-    if (to_be_deleted == sentinel) return false;
+    if (to_be_deleted == sentinel) return root_->red = false;
     // When the loop terminates, (*g_parent)->value is the successor of x.
     to_be_deleted->value = (*g_parent)->value;
     to_be_deleted = *g_parent;

@@ -34,7 +34,7 @@ class RBTreeBenchmark : public benchmark::Fixture {
     std::shuffle(test, test + state.range(0), g);
   }
 
-	static void BuildTree(const ::benchmark::State& state, std::set<int>& tree) {
+  static void BuildTree(const ::benchmark::State& state, std::set<int>& tree) {
     std::random_device rd;
     std::mt19937 g(rd());
     std::shuffle(test, test + state.range(0), g);
@@ -49,7 +49,7 @@ BENCHMARK_DEFINE_F(RBTreeBenchmark, STLInsert)
     state.PauseTiming();
     Shuffle(state);
     state.ResumeTiming();
-		std::set<int> tree;
+    std::set<int> tree;
     for (int i = 0; i < state.range(0); ++i) {
       tree.insert(test[i]);
     }
@@ -95,7 +95,7 @@ BENCHMARK_DEFINE_F(RBTreeBenchmark, STLDelete)
 (benchmark::State& state) {
   while (state.KeepRunning()) {
     state.PauseTiming();
-		std::set<int> tree;
+    std::set<int> tree;
     BuildTree(state, tree);
     state.ResumeTiming();
     for (int i = 0; i < state.range(0); ++i) {
