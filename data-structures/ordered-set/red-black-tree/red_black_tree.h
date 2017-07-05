@@ -81,20 +81,20 @@ struct RBTree {
          g_parent = parent, parent = next, sibling = *next_sibling) {
       // Loop invariant: when current is black, the sibling is black, and
       // the parent node (pointed by g_parent) is red.
-      Node* current = *parent;
+      Node*& current = *parent;
       if (x == current->value) to_be_deleted = current;
       if (x < current->value) {
-        next = &(*parent)->left;
-        next_sibling = &(*parent)->right;
+        next = &current->left;
+        next_sibling = &current->right;
       } else {
-        next = &(*parent)->right;
-        next_sibling = &(*parent)->left;
+        next = &current->right;
+        next_sibling = &current->left;
       }
+      // Rebalance is required only when the current and the next node are black.
 			if (current->red || (*next)->red) continue;
-      // When next node is black, rebalance is required.
-      current->red = true;
       // When next sibling is red, rotate.
       if ((*next_sibling)->red) {
+				current->red = true;
         (*next_sibling)->red = false;
         if (x < current->value) {
           LeftRotate(*parent);
@@ -106,10 +106,10 @@ struct RBTree {
 				continue;
       }
       // Current has two black children.
-      (*g_parent)->red = false;
       // If sibling has two black children, flip the color.
       if (!sibling->right->red && !sibling->left->red) {
-        sibling->red = true;
+      	(*g_parent)->red = false;
+        current->red = sibling->red = true;
         continue;
       }
       // If sibling has one red child, rebalance base on whether the
@@ -117,13 +117,12 @@ struct RBTree {
       if (*parent == (*g_parent)->left) {
         sibling->right->red ? LeftRotate(*g_parent) : RLRotate(*g_parent);
         parent = &(*g_parent)->left->left;
-        (*g_parent)->right->red = false;
       } else {
         sibling->left->red ? RightRotate(*g_parent) : LRRotate(*g_parent);
         parent = &(*g_parent)->right->right;
-        (*g_parent)->left->red = false;
       }
-      (*g_parent)->red = true;
+      current->red = (*g_parent)->red = true;
+      (*g_parent)->left->red = (*g_parent)->right->red = false;
     }
     if (to_be_deleted == sentinel) return false;
     // When the loop terminates, (*g_parent)->value is the successor of x.
