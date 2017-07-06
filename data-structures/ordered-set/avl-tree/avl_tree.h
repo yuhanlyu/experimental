@@ -142,8 +142,21 @@ struct AVLTree {
 
   static bool Delete(Node*& node, const T& x, bool& done) {
     if (node == nullptr) return false;
-    if (x < node->value) {
-      if (!Delete(node->left, x, done)) return false;
+		const T* delete_value = &x;
+		if (x == node->value) {
+      if (node->left == nullptr || node->right == nullptr) {
+        Node* to_be_deleted = node;
+        node = node->left == nullptr ? node->right : node->left;
+        delete to_be_deleted;
+        return true;
+      }
+      Node* successor = node->right;
+      while (successor->left != nullptr) successor = successor->left;
+      node->value = successor->value;
+  		delete_value = &node->value;
+    }
+    if (*delete_value < node->value) {
+      if (!Delete(node->left, *delete_value, done)) return false;
       // The balance_factor changes from -1 to 0 -> the height of the subtree
       // decreases, propagate up to rebalance the tree.
       if (done || ++node->balance_factor == 0) return true;
@@ -163,19 +176,7 @@ struct AVLTree {
       } else
         RLRotate(node);
     } else {
-      if (x == node->value) {
-        if (node->left == nullptr || node->right == nullptr) {
-          Node* to_be_deleted = node;
-          node = node->left == nullptr ? node->right : node->left;
-          delete to_be_deleted;
-          return true;
-        }
-        Node* successor = node->right;
-        while (successor->left != nullptr) successor = successor->left;
-        node->value = successor->value;
-        Delete(node->right, successor->value, done);
-      } else if (!Delete(node->right, x, done))
-        return false;
+			if (!Delete(node->right, *delete_value, done)) return false;
       // The balance_factor changes from 1 to 0 -> the height of the subtree
       // decreases, propagate up to rebalance the tree.
       if (done || --node->balance_factor == 0) return true;
