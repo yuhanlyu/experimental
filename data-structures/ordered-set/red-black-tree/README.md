@@ -50,12 +50,12 @@ RBTreeBenchmark/RBTreeDelete/1048576  668728140 ns  668535596 ns          1
 -------------------------------------------------------------------------------------
 Benchmark                                              Time           CPU Iterations
 -------------------------------------------------------------------------------------
-RBTreeBenchmark/RBTreeRecursiveInsert/1024         94807 ns      94807 ns       7279
-RBTreeBenchmark/RBTreeRecursiveInsert/4096        442719 ns     442633 ns       1575
-RBTreeBenchmark/RBTreeRecursiveInsert/16384      2481125 ns    2480456 ns        277
-RBTreeBenchmark/RBTreeRecursiveInsert/65536     13506362 ns   13493071 ns         49
-RBTreeBenchmark/RBTreeRecursiveInsert/262144    84997039 ns   84875617 ns          9
-RBTreeBenchmark/RBTreeRecursiveInsert/1048576  602780516 ns  601862254 ns          1
+RBTreeBenchmark/RBTreeRecursiveInsert/1024         94645 ns      94664 ns       7403
+RBTreeBenchmark/RBTreeRecursiveInsert/4096        453496 ns     453521 ns       1562
+RBTreeBenchmark/RBTreeRecursiveInsert/16384      2503588 ns    2503614 ns        281
+RBTreeBenchmark/RBTreeRecursiveInsert/65536     13330796 ns   13330633 ns         53
+RBTreeBenchmark/RBTreeRecursiveInsert/262144    78600094 ns   78599690 ns         10
+RBTreeBenchmark/RBTreeRecursiveInsert/1048576  551622478 ns  551615346 ns          1
 
 -------------------------------------------------------------------------------------
 Benchmark                                              Time           CPU Iterations

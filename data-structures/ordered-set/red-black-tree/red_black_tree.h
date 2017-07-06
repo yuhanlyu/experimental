@@ -230,29 +230,8 @@ struct RBTree {
 
   static bool Delete(Node*& node, const T& x, bool& done) {
     if (node == sentinel) return false;
-    if (x == node->value) {
-      if (node->left == sentinel || node->right == sentinel) {
-        Node* to_be_deleted = node;
-        node = node->left == sentinel ? node->right : node->left;
-        if (to_be_deleted->red)
-          done = true;
-        else if (node->red) {
-          // If the child is red, recolor it as black.
-          node->red = false;
-          done = true;
-        }
-        delete to_be_deleted;
-        return true;
-      }
-      Node* predecessor = node->left;
-      while (predecessor->right != sentinel) predecessor = predecessor->right;
-      node->value = predecessor->value;
-      Delete(node->left, predecessor->value, done);
-      goto L;
-    }
     if (x < node->value) {
       if (!Delete(node->left, x, done)) return false;
-    L:
       if (done) return true;
       Node **parent = &node, *&sibling = node->right;
       // When sibling is red, rotate to obtain a black sibling.
@@ -280,7 +259,26 @@ struct RBTree {
       (*parent)->left->red = (*parent)->right->red = false;
       return done = true;
     } else {
-      if (!Delete(node->right, x, done)) return false;
+      if (x == node->value) {
+        if (node->left == sentinel || node->right == sentinel) {
+          Node* to_be_deleted = node;
+          node = node->left == sentinel ? node->right : node->left;
+          if (to_be_deleted->red)
+            done = true;
+          else if (node->red) {
+            // If the child is red, recolor it as black.
+            node->red = false;
+            done = true;
+          }
+          delete to_be_deleted;
+          return true;
+        }
+        Node* successor = node->right;
+        while (successor->left != sentinel) successor = successor->left;
+        node->value = successor->value;
+        Delete(node->right, successor->value, done);
+      } else if (!Delete(node->right, x, done))
+        return false;
       if (done) return true;
       Node **parent = &node, *&sibling = node->left;
       // When sibling is red, rotate to obtain a black sibling.
