@@ -34,8 +34,8 @@ struct AVLTree {
     // and the position to be inserted as parent.
     while ((*parent) != nullptr) {
       Node*& current = *parent;
-      if (current->balance_factor != 0) safe_node = parent;
       if (x == current->value) return false;
+      if (current->balance_factor != 0) safe_node = parent;
       parent = x < current->value ? &current->left : &current->right;
     }
     *parent = new Node(x);

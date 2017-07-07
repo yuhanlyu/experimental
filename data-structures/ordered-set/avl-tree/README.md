@@ -10,12 +10,12 @@ This module implements two versions of insertion: iterative and recursive.
 ---------------------------------------------------------------------------------------
 Benchmark                                                Time           CPU Iterations
 ---------------------------------------------------------------------------------------
-AVLTreeBenchmark/AVLTreeInsert/1024                  73935 ns      73955 ns       9368
-AVLTreeBenchmark/AVLTreeInsert/4096                 354298 ns     354322 ns       1966
-AVLTreeBenchmark/AVLTreeInsert/16384               2138426 ns    2138484 ns        325
-AVLTreeBenchmark/AVLTreeInsert/65536              11893950 ns   11893976 ns         56
-AVLTreeBenchmark/AVLTreeInsert/262144             87799816 ns   87798465 ns          9
-AVLTreeBenchmark/AVLTreeInsert/1048576           603889226 ns  603877076 ns          1
+AVLTreeBenchmark/AVLTreeInsert/1024                  72628 ns      72235 ns       9682
+AVLTreeBenchmark/AVLTreeInsert/4096                 347650 ns     347615 ns       2077
+AVLTreeBenchmark/AVLTreeInsert/16384               1969666 ns    1969722 ns        357
+AVLTreeBenchmark/AVLTreeInsert/65536              11038753 ns   11039022 ns         65
+AVLTreeBenchmark/AVLTreeInsert/262144             73801868 ns   73802630 ns         11
+AVLTreeBenchmark/AVLTreeInsert/1048576           611745160 ns  611748579 ns          2
 AVLTreeBenchmark/AVLTreeRecursiveInsert/1024         89660 ns      89679 ns       7828
 AVLTreeBenchmark/AVLTreeRecursiveInsert/4096        423173 ns     423176 ns       1654
 AVLTreeBenchmark/AVLTreeRecursiveInsert/16384      2467116 ns    2467019 ns        290
