@@ -231,7 +231,7 @@ struct WAVL {
   static bool Delete(Node*& node, const T& x, bool& done) {
     if (node == nullptr) return false;
     const T* delete_value = &x;
-    if (x == node->value) {
+    if (*delete_value == node->value) {
       if (node->left == nullptr || node->right == nullptr) {
         Node* to_be_deleted = node;
         node = node->left == nullptr ? node->right : node->left;
