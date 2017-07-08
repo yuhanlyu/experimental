@@ -13,7 +13,6 @@ using testing::ElementsAreArray;
 
 constexpr int max_test_size = 7;
 
-/*
 TEST(WAVL, Insert) {
   for (int size = 1; size <= max_test_size; ++size) {
     std::vector<int> expected_result;
@@ -29,14 +28,14 @@ TEST(WAVL, Insert) {
       tree.InorderTraverse(actual_result);
       EXPECT_THAT(actual_result, ElementsAreArray(expected_result));
       for (int value : inserted_elements) {
-                                EXPECT_FALSE(tree.Insert(value));
+        EXPECT_FALSE(tree.Insert(value));
         EXPECT_TRUE(tree.IsBalanced());
         EXPECT_THAT(actual_result, ElementsAreArray(expected_result));
-                        }
+      }
     } while (std::next_permutation(inserted_elements.begin(),
                                    inserted_elements.end()));
   }
-}*/
+}
 
 TEST(WAVL, RecursiveInsert) {
   for (int size = 1; size <= max_test_size; ++size) {
@@ -69,9 +68,9 @@ TEST(WAVL, RecursiveDelete) {
     std::vector<int> temp(inserted_elements);
     do {
       WAVL<int> tree;
-      for (int value : temp) ASSERT_TRUE(tree.RecursiveInsert(value));
+      for (int value : temp) ASSERT_TRUE(tree.Insert(value));
       EXPECT_TRUE(tree.RecursiveDelete(temp[0]));
-      ASSERT_TRUE(tree.IsBalanced());
+      EXPECT_TRUE(tree.IsBalanced());
       std::vector<int> expected_result(temp);
       expected_result.erase(expected_result.begin());
       std::sort(expected_result.begin(), expected_result.end());

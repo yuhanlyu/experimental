@@ -29,10 +29,26 @@ class WAVLBenchmark : public benchmark::Fixture {
     std::random_device rd;
     std::mt19937 g(rd());
     std::shuffle(test, test + state.range(0), g);
-    for (int i = 0; i < state.range(0); ++i) tree.RecursiveInsert(test[i]);
+    for (int i = 0; i < state.range(0); ++i) tree.Insert(test[i]);
     std::shuffle(test, test + state.range(0), g);
   }
 };
+
+BENCHMARK_DEFINE_F(WAVLBenchmark, WAVLInsert)
+(benchmark::State& state) {
+  while (state.KeepRunning()) {
+    state.PauseTiming();
+    Shuffle(state);
+    state.ResumeTiming();
+    WAVL<int> tree;
+    for (int i = 0; i < state.range(0); ++i) {
+      tree.Insert(test[i]);
+    }
+  }
+}
+BENCHMARK_REGISTER_F(WAVLBenchmark, WAVLInsert)
+    ->RangeMultiplier(multiplier)
+    ->Range(min_size, max_size);
 
 BENCHMARK_DEFINE_F(WAVLBenchmark, WAVLRecursiveInsert)
 (benchmark::State& state) {

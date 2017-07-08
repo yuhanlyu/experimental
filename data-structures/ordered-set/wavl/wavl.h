@@ -1,6 +1,7 @@
 #ifndef WAVL_H
 #define WAVL_H
 
+#include <sstream>
 #include <vector>
 
 #include "../binary-search-tree-common/binary_search_tree_common.h"
@@ -10,13 +11,23 @@ struct WAVL {
  public:
   struct Node {
     using value_type = T;
-    explicit Node(const T& x) : value(x), rank_parity(false) {}
+    explicit Node(const T& x) : value(x) {}
     Node(Node* l, Node* r) : left(l), right(r) {}
     Node() = default;
-    Node* left = sentinel;
-    Node* right = sentinel;
+    std::string ToString() const {
+      std::ostringstream stream;
+      stream << value << " (" << left_rd_one << ", " << right_rd_one << ")";
+      return stream.str();
+    }
+    Node* left = nullptr;
+    Node* right = nullptr;
     T value;
-    bool rank_parity = true;  // Used by sentinel, represent rank -1.
+    // rd_one means the parity of the rank difference between node and child.
+    // rd_one = false means the difference is 2, or 0 (temporarily in
+    // insertion).
+    // rd_one = true means the difference is 1, or 3 (temporarily in deletion).
+    bool left_rd_one = true;
+    bool right_rd_one = true;
   };
 
   bool RecursiveInsert(const T& x) {
@@ -24,7 +35,90 @@ struct WAVL {
     return Insert(root_, x, done);
   }
 
-  bool Insert(const T& x) { return true; }
+  bool Insert(const T& x) {
+    if (root_ == nullptr) {
+      root_ = new Node(x);
+      return true;
+    }
+    Node **parent = &root_, **safe_node = &root_;
+    // Find the lowest node that has non zero balance_factor as safe_node,
+    // and the position to be inserted as parent.
+    while ((*parent) != nullptr) {
+      Node*& current = *parent;
+      if (x == current->value) return false;
+      // When the has a 2 child, the node is a safe_node.
+      // USING bitwise or is faster than logical or.
+      if (!current->left_rd_one | !current->right_rd_one) safe_node = parent;
+      parent = x < current->value ? &current->left : &current->right;
+    }
+    *parent = new Node(x);
+    Node*& node = *safe_node;
+    // Promote all nodes below the safe_node.
+    for (Node* current = x < node->value ? node->left : node->right;
+         current != *parent;) {
+      if (x < current->value) {
+        current->right_rd_one = false;
+        current = current->left;
+      } else {
+        current->left_rd_one = false;
+        current = current->right;
+      }
+    }
+    if (x < node->value) {
+      node->left_rd_one = !node->left_rd_one;
+      // At this point, rank difference between current and left is either 0 or
+      // 1.
+      if (node->left_rd_one) return true;
+      // At this point, rank difference between current and left is 0.
+      // At this point, rank difference between current and right is either 1 or
+      // 2.
+      if (node->right_rd_one) {
+        node->right_rd_one = false;
+        return node->left_rd_one = true;
+      }
+      // At this point, rank difference between current and right is 2.
+      if (!node->left->left_rd_one) {
+        node->left_rd_one = node->left->right->right_rd_one;
+        node->left->right_rd_one = node->left->right->left_rd_one;
+        node->right_rd_one = node->left->left_rd_one =
+            node->left->right->left_rd_one = node->left->right->right_rd_one =
+                true;
+        LRRotate(node);
+      } else {
+        node->right_rd_one = node->left_rd_one = node->left->right_rd_one =
+            true;
+        RightRotate(node);
+      }
+    } else {
+      node->right_rd_one = !node->right_rd_one;
+      // At this point, rank difference between current and right is either 0 or
+      // 1.
+      if (node->right_rd_one) return true;
+      // At this point, rank difference between current and right is 0.
+      // At this point, rank difference between current and left is either 1 or
+      // 2.
+      if (node->left_rd_one) {
+        node->left_rd_one = false;
+        return node->right_rd_one = true;
+      }
+      // At this point, rank difference between current and left is or 2.
+      if (!node->right->right_rd_one) {
+        node->right_rd_one = node->right->left->left_rd_one;
+        node->right->left_rd_one = node->right->left->right_rd_one;
+        node->left_rd_one = node->right->right_rd_one =
+            node->right->left->left_rd_one = node->right->left->right_rd_one =
+                true;
+        RLRotate(node);
+      } else {
+        node->right->left_rd_one = node->left_rd_one = node->right_rd_one =
+            true;
+        LeftRotate(node);
+      }
+    }
+    return true;
+  }
+
+  bool Delete(const T& x) { return true; }
 
   bool RecursiveDelete(const T& x) {
     bool done = false;
@@ -33,10 +127,10 @@ struct WAVL {
 
   bool IsBalanced() const { return ValidateRank(root_) != -1; }
 
-  ~WAVL() { FreeTree(root_, sentinel); }
+  ~WAVL() { FreeTree(root_); }
 
   void InorderTraverse(std::vector<T>& result) const {
-    return ::InorderTraverse(root_, result, sentinel);
+    return ::InorderTraverse(root_, result);
   }
 
   void PrintTree() const { return PrintTree(root_, "root"); }
@@ -47,29 +141,29 @@ struct WAVL {
 
  private:
   static void PrintTree(const Node* root, std::string prefix) {
-    if (root == sentinel) return;
+    if (root == nullptr) return;
     PrintTree(root->left, prefix + "->left");
-    std::cerr << prefix << " = " << root->value << " with " << root->rank_parity
-              << '\n';
+    std::cerr << prefix << " = " << root->ToString() << '\n';
     PrintTree(root->right, prefix + "->right");
   }
+
   static int ValidateRank(const Node* node) {
-    if (node == sentinel) return 0;
+    if (node == nullptr) return 0;
     int left_rank = ValidateRank(node->left);
     int right_rank = ValidateRank(node->right);
     if (left_rank == -1 || right_rank == -1) return -1;
-    if (left_rank == 0 && right_rank == 0 &&
-        node->rank_parity == node->left->rank_parity)
+    if (left_rank == 0 && right_rank == 0 && !node->left_rd_one &&
+        !node->right_rd_one)
       return -1;
-    left_rank += (node->rank_parity == node->left->rank_parity ? 2 : 1);
-    right_rank += (node->rank_parity == node->right->rank_parity ? 2 : 1);
+    left_rank += node->left_rd_one ? 1 : 2;
+    right_rank += node->right_rd_one ? 1 : 2;
     if (left_rank != right_rank) return -1;
     return left_rank;
   }
 
   static bool Insert(Node*& node, const T& x, bool& done) {
     // When the tree is empty, create the node at root;
-    if (node == sentinel) {
+    if (node == nullptr) {
       node = new Node(x);
       return true;
     }
@@ -77,47 +171,57 @@ struct WAVL {
     if (x < node->value) {
       if (!Insert(node->left, x, done)) return false;
       if (done) return true;
-      // When node's rank is different from the child's rank, no rebalance is
-      // required.
-      if (node->rank_parity != node->left->rank_parity) return done = true;
-      // When node's rank equals the child but differ from another child's rank,
-      // promote.
-      if (node->rank_parity != node->right->rank_parity) {
-        node->rank_parity = !node->rank_parity;
-        return true;
+      node->left_rd_one = !node->left_rd_one;
+      // At this point, rank difference between current and left is either 0 or
+      // 1.
+      if (node->left_rd_one) return done = true;
+      // At this point, rank difference between current and left is 0.
+      // At this point, rank difference between current and right is either 1 or
+      // 2.
+      if (node->right_rd_one) {
+        node->right_rd_one = false;
+        return node->left_rd_one = true;
       }
-      // Rotate according to node->left->right->parity.
       done = true;
-      if (node->rank_parity != node->left->right->rank_parity) {
-        node->rank_parity = !node->rank_parity;
-        node->left->rank_parity = !node->left->rank_parity;
-        node->left->right->rank_parity = !node->left->right->rank_parity;
+      // At this point, rank difference between current and right is 2.
+      if (!node->left->left_rd_one) {
+        node->left_rd_one = node->left->right->right_rd_one;
+        node->left->right_rd_one = node->left->right->left_rd_one;
+        node->right_rd_one = node->left->left_rd_one =
+            node->left->right->left_rd_one = node->left->right->right_rd_one =
+                true;
         LRRotate(node);
       } else {
-        node->rank_parity = !node->rank_parity;
+        node->right_rd_one = node->left_rd_one = node->left->right_rd_one =
+            true;
         RightRotate(node);
       }
     } else {
       if (!Insert(node->right, x, done)) return false;
       if (done) return true;
-      // When node's rank is different from the child's rank, no rebalance is
-      // required.
-      if (node->rank_parity != node->right->rank_parity) return done = true;
-      // When node's rank equals the child but differ from another child's rank,
-      // promote.
-      if (node->rank_parity != node->left->rank_parity) {
-        node->rank_parity = !node->rank_parity;
-        return true;
+      node->right_rd_one = !node->right_rd_one;
+      // At this point, rank difference between current and right is either 0 or
+      // 1.
+      if (node->right_rd_one) return done = true;
+      // At this point, rank difference between current and right is 0.
+      // At this point, rank difference between current and left is either 1 or
+      // 2.
+      if (node->left_rd_one) {
+        node->left_rd_one = false;
+        return node->right_rd_one = true;
       }
-      // Rotate according to node->right->left->rank_parity.
       done = true;
-      if (node->rank_parity != node->right->left->rank_parity) {
-        node->rank_parity = !node->rank_parity;
-        node->right->rank_parity = !node->right->rank_parity;
-        node->right->left->rank_parity = !node->right->left->rank_parity;
+      // At this point, rank difference between current and left is 2.
+      if (!node->right->right_rd_one) {
+        node->right_rd_one = node->right->left->left_rd_one;
+        node->right->left_rd_one = node->right->left->right_rd_one;
+        node->left_rd_one = node->right->right_rd_one =
+            node->right->left->left_rd_one = node->right->left->right_rd_one =
+                true;
         RLRotate(node);
       } else {
-        node->rank_parity = !node->rank_parity;
+        node->right->left_rd_one = node->left_rd_one = node->right_rd_one =
+            true;
         LeftRotate(node);
       }
     }
@@ -125,89 +229,110 @@ struct WAVL {
   }
 
   static bool Delete(Node*& node, const T& x, bool& done) {
-    if (node == sentinel) return false;
+    if (node == nullptr) return false;
     const T* delete_value = &x;
     if (x == node->value) {
-      if (node->left == sentinel || node->right == sentinel) {
+      if (node->left == nullptr || node->right == nullptr) {
         Node* to_be_deleted = node;
-        node = node->left == sentinel ? node->right : node->left;
+        node = node->left == nullptr ? node->right : node->left;
         delete to_be_deleted;
         return true;
       }
       Node* successor = node->right;
-      while (successor->left != sentinel) successor = successor->left;
+      while (successor->left != nullptr) successor = successor->left;
       node->value = successor->value;
       delete_value = &node->value;
     }
     if (*delete_value < node->value) {
       if (!Delete(node->left, *delete_value, done)) return false;
       if (done) return true;
-      // If the rank difference between left and current is 2.
-      if (node->rank_parity == node->left->rank_parity) {
+      node->left_rd_one = !node->left_rd_one;
+      // At this pont, rank difference between current and left is either 2 or
+      // 3.
+      if (!node->left_rd_one) {
         // When node is not leaf, no rebalancing is required.
-        if (node->left != sentinel || node->right != sentinel)
-          return done = true;
-        // Leaf node cannot has rank 1.
-        node->rank_parity = !node->rank_parity;
-        return true;
+        if (node->left != nullptr || node->right != nullptr) return done = true;
+        // Leaf node must be 1, 1.
+        return node->left_rd_one = node->right_rd_one = true;
       }
-      // At this point, the rank difference between left and current is 3.
-      // If the rank difference between right and current is 2, demote.
-      if (node->rank_parity == node->right->rank_parity) {
-        node->rank_parity = !node->rank_parity;
-        return true;
+      // At this point, rank difference between current and left is 3.
+      // At this point, rank difference between current and right is 1 or 2.
+      if (!node->right_rd_one) {
+        node->left_rd_one = false;
+        return node->right_rd_one = true;
       }
-      // If the rank difference between right and current is 1, and node->right
-      // can be demote, then demote current and right.
-      if (node->right->rank_parity == node->right->left->rank_parity &&
-          node->right->left->rank_parity == node->right->right->rank_parity) {
-        node->rank_parity = !node->rank_parity;
-        node->right->rank_parity = !node->right->rank_parity;
-        return true;
+      // At this point, rank difference between current and right is 1.
+      // If right can be demoted, then demote current and right.
+      if (!node->right->left_rd_one && !node->right->right_rd_one) {
+        node->left_rd_one = false;
+        return node->right->left_rd_one = node->right->right_rd_one = true;
       }
       done = true;
-      node->right->rank_parity = !node->right->rank_parity;
-      if (node->rank_parity != node->right->right->rank_parity) {
+      // At this point, rank difference between right and right->right is either
+      // 1 or 2.
+      if (!node->right->right_rd_one) {
+        // At this point, rank difference between right and right->left is 1.
+        node->right_rd_one = node->right->left->left_rd_one;
+        node->right->left_rd_one = node->right->left->right_rd_one;
         RLRotate(node);
-        return true;
+        node->left_rd_one = node->right_rd_one = false;
+        return node->right->right_rd_one = true;
       }
-      if (node->left != sentinel || node->right->left != sentinel)
-        node->rank_parity = !node->rank_parity;
+      // At this point, rank difference between right and right->right is 1.
+      node->right_rd_one = node->right->left_rd_one;
       LeftRotate(node);
+      node->left_rd_one = true;
+      node->right_rd_one = node->left->left_rd_one = false;
+      // When left is a leaf, demote left.
+      if (node->left->left == nullptr && node->left->right == nullptr) {
+        node->left->left_rd_one = node->left->right_rd_one = true;
+        node->left_rd_one = false;
+      }
     } else {
       if (!Delete(node->right, *delete_value, done)) return false;
       if (done) return true;
-      // If the rank difference between right and current is 2.
-      if (node->rank_parity == node->right->rank_parity) {
+      node->right_rd_one = !node->right_rd_one;
+      // At this pont, rank difference between current and right is either 2 or
+      // 3.
+      if (!node->right_rd_one) {
         // When node is not leaf, no rebalancing is required.
-        if (node->left != sentinel || node->right != sentinel)
-          return done = true;
-        node->rank_parity = !node->rank_parity;
-        return true;
+        if (node->left != nullptr || node->right != nullptr) return done = true;
+        // Leaf node must be 1, 1.
+        return node->left_rd_one = node->right_rd_one = true;
       }
-      // At this point, the rank difference between right and current is 3.
-      // If the rank difference between left and current is 2, demote.
-      if (node->rank_parity == node->left->rank_parity) {
-        node->rank_parity = !node->rank_parity;
-        return true;
+      // At this point, rank difference between current and right is 3.
+      // At this point, rank difference between current and left is 1 or 2.
+      if (!node->left_rd_one) {
+        node->right_rd_one = false;
+        return node->left_rd_one = true;
       }
-      // If the rank difference between left and current is 1, and node->left
-      // can be demote, then demote current and left.
-      if (node->left->rank_parity == node->left->left->rank_parity &&
-          node->left->left->rank_parity == node->left->right->rank_parity) {
-        node->rank_parity = !node->rank_parity;
-        node->left->rank_parity = !node->left->rank_parity;
-        return true;
+      // At this point, rank difference between current and left is 1.
+      // If left can be demoted, then demote current and left.
+      if (!node->left->left_rd_one && !node->left->right_rd_one) {
+        node->right_rd_one = false;
+        return node->left->left_rd_one = node->left->right_rd_one = true;
       }
       done = true;
-      node->left->rank_parity = !node->left->rank_parity;
-      if (node->rank_parity != node->left->left->rank_parity) {
+      // At this point, rank difference between left and left->left is either 1
+      // or 2.
+      if (!node->left->left_rd_one) {
+        // At this point, rank difference between left and left->right is 1.
+        node->left_rd_one = node->left->right->right_rd_one;
+        node->left->right_rd_one = node->left->right->left_rd_one;
         LRRotate(node);
-        return true;
+        node->left_rd_one = node->right_rd_one = false;
+        return node->left->left_rd_one = true;
       }
-      if (node->right != sentinel || node->left->right != sentinel)
-        node->rank_parity = !node->rank_parity;
+      // At this point, rank difference between left and left->left is 1.
+      node->left_rd_one = node->left->right_rd_one;
       RightRotate(node);
+      node->right_rd_one = true;
+      node->left_rd_one = node->right->right_rd_one = false;
+      // When right is a leaf, demote right.
+      if (node->right->left == nullptr && node->right->right == nullptr) {
+        node->right->left_rd_one = node->right->right_rd_one = true;
+        node->right_rd_one = false;
+      }
     }
     return true;
   }
@@ -272,12 +397,7 @@ struct WAVL {
     root = y;
   }
 
-  static Node dummy;
-  static constexpr Node* sentinel = &dummy;
-  Node* root_ = sentinel;
+  Node* root_ = nullptr;
 };
 
-// TODO(C++17): use inline variable.
-template <typename T>
-typename WAVL<T>::Node WAVL<T>::dummy;
 #endif

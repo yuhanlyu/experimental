@@ -11,20 +11,22 @@ rotation or one double rotation).
 ---------------------------------------------------------------------------------
 Benchmark                                          Time           CPU Iterations
 ---------------------------------------------------------------------------------
-WAVLBenchmark/WAVLRecursiveInsert/1024         87214 ns      87231 ns       7818
-WAVLBenchmark/WAVLRecursiveInsert/4096        413230 ns     413254 ns       1688
-WAVLBenchmark/WAVLRecursiveInsert/16384      2417971 ns    2418071 ns        290
-WAVLBenchmark/WAVLRecursiveInsert/65536     13164263 ns   13162821 ns         53
-WAVLBenchmark/WAVLRecursiveInsert/262144    78778237 ns   78778467 ns         10
-WAVLBenchmark/WAVLRecursiveInsert/1048576  568883262 ns  568892504 ns          1
-
----------------------------------------------------------------------------------
-Benchmark                                          Time           CPU Iterations
----------------------------------------------------------------------------------
-WAVLBenchmark/WAVLRecursiveDelete/1024         80201 ns      80183 ns       8571
-WAVLBenchmark/WAVLRecursiveDelete/4096        376440 ns     376415 ns       1845
-WAVLBenchmark/WAVLRecursiveDelete/16384      2187644 ns    2187648 ns        317
-WAVLBenchmark/WAVLRecursiveDelete/65536     11956023 ns   11956147 ns         58
-WAVLBenchmark/WAVLRecursiveDelete/262144    73249359 ns   73250620 ns         10
-WAVLBenchmark/WAVLRecursiveDelete/1048576  576923618 ns  576936327 ns          1
+WAVLBenchmark/WAVLInsert/1024                  71858 ns      71900 ns       9704
+WAVLBenchmark/WAVLInsert/4096                 336732 ns     336686 ns       2067
+WAVLBenchmark/WAVLInsert/16384               1953513 ns    1953253 ns        358
+WAVLBenchmark/WAVLInsert/65536              11094533 ns   11092921 ns         63
+WAVLBenchmark/WAVLInsert/262144             78656465 ns   78644058 ns         10
+WAVLBenchmark/WAVLInsert/1048576           578242760 ns  578156542 ns          1
+WAVLBenchmark/WAVLRecursiveInsert/1024         87621 ns      87643 ns       7968
+WAVLBenchmark/WAVLRecursiveInsert/4096        415413 ns     415392 ns       1681
+WAVLBenchmark/WAVLRecursiveInsert/16384      2317488 ns    2317356 ns        300
+WAVLBenchmark/WAVLRecursiveInsert/65536     12740325 ns   12739034 ns         54
+WAVLBenchmark/WAVLRecursiveInsert/262144    96178685 ns   96161537 ns          9
+WAVLBenchmark/WAVLRecursiveInsert/1048576  612581195 ns  612511495 ns          1
+WAVLBenchmark/WAVLRecursiveDelete/1024         80409 ns      80392 ns       8746
+WAVLBenchmark/WAVLRecursiveDelete/4096        387082 ns     387030 ns       1806
+WAVLBenchmark/WAVLRecursiveDelete/16384      2168941 ns    2168711 ns        321
+WAVLBenchmark/WAVLRecursiveDelete/65536     12174128 ns   12173238 ns         59
+WAVLBenchmark/WAVLRecursiveDelete/262144    82700690 ns   82695528 ns          9
+WAVLBenchmark/WAVLRecursiveDelete/1048576  600224950 ns  600196375 ns          1
 </pre>
