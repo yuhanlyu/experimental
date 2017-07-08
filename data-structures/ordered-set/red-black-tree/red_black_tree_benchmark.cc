@@ -75,6 +75,22 @@ BENCHMARK_REGISTER_F(RBTreeBenchmark, RBTreeInsert)
     ->RangeMultiplier(multiplier)
     ->Range(min_size, max_size);
 
+BENCHMARK_DEFINE_F(RBTreeBenchmark, RBTreeBottomUpInsert)
+(benchmark::State& state) {
+  while (state.KeepRunning()) {
+    state.PauseTiming();
+    Shuffle(state);
+    state.ResumeTiming();
+    RBTree<int> tree;
+    for (int i = 0; i < state.range(0); ++i) {
+      tree.BottomUpInsert(test[i]);
+    }
+  }
+}
+BENCHMARK_REGISTER_F(RBTreeBenchmark, RBTreeBottomUpInsert)
+    ->RangeMultiplier(multiplier)
+    ->Range(min_size, max_size);
+
 BENCHMARK_DEFINE_F(RBTreeBenchmark, RBTreeRecursiveInsert)
 (benchmark::State& state) {
   while (state.KeepRunning()) {

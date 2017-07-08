@@ -136,6 +136,48 @@ struct RBTree {
     return true;
   }
 
+  bool BottomUpInsert(const T& x) {
+    if (root_ == sentinel) {
+      root_ = new Node(x, false);
+      return true;
+    }
+    if (root_->left->red && root_->right->red)
+      root_->left->red = root_->right->red = false;
+    Node **parent = &root_, **safe_node = &root_;
+    // Find the lowest black node that has one black child.
+    while ((*parent) != sentinel) {
+      Node*& current = *parent;
+      if (x == current->value) return false;
+      // Use bitwise or is faster than the logical or.
+      if (!current->red && (!current->left->red | !current->right->red))
+        safe_node = parent;
+      parent = x < current->value ? &current->left : &current->right;
+    }
+    *parent = new Node(x);
+    Node *&node = *safe_node,
+         *next = x < node->value ? node->left : node->right, *current = next;
+    if (next == *parent) return true;
+    bool need_rotation = next->red;
+    if (need_rotation) current = x < next->value ? next->left : next->right;
+    // Flip color from the current to parent.
+    while (current != *parent) {
+      current->red = true;
+      current->left->red = current->right->red = false;
+      current = x < current->value ? current->left : current->right;
+      current = x < current->value ? current->left : current->right;
+    }
+    if (!need_rotation) return true;
+    // At this point, safe_node is black, next is red, next's sibling is
+    // black, and grand_child is red.
+    node->red = true;
+    if (x < node->value)
+      x < next->value ? RightRotate(node) : LRRotate(node);
+    else
+      x < next->value ? RLRotate(node) : LeftRotate(node);
+    node->red = false;
+    return true;
+  }
+
   bool RecursiveInsert(const T& x) {
     bool done = false, inserted = Insert(root_, x, done);
     root_->red = false;

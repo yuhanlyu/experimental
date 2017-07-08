@@ -37,6 +37,30 @@ TEST(RBTree, Insert) {
   }
 }
 
+TEST(RBTree, BottomUpInsert) {
+  for (int size = 1; size <= max_test_size; ++size) {
+    std::vector<int> expected_result;
+    for (int i = 0; i < size; ++i) expected_result.push_back(i + 1);
+    std::vector<int> inserted_elements(expected_result);
+    do {
+      RBTree<int> tree;
+      for (int value : inserted_elements) {
+        EXPECT_TRUE(tree.BottomUpInsert(value));
+        EXPECT_TRUE(tree.IsBalanced());
+      }
+      std::vector<int> actual_result;
+      tree.InorderTraverse(actual_result);
+      EXPECT_THAT(actual_result, ElementsAreArray(expected_result));
+      for (int value : inserted_elements) {
+        EXPECT_FALSE(tree.BottomUpInsert(value));
+        EXPECT_THAT(actual_result, ElementsAreArray(expected_result));
+        EXPECT_TRUE(tree.IsBalanced());
+      }
+    } while (std::next_permutation(inserted_elements.begin(),
+                                   inserted_elements.end()));
+  }
+}
+
 TEST(RBTree, RecursiveInsert) {
   for (int size = 1; size <= max_test_size; ++size) {
     std::vector<int> expected_result;
