@@ -41,8 +41,7 @@ struct WAVL {
       return true;
     }
     Node **parent = &root_, **safe_node = &root_;
-    // Find the lowest node that has non zero balance_factor as safe_node,
-    // and the position to be inserted as parent.
+    // Find the lowest node that has a 2-child.
     while ((*parent) != nullptr) {
       Node*& current = *parent;
       if (x == current->value) return false;
