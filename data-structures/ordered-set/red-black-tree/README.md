@@ -38,20 +38,21 @@ inspire my iterative bottom-up implementation.
 
 My iterative bottom-up implementation uses constant space without parent
 pointers. The idea is that when traverse down the tree, locate the node where
- the rebalance terminates (safe node). Then, rebalance the tree in the second
-pass from this node to the bottom, which takes amortized O(1) time. The price
-is the time spent in finding the safe node.
+the rebalance terminates (safe node). Then, rebalance the tree in the second
+pass from the safe node to the bottom, which takes amortized O(1) time. The
+price is the time spent in finding the safe node.
 
 My iterative bottom-up implementation is not an one pass algorithm, which
 differs from Tarjan's proposal. In order to make my bottom-up implementation
 one pass, 8 levels lookahead in insertion and 4 levels lookahead are required.
 
 ## Benchmark
+
 For insert, my iterative bottom-up is faster than recursive bottom-up method,
 top-down, and STL insert (non-recursive bottom-up method with parent pointers).
-
 For delete, my iterative bottom-up method is slower than recursive bottom-up
 method due to the time spent in finding the safe node.
+
 ----------------------------------------------------------------------------
 Benchmark                                     Time           CPU Iterations
 ----------------------------------------------------------------------------
