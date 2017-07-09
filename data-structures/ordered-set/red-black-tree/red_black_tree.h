@@ -23,6 +23,54 @@ struct RBTree {
       root_ = new Node(x, false);
       return true;
     }
+    if (root_->left->red && root_->right->red)
+      root_->left->red = root_->right->red = false;
+    Node **parent = &root_, **safe_node = &root_;
+    // Find the lowest black node that has one black child.
+    while ((*parent) != sentinel) {
+      Node*& current = *parent;
+      if (x == current->value) return false;
+      // Use bitwise or is faster than the logical or.
+      if (!current->red && (!current->left->red | !current->right->red))
+        safe_node = parent;
+      parent = x < current->value ? &current->left : &current->right;
+    }
+    *parent = new Node(x);
+    Node *&node = *safe_node,
+         *next = x < node->value ? node->left : node->right, *current = next;
+    if (next == *parent) return true;
+    bool need_rotation = next->red;
+    if (need_rotation) current = x < next->value ? next->left : next->right;
+    // Flip color from the current to parent.
+    while (current != *parent) {
+      current->red = true;
+      current->left->red = current->right->red = false;
+      current = x < current->value ? current->left : current->right;
+      current = x < current->value ? current->left : current->right;
+    }
+    if (!need_rotation) return true;
+    // At this point, safe_node is black, next is red, next's sibling is
+    // black, and grand_child is red.
+    node->red = true;
+    if (x < node->value)
+      x < next->value ? RightRotate(node) : LRRotate(node);
+    else
+      x < next->value ? RLRotate(node) : LeftRotate(node);
+    node->red = false;
+    return true;
+  }
+
+  bool Delete(const T& x) {
+    bool deleted = Delete(root_, x);
+    root_->red = false;
+    return deleted;
+  }
+
+  bool TopDownInsert(const T& x) {
+    if (root_ == sentinel) {
+      root_ = new Node(x, false);
+      return true;
+    }
     if (x == root_->value) return false;
     for (Node *nil = &dummy, **gg_parent = &nil, **g_parent = &nil,
               **parent = &root_;
@@ -72,7 +120,7 @@ struct RBTree {
     return true;
   }
 
-  bool Delete(const T& x) {
+  bool TopDownDelete(const T& x) {
     if (root_ == sentinel) return false;
     // Set sibling and g_parent to nil pointer to simplify the initial
     // condition.
@@ -137,55 +185,13 @@ struct RBTree {
   }
 
   bool BottomUpInsert(const T& x) {
-    if (root_ == sentinel) {
-      root_ = new Node(x, false);
-      return true;
-    }
-    if (root_->left->red && root_->right->red)
-      root_->left->red = root_->right->red = false;
-    Node **parent = &root_, **safe_node = &root_;
-    // Find the lowest black node that has one black child.
-    while ((*parent) != sentinel) {
-      Node*& current = *parent;
-      if (x == current->value) return false;
-      // Use bitwise or is faster than the logical or.
-      if (!current->red && (!current->left->red | !current->right->red))
-        safe_node = parent;
-      parent = x < current->value ? &current->left : &current->right;
-    }
-    *parent = new Node(x);
-    Node *&node = *safe_node,
-         *next = x < node->value ? node->left : node->right, *current = next;
-    if (next == *parent) return true;
-    bool need_rotation = next->red;
-    if (need_rotation) current = x < next->value ? next->left : next->right;
-    // Flip color from the current to parent.
-    while (current != *parent) {
-      current->red = true;
-      current->left->red = current->right->red = false;
-      current = x < current->value ? current->left : current->right;
-      current = x < current->value ? current->left : current->right;
-    }
-    if (!need_rotation) return true;
-    // At this point, safe_node is black, next is red, next's sibling is
-    // black, and grand_child is red.
-    node->red = true;
-    if (x < node->value)
-      x < next->value ? RightRotate(node) : LRRotate(node);
-    else
-      x < next->value ? RLRotate(node) : LeftRotate(node);
-    node->red = false;
-    return true;
-  }
-
-  bool RecursiveInsert(const T& x) {
-    bool done = false, inserted = Insert(root_, x, done);
+    bool done = false, inserted = BottomUpInsert(root_, x, done);
     root_->red = false;
     return inserted;
   }
 
-  bool RecursiveDelete(const T& x) {
-    bool done = false, deleted = Delete(root_, x, done);
+  bool BottomUpDelete(const T& x) {
+    bool done = false, deleted = BottomUpDelete(root_, x, done);
     root_->red = false;
     return deleted;
   }
@@ -227,7 +233,103 @@ struct RBTree {
     return lh + (node->red ? 0 : 1);
   }
 
-  static bool Insert(Node*& node, const T& x, bool& done) {
+  static bool Delete(Node*& root, const T& x) {
+    Node **parent = &root, **safe_node = &root, *current;
+    if (!root->red && !root->left->red && !root->right->red) root->red = true;
+    const T* delete_value = &x;
+    // Find the node to be deleted and the lowest red node or black node with
+    // red child/grandchild.
+    for (current = root; current != sentinel; current = *parent) {
+      // Using bitwise or is faster than logical or.
+      if (current->red | current->left->red | current->right->red |
+          current->left->left->red | current->left->right->red |
+          current->right->left->red | current->right->right->red)
+        safe_node = parent;
+      if (x == current->value) break;
+      parent = (x < current->value) ? &current->left : &current->right;
+    }
+    if (current == sentinel) return false;
+    // When the node needed to be removed has two children, pull the minimum
+    // value from the right tree and delete the minimum value in the right
+    // tree.
+    if (current->left != sentinel && current->right != sentinel) {
+      Node* min = current->right;
+      for (parent = &current->right; min->left != sentinel; min = min->left) {
+        if (min->red | min->left->red | min->right->red | min->left->left->red |
+            min->left->right->red | min->right->left->red |
+            min->right->right->red)
+          safe_node = parent;
+        parent = &min->left;
+      }
+      current->value = min->value;
+      delete_value = &current->value;
+      current = min;
+    }
+    // The node pointed by current will be replaced by subtree.
+    Node* subtree =
+        (current->left != sentinel ? current->left : current->right);
+    // If both current and subtree are black, rebalance is required.
+    bool require_rebalance = !current->red && !subtree->red;
+    delete current;
+    // Assign subtree as black, since subtree is going to represent a black
+    // node.
+    subtree->red = false;
+    *parent = subtree;
+    if (!require_rebalance) return true;
+
+    Node *next, *sibling;
+    if (*delete_value < (*safe_node)->value) {
+      next = (*safe_node)->left;
+      sibling = (*safe_node)->right;
+    } else {
+      next = (*safe_node)->right;
+      sibling = (*safe_node)->left;
+    }
+    // At this point, next is black.
+    // For each black nodes below *safe_node, mark its sibling as red.
+    for (current = next; current != subtree && current != sentinel;) {
+      if (*delete_value < current->value) {
+        current->right->red = true;
+        current = current->left;
+      } else {
+        current->left->red = true;
+        current = current->right;
+      }
+    }
+    // When safe_node is black and sibling is red, rotate accordingly.
+    if (!(*safe_node)->red && sibling->red) {
+      Node*& node = *safe_node;
+      node->red = true;
+      sibling->red = false;
+      if (*delete_value < node->value) {
+        sibling = sibling->left;
+        LeftRotate(node);
+        safe_node = &node->left;
+      } else {
+        sibling = sibling->right;
+        RightRotate(node);
+        safe_node = &node->right;
+      }
+    }
+    // When sibling's both children are black, recolor.
+    if (!sibling->left->red && !sibling->right->red) {
+      (*safe_node)->red = false;
+      return sibling->red = true;
+    }
+    // At this point, both next and sibling are black, and one of sibling's
+    // child is red.
+    Node*& node = *safe_node;
+    bool old_node_color = node->red;
+    if (*delete_value < node->value)
+      sibling->right->red ? LeftRotate(node) : RLRotate(node);
+    else
+      sibling->left->red ? RightRotate(node) : LRRotate(node);
+    node->red = old_node_color;
+    node->left->red = node->right->red = false;
+    return true;
+  }
+
+  static bool BottomUpInsert(Node*& node, const T& x, bool& done) {
     // When the tree is empty, create the node at root;
     if (node == sentinel) {
       node = new Node(x);
@@ -235,7 +337,7 @@ struct RBTree {
     }
     if (x == node->value) return false;
     if (x < node->value) {
-      if (!Insert(node->left, x, done)) return false;
+      if (!BottomUpInsert(node->left, x, done)) return false;
       if (done) return true;
       // When the child is black, no violation can occur.
       if (!node->left->red) return done = true;
@@ -251,7 +353,7 @@ struct RBTree {
         return done = node->right->red = true;
       }
     } else {
-      if (!Insert(node->right, x, done)) return false;
+      if (!BottomUpInsert(node->right, x, done)) return false;
       if (done) return true;
       // When the child is black, no violation can occur.
       if (!node->right->red) return done = true;
@@ -270,7 +372,7 @@ struct RBTree {
     return true;
   }
 
-  static bool Delete(Node*& node, const T& x, bool& done) {
+  static bool BottomUpDelete(Node*& node, const T& x, bool& done) {
     if (node == sentinel) return false;
     const T* delete_value = &x;
     if (x == node->value) {
@@ -293,7 +395,7 @@ struct RBTree {
       delete_value = &node->value;
     }
     if (*delete_value < node->value) {
-      if (!Delete(node->left, *delete_value, done)) return false;
+      if (!BottomUpDelete(node->left, *delete_value, done)) return false;
       if (done) return true;
       Node **parent = &node, *&sibling = node->right;
       // When sibling is red, rotate to obtain a black sibling.
@@ -321,7 +423,7 @@ struct RBTree {
       (*parent)->left->red = (*parent)->right->red = false;
       return done = true;
     } else {
-      if (!Delete(node->right, *delete_value, done)) return false;
+      if (!BottomUpDelete(node->right, *delete_value, done)) return false;
       if (done) return true;
       Node **parent = &node, *&sibling = node->left;
       // When sibling is red, rotate to obtain a black sibling.

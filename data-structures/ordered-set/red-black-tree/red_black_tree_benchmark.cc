@@ -43,22 +43,6 @@ class RBTreeBenchmark : public benchmark::Fixture {
   }
 };
 
-BENCHMARK_DEFINE_F(RBTreeBenchmark, STLInsert)
-(benchmark::State& state) {
-  while (state.KeepRunning()) {
-    state.PauseTiming();
-    Shuffle(state);
-    state.ResumeTiming();
-    std::set<int> tree;
-    for (int i = 0; i < state.range(0); ++i) {
-      tree.insert(test[i]);
-    }
-  }
-}
-BENCHMARK_REGISTER_F(RBTreeBenchmark, STLInsert)
-    ->RangeMultiplier(multiplier)
-    ->Range(min_size, max_size);
-
 BENCHMARK_DEFINE_F(RBTreeBenchmark, RBTreeInsert)
 (benchmark::State& state) {
   while (state.KeepRunning()) {
@@ -91,7 +75,7 @@ BENCHMARK_REGISTER_F(RBTreeBenchmark, RBTreeBottomUpInsert)
     ->RangeMultiplier(multiplier)
     ->Range(min_size, max_size);
 
-BENCHMARK_DEFINE_F(RBTreeBenchmark, RBTreeRecursiveInsert)
+BENCHMARK_DEFINE_F(RBTreeBenchmark, RBTreeTopDownInsert)
 (benchmark::State& state) {
   while (state.KeepRunning()) {
     state.PauseTiming();
@@ -99,27 +83,27 @@ BENCHMARK_DEFINE_F(RBTreeBenchmark, RBTreeRecursiveInsert)
     state.ResumeTiming();
     RBTree<int> tree;
     for (int i = 0; i < state.range(0); ++i) {
-      tree.RecursiveInsert(test[i]);
+      tree.TopDownInsert(test[i]);
     }
   }
 }
-BENCHMARK_REGISTER_F(RBTreeBenchmark, RBTreeRecursiveInsert)
+BENCHMARK_REGISTER_F(RBTreeBenchmark, RBTreeTopDownInsert)
     ->RangeMultiplier(multiplier)
     ->Range(min_size, max_size);
 
-BENCHMARK_DEFINE_F(RBTreeBenchmark, STLDelete)
+BENCHMARK_DEFINE_F(RBTreeBenchmark, STLInsert)
 (benchmark::State& state) {
   while (state.KeepRunning()) {
     state.PauseTiming();
-    std::set<int> tree;
-    BuildTree(state, tree);
+    Shuffle(state);
     state.ResumeTiming();
+    std::set<int> tree;
     for (int i = 0; i < state.range(0); ++i) {
-      tree.erase(test[i]);
+      tree.insert(test[i]);
     }
   }
 }
-BENCHMARK_REGISTER_F(RBTreeBenchmark, STLDelete)
+BENCHMARK_REGISTER_F(RBTreeBenchmark, STLInsert)
     ->RangeMultiplier(multiplier)
     ->Range(min_size, max_size);
 
@@ -139,7 +123,7 @@ BENCHMARK_REGISTER_F(RBTreeBenchmark, RBTreeDelete)
     ->RangeMultiplier(multiplier)
     ->Range(min_size, max_size);
 
-BENCHMARK_DEFINE_F(RBTreeBenchmark, RBTreeRecursiveDelete)
+BENCHMARK_DEFINE_F(RBTreeBenchmark, RBTreeBottomUpDelete)
 (benchmark::State& state) {
   while (state.KeepRunning()) {
     state.PauseTiming();
@@ -147,11 +131,43 @@ BENCHMARK_DEFINE_F(RBTreeBenchmark, RBTreeRecursiveDelete)
     BuildTree(state, tree);
     state.ResumeTiming();
     for (int i = 0; i < state.range(0); ++i) {
-      tree.RecursiveDelete(test[i]);
+      tree.BottomUpDelete(test[i]);
     }
   }
 }
-BENCHMARK_REGISTER_F(RBTreeBenchmark, RBTreeRecursiveDelete)
+BENCHMARK_REGISTER_F(RBTreeBenchmark, RBTreeBottomUpDelete)
+    ->RangeMultiplier(multiplier)
+    ->Range(min_size, max_size);
+
+BENCHMARK_DEFINE_F(RBTreeBenchmark, RBTreeTopDownDelete)
+(benchmark::State& state) {
+  while (state.KeepRunning()) {
+    state.PauseTiming();
+    RBTree<int> tree;
+    BuildTree(state, tree);
+    state.ResumeTiming();
+    for (int i = 0; i < state.range(0); ++i) {
+      tree.TopDownDelete(test[i]);
+    }
+  }
+}
+BENCHMARK_REGISTER_F(RBTreeBenchmark, RBTreeTopDownDelete)
+    ->RangeMultiplier(multiplier)
+    ->Range(min_size, max_size);
+
+BENCHMARK_DEFINE_F(RBTreeBenchmark, STLDelete)
+(benchmark::State& state) {
+  while (state.KeepRunning()) {
+    state.PauseTiming();
+    std::set<int> tree;
+    BuildTree(state, tree);
+    state.ResumeTiming();
+    for (int i = 0; i < state.range(0); ++i) {
+      tree.erase(test[i]);
+    }
+  }
+}
+BENCHMARK_REGISTER_F(RBTreeBenchmark, STLDelete)
     ->RangeMultiplier(multiplier)
     ->Range(min_size, max_size);
 
