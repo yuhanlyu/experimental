@@ -53,6 +53,7 @@ top-down, and STL insert (non-recursive bottom-up method with parent pointers).
 For delete, my iterative bottom-up method is slower than recursive bottom-up
 method due to the time spent in finding the safe node.
 
+<pre>
 ----------------------------------------------------------------------------
 Benchmark                                     Time           CPU Iterations
 ----------------------------------------------------------------------------
