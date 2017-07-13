@@ -269,7 +269,7 @@ struct RBTree {
     Node* subtree =
         (current->left != sentinel ? current->left : current->right);
     // If both current and subtree are black, rebalance is required.
-    bool require_rebalance = !current->red && !subtree->red;
+    bool require_rebalance = current->red == subtree->red;
     delete current;
     // Assign subtree as black, since subtree is going to represent a black
     // node.
