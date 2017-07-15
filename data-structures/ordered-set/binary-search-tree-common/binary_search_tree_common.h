@@ -24,7 +24,7 @@ template <typename Node>
 void PrintTree(const Node* root, std::string prefix) {
   if (root == nullptr) return;
   PrintTree(root->left, prefix + "->left");
-  std::cerr << prefix << " = " << root->value << '\n';
+  std::cerr << prefix << " = " << root->value << ' ' << root->ToString() << '\n';
   PrintTree(root->right, prefix + "->right");
 }
 
