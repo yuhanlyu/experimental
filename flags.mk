@@ -8,7 +8,7 @@ INCLUDE_DIR = /usr/local/include
 DEBUG_SYMBOL = -g
 PTHREAD = -lpthread
 
-CFLAGS = -std=c++14 -pedantic -Wall -Wextra -fno-rtti -fno-exceptions
+CFLAGS = -std=c++17 -pedantic -Wall -Wextra -fno-rtti -fno-exceptions
 SANITIZE_FLAGS = -fsanitize=address -fsanitize=undefined
 OPT_FLAGS = -O3 -march=native -flto -fipa-pta
 CLANG_FORMAT_FLAGS = -i -style=Google -sort-includes
