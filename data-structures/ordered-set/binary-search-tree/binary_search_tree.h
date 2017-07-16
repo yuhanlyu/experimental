@@ -67,7 +67,7 @@ struct BinarySearchTree {
 
   bool InsertRec(const T& x) { return InsertRec(root_, x); }
 
-	bool DeleteRec(const T& x) { return DeleteRec(root_, x); }
+  bool DeleteRec(const T& x) { return DeleteRec(root_, x); }
 
   ~BinarySearchTree() { FreeTree(root_); }
 
@@ -80,7 +80,6 @@ struct BinarySearchTree {
   Node*& root() { return root_; }
 
  private:
-
   static bool InsertRec(Node*& node, const T& x) {
     // When the tree is empty, create the node at root;
     if (node == nullptr) {
@@ -88,31 +87,31 @@ struct BinarySearchTree {
       return true;
     }
     if (x == node->value) return false;
-		return InsertRec(x < node->value ? node->left : node->right, x);
+    return InsertRec(x < node->value ? node->left : node->right, x);
   }
 
   static bool DeleteRec(Node*& node, const T& x) {
     if (node == nullptr) return false;
-		if (x == node->value) {
-			if (node->left == nullptr || node->right == nullptr) {
-      	// When the node needed to be removed has one child, move the non-null
-      	// subtree up. If both subtrees are null, then set the node to be null.
-      	Node* old_node = node;
-      	node = (node->left != nullptr) ? node->left : node->right;
-      	delete old_node;
-				return true;
-			}
-    	// When the node needed to be removed has two children, pull the minimum
-    	// value from the right tree and delete the minimum value in the right
-    	// tree.
-     	Node *parent = node, *min = node->right;
-     	for (; min->left != nullptr; min = min->left) parent = min;
-     	node->value = min->value;
-     	(parent->left == min ? parent->left : parent->right) = min->right;
-     	delete min;
-    	return true;
-		} 
-		return DeleteRec(x < node->value ? node->left : node->right, x);
+    if (x == node->value) {
+      if (node->left == nullptr || node->right == nullptr) {
+        // When the node needed to be removed has one child, move the non-null
+        // subtree up. If both subtrees are null, then set the node to be null.
+        Node* old_node = node;
+        node = (node->left != nullptr) ? node->left : node->right;
+        delete old_node;
+        return true;
+      }
+      // When the node needed to be removed has two children, pull the minimum
+      // value from the right tree and delete the minimum value in the right
+      // tree.
+      Node *parent = node, *min = node->right;
+      for (; min->left != nullptr; min = min->left) parent = min;
+      node->value = min->value;
+      (parent->left == min ? parent->left : parent->right) = min->right;
+      delete min;
+      return true;
+    }
+    return DeleteRec(x < node->value ? node->left : node->right, x);
   }
 
   Node* root_ = nullptr;
