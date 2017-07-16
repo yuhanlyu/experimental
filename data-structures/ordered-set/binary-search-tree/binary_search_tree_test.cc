@@ -1,6 +1,7 @@
 #include "binary_search_tree.h"
 
 #include <algorithm>
+#include <random>
 #include <vector>
 
 #include "gmock/gmock.h"
@@ -34,6 +35,29 @@ TEST(BinarySearchTree, Insert) {
   }
 }
 
+TEST(BinarySearchTree, InsertRandom) {
+  int sizes[] = {10, 100, 200, 500, 1000, 2000};
+  for (int size : sizes) {
+    std::random_device rd;
+    std::mt19937 g(rd());
+    std::vector<int> expected_result;
+    for (int i = 0; i < size; ++i) expected_result.push_back(i + 1);
+    std::vector<int> inserted_elements(expected_result);
+    std::shuffle(inserted_elements.begin(), inserted_elements.end(), g);
+    BinarySearchTree<int> tree;
+    for (int value : inserted_elements) EXPECT_TRUE(tree.Insert(value));
+    std::vector<int> actual_result;
+    tree.InorderTraverse(actual_result);
+    EXPECT_THAT(actual_result, ElementsAreArray(expected_result));
+    for (int value : inserted_elements) {
+      EXPECT_FALSE(tree.Insert(value));
+      actual_result.clear();
+      tree.InorderTraverse(actual_result);
+      EXPECT_THAT(actual_result, ElementsAreArray(expected_result));
+    }
+  }
+}
+
 TEST(BinarySearchTree, InsertRec) {
   for (int size = 1; size <= max_test_size; ++size) {
     std::vector<int> expected_result;
@@ -53,6 +77,29 @@ TEST(BinarySearchTree, InsertRec) {
       }
     } while (std::next_permutation(inserted_elements.begin(),
                                    inserted_elements.end()));
+  }
+}
+
+TEST(BinarySearchTree, InsertRecRandom) {
+  int sizes[] = {10, 100, 200, 500, 1000, 2000};
+  for (int size : sizes) {
+    std::random_device rd;
+    std::mt19937 g(rd());
+    std::vector<int> expected_result;
+    for (int i = 0; i < size; ++i) expected_result.push_back(i + 1);
+    std::vector<int> inserted_elements(expected_result);
+    std::shuffle(inserted_elements.begin(), inserted_elements.end(), g);
+    BinarySearchTree<int> tree;
+    for (int value : inserted_elements) EXPECT_TRUE(tree.InsertRec(value));
+    std::vector<int> actual_result;
+    tree.InorderTraverse(actual_result);
+    EXPECT_THAT(actual_result, ElementsAreArray(expected_result));
+    for (int value : inserted_elements) {
+      EXPECT_FALSE(tree.InsertRec(value));
+      actual_result.clear();
+      tree.InorderTraverse(actual_result);
+      EXPECT_THAT(actual_result, ElementsAreArray(expected_result));
+    }
   }
 }
 
