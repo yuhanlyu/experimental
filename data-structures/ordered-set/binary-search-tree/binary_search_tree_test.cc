@@ -110,7 +110,7 @@ TEST(BinarySearchTree, Delete) {
     std::vector<int> temp(inserted_elements);
     do {
       BinarySearchTree<int> tree;
-      for (int value : temp) ASSERT_TRUE(tree.InsertRec(value));
+      for (int value : temp) ASSERT_TRUE(tree.Insert(value));
       EXPECT_TRUE(tree.Delete(temp[0]));
       std::vector<int> expected_result(temp);
       expected_result.erase(expected_result.begin());
@@ -126,6 +126,33 @@ TEST(BinarySearchTree, Delete) {
   }
 }
 
+TEST(BinarySearchTree, DeleteRandom) {
+  int sizes[] = {10, 100, 200, 500, 1000, 2000, 5000};
+  for (int size : sizes) {
+    std::random_device rd;
+    std::mt19937 g(rd());
+    std::vector<int> inserted_elements;
+    for (int i = 0; i < size; ++i) inserted_elements.push_back(i + 1);
+    std::shuffle(inserted_elements.begin(), inserted_elements.end(), g);
+    std::vector<int> temp(inserted_elements);
+    BinarySearchTree<int> tree;
+    for (int value : inserted_elements) ASSERT_TRUE(tree.Insert(value));
+    for (int i = 0; i < size / 10; ++i)
+      EXPECT_TRUE(tree.Delete(inserted_elements[i]));
+    temp.erase(temp.begin(), temp.begin() + size / 10);
+    std::vector<int> expected_result(temp);
+    std::sort(expected_result.begin(), expected_result.end());
+    std::vector<int> actual_result;
+    tree.InorderTraverse(actual_result);
+    EXPECT_THAT(actual_result, ElementsAreArray(expected_result));
+    for (int i = 0; i < size / 10; ++i)
+      EXPECT_FALSE(tree.Delete(inserted_elements[i]));
+    actual_result.clear();
+    tree.InorderTraverse(actual_result);
+    EXPECT_THAT(actual_result, ElementsAreArray(expected_result));
+  }
+}
+
 TEST(BinarySearchTree, DeleteRec) {
   for (int size = 1; size <= max_test_size; ++size) {
     std::vector<int> inserted_elements;
@@ -133,7 +160,7 @@ TEST(BinarySearchTree, DeleteRec) {
     std::vector<int> temp(inserted_elements);
     do {
       BinarySearchTree<int> tree;
-      for (int value : temp) ASSERT_TRUE(tree.InsertRec(value));
+      for (int value : temp) ASSERT_TRUE(tree.Insert(value));
       EXPECT_TRUE(tree.DeleteRec(temp[0]));
       std::vector<int> expected_result(temp);
       expected_result.erase(expected_result.begin());
@@ -146,6 +173,33 @@ TEST(BinarySearchTree, DeleteRec) {
       tree.InorderTraverse(actual_result);
       EXPECT_THAT(actual_result, ElementsAreArray(expected_result));
     } while (std::next_permutation(temp.begin(), temp.end()));
+  }
+}
+
+TEST(BinarySearchTree, DeleteRecRandom) {
+  int sizes[] = {10, 100, 200, 500, 1000, 2000, 5000};
+  for (int size : sizes) {
+    std::random_device rd;
+    std::mt19937 g(rd());
+    std::vector<int> inserted_elements;
+    for (int i = 0; i < size; ++i) inserted_elements.push_back(i + 1);
+    std::shuffle(inserted_elements.begin(), inserted_elements.end(), g);
+    std::vector<int> temp(inserted_elements);
+    BinarySearchTree<int> tree;
+    for (int value : inserted_elements) ASSERT_TRUE(tree.Insert(value));
+    for (int i = 0; i < size / 10; ++i)
+      EXPECT_TRUE(tree.DeleteRec(inserted_elements[i]));
+    temp.erase(temp.begin(), temp.begin() + size / 10);
+    std::vector<int> expected_result(temp);
+    std::sort(expected_result.begin(), expected_result.end());
+    std::vector<int> actual_result;
+    tree.InorderTraverse(actual_result);
+    EXPECT_THAT(actual_result, ElementsAreArray(expected_result));
+    for (int i = 0; i < size / 10; ++i)
+      EXPECT_FALSE(tree.DeleteRec(inserted_elements[i]));
+    actual_result.clear();
+    tree.InorderTraverse(actual_result);
+    EXPECT_THAT(actual_result, ElementsAreArray(expected_result));
   }
 }
 
