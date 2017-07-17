@@ -2,6 +2,8 @@
 
 #include <algorithm>
 #include <random>
+#include <set>
+#include <unordered_map>
 #include <vector>
 
 #include "gmock/gmock.h"
@@ -203,4 +205,77 @@ TEST(BinarySearchTree, DeleteRecRandom) {
   }
 }
 
+TEST(BinarySearchTree, Mix) {
+  int sizes[] = {10, 100, 200, 500};
+  for (int size : sizes) {
+    std::random_device rd;
+    std::mt19937 g(rd());
+    std::vector<int> elements;
+    for (int i = 0; i < size; ++i) elements.insert(elements.end(), 4, i + 1);
+    std::shuffle(elements.begin(), elements.end(), g);
+    BinarySearchTree<int> tree;
+    std::set<int> expected_tree;
+    std::unordered_map<int, int> count;
+    for (int value : elements) {
+      switch (++count[value]) {
+        case 1:
+          expected_tree.insert(value);
+          EXPECT_TRUE(tree.Insert(value));
+          break;
+        case 2:
+          EXPECT_FALSE(tree.Insert(value));
+          break;
+        case 3:
+          expected_tree.erase(value);
+          EXPECT_TRUE(tree.Delete(value));
+          break;
+        case 4:
+          EXPECT_FALSE(tree.Delete(value));
+          break;
+      }
+      std::vector<int> expected_result(expected_tree.begin(),
+                                       expected_tree.end());
+      std::vector<int> actual_result;
+      tree.InorderTraverse(actual_result);
+      EXPECT_THAT(actual_result, ElementsAreArray(expected_result));
+    }
+  }
+}
+
+TEST(BinarySearchTree, RecMix) {
+  int sizes[] = {10, 100, 200, 500};
+  for (int size : sizes) {
+    std::random_device rd;
+    std::mt19937 g(rd());
+    std::vector<int> elements;
+    for (int i = 0; i < size; ++i) elements.insert(elements.end(), 4, i + 1);
+    std::shuffle(elements.begin(), elements.end(), g);
+    BinarySearchTree<int> tree;
+    std::set<int> expected_tree;
+    std::unordered_map<int, int> count;
+    for (int value : elements) {
+      switch (++count[value]) {
+        case 1:
+          expected_tree.insert(value);
+          EXPECT_TRUE(tree.InsertRec(value));
+          break;
+        case 2:
+          EXPECT_FALSE(tree.InsertRec(value));
+          break;
+        case 3:
+          expected_tree.erase(value);
+          EXPECT_TRUE(tree.DeleteRec(value));
+          break;
+        case 4:
+          EXPECT_FALSE(tree.DeleteRec(value));
+          break;
+      }
+      std::vector<int> expected_result(expected_tree.begin(),
+                                       expected_tree.end());
+      std::vector<int> actual_result;
+      tree.InorderTraverse(actual_result);
+      EXPECT_THAT(actual_result, ElementsAreArray(expected_result));
+    }
+  }
+}
 }  // namespace
