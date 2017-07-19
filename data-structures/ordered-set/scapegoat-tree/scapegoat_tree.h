@@ -12,7 +12,7 @@ struct ScapegoatTree {
   struct Node {
     using value_type = T;
     explicit Node(const T& x) : value(x) {}
-    explicit Node(Node* l, Node* r) : left(l), right(r) {}
+    Node(Node* l, Node* r) : left(l), right(r) {}
     Node() = default;
     Node* left = nullptr;
     Node* right = nullptr;
@@ -55,8 +55,7 @@ struct ScapegoatTree {
   bool Delete(const T& x) {
     Node *parent = nullptr, *current = root_;
     // Find the node to be deleted;
-    while (current != nullptr) {
-      if (current->value == x) break;
+    while (current != nullptr && current->value != x) {
       parent = current;
       current = (x < current->value) ? current->left : current->right;
     }
@@ -78,11 +77,10 @@ struct ScapegoatTree {
     Node* sub_tree =
         (current->left != nullptr ? current->left : current->right);
     // If root node will be deleted.
-    if (parent == nullptr) {
+    if (parent == nullptr)
       root_ = sub_tree;
-    } else {
+    else
       (parent->left == current ? parent->left : parent->right) = sub_tree;
-    }
     delete current;
     if (--size < alpha * max_size) {
       NaiveRebalance(root_);
@@ -103,13 +101,13 @@ struct ScapegoatTree {
 
  private:
   static int height_alpha(int size) {
-    static constexpr double log_sqrt2 = 2.88539008178;
     return std::floor(std::log(size) * log_sqrt2);
   }
 
   Node* root_ = nullptr;
   int size = 0;
   int max_size = 0;
+  static constexpr double log_sqrt2 = 2.88539008178;
   static constexpr double alpha = 0.707106781186548;  // 1 / sqrt(2.0).
 };
 
