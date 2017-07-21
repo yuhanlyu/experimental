@@ -81,8 +81,8 @@ struct SplayTree {
   }
 
   bool DeleteRec(const T& x) {
-    if (root_ == nullptr) return false;
     SplayRec(root_, x);
+    if (root_ == nullptr || root_->value != x) return false;
     Node* new_tree;
     // Combine the two subtrees and delete the node.
     if (root_->left == nullptr) {
