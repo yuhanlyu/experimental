@@ -28,11 +28,11 @@ TEST(SplayTree, Insert) {
       tree.InorderTraverse(actual_result);
       EXPECT_THAT(actual_result, ElementsAreArray(expected_result));
       for (int value : inserted_elements) {
-				EXPECT_FALSE(tree.Insert(value));
-      	actual_result.clear();
-      	tree.InorderTraverse(actual_result);
-      	EXPECT_THAT(actual_result, ElementsAreArray(expected_result));
-			}
+        EXPECT_FALSE(tree.Insert(value));
+        actual_result.clear();
+        tree.InorderTraverse(actual_result);
+        EXPECT_THAT(actual_result, ElementsAreArray(expected_result));
+      }
     } while (std::next_permutation(inserted_elements.begin(),
                                    inserted_elements.end()));
   }
@@ -73,11 +73,11 @@ TEST(SplayTree, InsertRec) {
       tree.InorderTraverse(actual_result);
       EXPECT_THAT(actual_result, ElementsAreArray(expected_result));
       for (int value : inserted_elements) {
-				EXPECT_FALSE(tree.InsertRec(value));
-      	actual_result.clear();
-      	tree.InorderTraverse(actual_result);
-      	EXPECT_THAT(actual_result, ElementsAreArray(expected_result));
-			}
+        EXPECT_FALSE(tree.InsertRec(value));
+        actual_result.clear();
+        tree.InorderTraverse(actual_result);
+        EXPECT_THAT(actual_result, ElementsAreArray(expected_result));
+      }
     } while (std::next_permutation(inserted_elements.begin(),
                                    inserted_elements.end()));
   }
@@ -150,10 +150,10 @@ TEST(SplayTree, DeleteRandom) {
     EXPECT_THAT(actual_result, ElementsAreArray(expected_result));
     for (int i = 0; i < size / 10; ++i) {
       EXPECT_FALSE(tree.Delete(inserted_elements[i]));
-    	actual_result.clear();
-    	tree.InorderTraverse(actual_result);
-    	EXPECT_THAT(actual_result, ElementsAreArray(expected_result));
-		}
+      actual_result.clear();
+      tree.InorderTraverse(actual_result);
+      EXPECT_THAT(actual_result, ElementsAreArray(expected_result));
+    }
   }
 }
 
@@ -201,10 +201,10 @@ TEST(SplayTree, DeleteRecRandom) {
     EXPECT_THAT(actual_result, ElementsAreArray(expected_result));
     for (int i = 0; i < size / 10; ++i) {
       EXPECT_FALSE(tree.Delete(inserted_elements[i]));
-    	actual_result.clear();
-    	tree.InorderTraverse(actual_result);
-    	EXPECT_THAT(actual_result, ElementsAreArray(expected_result));
-		}
+      actual_result.clear();
+      tree.InorderTraverse(actual_result);
+      EXPECT_THAT(actual_result, ElementsAreArray(expected_result));
+    }
   }
 }
 

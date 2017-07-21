@@ -103,10 +103,10 @@ TEST(ScapegoatTree, DeleteRandom) {
     EXPECT_THAT(actual_result, ElementsAreArray(expected_result));
     for (int i = 0; i < size / 10; ++i) {
       EXPECT_FALSE(tree.Delete(inserted_elements[i]));
-    	actual_result.clear();
-    	tree.InorderTraverse(actual_result);
-    	EXPECT_THAT(actual_result, ElementsAreArray(expected_result));
-		}
+      actual_result.clear();
+      tree.InorderTraverse(actual_result);
+      EXPECT_THAT(actual_result, ElementsAreArray(expected_result));
+    }
   }
 }
 
