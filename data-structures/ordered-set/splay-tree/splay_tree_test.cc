@@ -27,7 +27,12 @@ TEST(SplayTree, Insert) {
       std::vector<int> actual_result;
       tree.InorderTraverse(actual_result);
       EXPECT_THAT(actual_result, ElementsAreArray(expected_result));
-      for (int value : inserted_elements) EXPECT_FALSE(tree.Insert(value));
+      for (int value : inserted_elements) {
+				EXPECT_FALSE(tree.Insert(value));
+      	actual_result.clear();
+      	tree.InorderTraverse(actual_result);
+      	EXPECT_THAT(actual_result, ElementsAreArray(expected_result));
+			}
     } while (std::next_permutation(inserted_elements.begin(),
                                    inserted_elements.end()));
   }
@@ -67,7 +72,12 @@ TEST(SplayTree, InsertRec) {
       std::vector<int> actual_result;
       tree.InorderTraverse(actual_result);
       EXPECT_THAT(actual_result, ElementsAreArray(expected_result));
-      for (int value : inserted_elements) EXPECT_FALSE(tree.InsertRec(value));
+      for (int value : inserted_elements) {
+				EXPECT_FALSE(tree.InsertRec(value));
+      	actual_result.clear();
+      	tree.InorderTraverse(actual_result);
+      	EXPECT_THAT(actual_result, ElementsAreArray(expected_result));
+			}
     } while (std::next_permutation(inserted_elements.begin(),
                                    inserted_elements.end()));
   }
