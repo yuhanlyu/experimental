@@ -14,8 +14,13 @@ struct Treap {
     explicit Node(const T& x) : value(x) {}
     Node(Node* l, Node* r) : left(l), right(r) {}
     Node() = default;
-    Node* left = nullptr;
-    Node* right = nullptr;
+    union {
+      Node* link[2] = {nullptr, nullptr};
+      struct {
+        Node* left;
+        Node* right;
+      };
+    };
     double priority = random();
     T value;
 
@@ -79,28 +84,25 @@ struct Treap {
   }
 
   static bool Delete(Node*& node, const T& x) {
-    Node** parent_pointer = &node;
-    while (*parent_pointer != nullptr && !(x == (*parent_pointer)->value)) {
-      parent_pointer = (x < (*parent_pointer)->value)
-                           ? &(*parent_pointer)->left
-                           : &(*parent_pointer)->right;
+    Node dummy{node, node}, *parent = &dummy, *current = node;
+    while (current != nullptr && x != current->value) {
+      parent = current;
+      current = x < current->value ? current->left : current->right;
     }
-    if (*parent_pointer == nullptr) return false;
+    if (current == nullptr) return false;
+    bool is_right = (parent == &dummy ? false : current == parent->right);
     // Rotate the node until the node does not have two children.
-    while ((*parent_pointer)->left && (*parent_pointer)->right) {
-      Node*& current = *parent_pointer;
-      if (current->left->priority < current->right->priority) {
-        current = RightRotate(current);
-        parent_pointer = &current->right;
-      } else {
-        current = LeftRotate(current);
-        parent_pointer = &current->left;
-      }
+    while (current->left && current->right) {
+			bool next_is_right = current->left->priority < current->right->priority;
+			parent->link[is_right] = Rotate(current, next_is_right);
+			parent = parent->link[is_right];
+			current = parent->link[next_is_right];
+			is_right = next_is_right;
     }
-    Node* to_be_delete = *parent_pointer;
-    *parent_pointer = (to_be_delete->left != nullptr) ? to_be_delete->left
-                                                      : to_be_delete->right;
-    delete to_be_delete;
+    parent->link[is_right] =
+        current->left == nullptr ? current->right : current->left;
+    node = dummy.link[0];
+    delete current;
     return true;
   }
 
@@ -199,6 +201,14 @@ struct Treap {
     Node* x = root->left;
     root->left = x->right;
     x->right = root;
+    return x;
+  }
+
+	template <typename Node>
+  static Node* Rotate(Node* root, bool is_right) {
+    Node* x = root->link[!is_right];
+		root->link[!is_right] = x->link[is_right];
+		x->link[is_right] = root;
     return x;
   }
 
