@@ -171,7 +171,7 @@ TEST(SplayTree, DeleteRec) {
       std::vector<int> actual_result;
       tree.InorderTraverse(actual_result);
       ASSERT_THAT(actual_result, ElementsAreArray(expected_result));
-      EXPECT_FALSE(tree.Delete(temp[0]));
+      EXPECT_FALSE(tree.DeleteRec(temp[0]));
       actual_result.clear();
       tree.InorderTraverse(actual_result);
       EXPECT_THAT(actual_result, ElementsAreArray(expected_result));
@@ -199,7 +199,7 @@ TEST(SplayTree, DeleteRecRandom) {
     tree.InorderTraverse(actual_result);
     EXPECT_THAT(actual_result, ElementsAreArray(expected_result));
     for (int i = 0; i < size / 10; ++i) {
-      EXPECT_FALSE(tree.Delete(inserted_elements[i]));
+      EXPECT_FALSE(tree.DeleteRec(inserted_elements[i]));
       actual_result.clear();
       tree.InorderTraverse(actual_result);
       EXPECT_THAT(actual_result, ElementsAreArray(expected_result));
@@ -266,10 +266,10 @@ TEST(SplayTree, RecMix) {
           break;
         case 3:
           expected_tree.erase(value);
-          EXPECT_TRUE(tree.Delete(value));
+          EXPECT_TRUE(tree.DeleteRec(value));
           break;
         case 4:
-          EXPECT_FALSE(tree.Delete(value));
+          EXPECT_FALSE(tree.DeleteRec(value));
           break;
       }
       std::vector<int> expected_result(expected_tree.begin(),
