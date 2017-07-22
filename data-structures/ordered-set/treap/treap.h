@@ -30,58 +30,14 @@ struct Treap {
 
   bool Insert(const T& x) { return Insert(root_, x); }
 
-  bool Delete(const T& x) {
-    Node** parent_pointer = &root_;
-    while (*parent_pointer != nullptr && !(x == (*parent_pointer)->value)) {
-      parent_pointer = (x < (*parent_pointer)->value)
-                           ? &(*parent_pointer)->left
-                           : &(*parent_pointer)->right;
-    }
-    if (*parent_pointer == nullptr) return false;
-    // Rotate the node until the node does not have two children.
-    while ((*parent_pointer)->left && (*parent_pointer)->right) {
-      Node*& current = *parent_pointer;
-      if (current->left->priority < current->right->priority) {
-        current = RightRotate(current);
-        parent_pointer = &current->right;
-      } else {
-        current = LeftRotate(current);
-        parent_pointer = &current->left;
-      }
-    }
-    Node* to_be_delete = *parent_pointer;
-    *parent_pointer = (to_be_delete->left != nullptr) ? to_be_delete->left
-                                                      : to_be_delete->right;
-    delete to_be_delete;
-    return true;
-  }
+  bool Delete(const T& x) { return Delete(root_, x); }
 
   // Insert a value without using rotation.
-  void InsertWithoutRotation(const T& x) {
-    Node* new_node = new Node(x);
-    Node** parent_pointer = &root_;
-    while (*parent_pointer != nullptr &&
-           new_node->priority > (*parent_pointer)->priority) {
-      Node*& current = *parent_pointer;
-      parent_pointer = (x < current->value) ? &current->left : &current->right;
-    }
-    if (*parent_pointer != nullptr)
-      Split(*parent_pointer, x, new_node->left, new_node->right);
-    *parent_pointer = new_node;
-  }
+  void InsertWithoutRotation(const T& x) { InsertWithoutRotation(root_, x); }
 
   // Delete a value without using rotation.
   bool DeleteWithoutRotation(const T& x) {
-    Node** parent_pointer = &root_;
-    while (*parent_pointer != nullptr && (*parent_pointer)->value != x) {
-      Node*& current = *parent_pointer;
-      parent_pointer = (x < current->value) ? &current->left : &current->right;
-    }
-    if (*parent_pointer == nullptr) return false;
-    Node* to_be_delete = *parent_pointer;
-    Join(*parent_pointer, (*parent_pointer)->left, (*parent_pointer)->right);
-    delete to_be_delete;
-    return true;
+    return DeleteWithoutRotation(root_, x);
   }
 
   ~Treap() { FreeTree(root_); }
@@ -119,6 +75,60 @@ struct Treap {
       if (Insert(node->right, x) == false) return false;
       if (node->right->priority < node->priority) node = LeftRotate(node);
     }
+    return true;
+  }
+
+  static bool Delete(Node*& node, const T& x) {
+    Node** parent_pointer = &node;
+    while (*parent_pointer != nullptr && !(x == (*parent_pointer)->value)) {
+      parent_pointer = (x < (*parent_pointer)->value)
+                           ? &(*parent_pointer)->left
+                           : &(*parent_pointer)->right;
+    }
+    if (*parent_pointer == nullptr) return false;
+    // Rotate the node until the node does not have two children.
+    while ((*parent_pointer)->left && (*parent_pointer)->right) {
+      Node*& current = *parent_pointer;
+      if (current->left->priority < current->right->priority) {
+        current = RightRotate(current);
+        parent_pointer = &current->right;
+      } else {
+        current = LeftRotate(current);
+        parent_pointer = &current->left;
+      }
+    }
+    Node* to_be_delete = *parent_pointer;
+    *parent_pointer = (to_be_delete->left != nullptr) ? to_be_delete->left
+                                                      : to_be_delete->right;
+    delete to_be_delete;
+    return true;
+  }
+
+  // Insert a value without using rotation.
+  static void InsertWithoutRotation(Node*& node, const T& x) {
+    Node* new_node = new Node(x);
+    Node** parent_pointer = &node;
+    while (*parent_pointer != nullptr &&
+           new_node->priority > (*parent_pointer)->priority) {
+      Node*& current = *parent_pointer;
+      parent_pointer = (x < current->value) ? &current->left : &current->right;
+    }
+    if (*parent_pointer != nullptr)
+      Split(*parent_pointer, x, new_node->left, new_node->right);
+    *parent_pointer = new_node;
+  }
+
+  // Delete a value without using rotation.
+  static bool DeleteWithoutRotation(Node*& node, const T& x) {
+    Node** parent_pointer = &node;
+    while (*parent_pointer != nullptr && (*parent_pointer)->value != x) {
+      Node*& current = *parent_pointer;
+      parent_pointer = (x < current->value) ? &current->left : &current->right;
+    }
+    if (*parent_pointer == nullptr) return false;
+    Node* to_be_delete = *parent_pointer;
+    Join(*parent_pointer, (*parent_pointer)->left, (*parent_pointer)->right);
+    delete to_be_delete;
     return true;
   }
 
@@ -168,7 +178,7 @@ struct Treap {
     Node* x = root->right;
     root->right = x->left;
     x->left = root;
-		return x;
+    return x;
   }
 
   // Right rotation:
@@ -182,7 +192,7 @@ struct Treap {
     Node* x = root->left;
     root->left = x->right;
     x->right = root;
-		return x;
+    return x;
   }
 
   Node* root_ = nullptr;
