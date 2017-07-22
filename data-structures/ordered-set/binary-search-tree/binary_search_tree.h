@@ -18,14 +18,33 @@ struct BinarySearchTree {
     T value;
   };
 
-  bool Insert(const T& x) {
+  bool Insert(const T& x) { return Insert(root_, x); }
+
+  bool Delete(const T& x) { return Delete(root_, x); }
+
+  bool InsertRec(const T& x) { return InsertRec(root_, x); }
+
+  bool DeleteRec(const T& x) { return DeleteRec(root_, x); }
+
+  ~BinarySearchTree() { FreeTree(root_); }
+
+  void InorderTraverse(std::vector<T>& result) const {
+    return ::InorderTraverse(root_, result);
+  }
+
+  Node* root() const { return root_; }
+
+  Node*& root() { return root_; }
+
+ private:
+  static bool Insert(Node*& node, const T& x) {
     // When the tree is empty, create the node at root;
-    if (root_ == nullptr) {
-      root_ = new Node(x);
+    if (node == nullptr) {
+      node = new Node(x);
       return true;
     }
     Node* parent;
-    for (Node* current = root_; current != nullptr;) {
+    for (Node* current = node; current != nullptr;) {
       if (current->value == x) return false;
       parent = current;
       current = (x < current->value) ? current->left : current->right;
@@ -34,8 +53,8 @@ struct BinarySearchTree {
     return true;
   }
 
-  bool Delete(const T& x) {
-    Node *parent = nullptr, *current = root_;
+  static bool Delete(Node*& node, const T& x) {
+    Node *parent = nullptr, *current = node;
     // Find the node to be deleted;
     while (current != nullptr && current->value != x) {
       parent = current;
@@ -58,28 +77,13 @@ struct BinarySearchTree {
     Node* subtree = (current->left != nullptr ? current->left : current->right);
     // If root node will be deleted.
     if (parent == nullptr)
-      root_ = subtree;
+      node = subtree;
     else
       (parent->left == current ? parent->left : parent->right) = subtree;
     delete current;
     return true;
   }
 
-  bool InsertRec(const T& x) { return InsertRec(root_, x); }
-
-  bool DeleteRec(const T& x) { return DeleteRec(root_, x); }
-
-  ~BinarySearchTree() { FreeTree(root_); }
-
-  void InorderTraverse(std::vector<T>& result) const {
-    return ::InorderTraverse(root_, result);
-  }
-
-  Node* root() const { return root_; }
-
-  Node*& root() { return root_; }
-
- private:
   static bool InsertRec(Node*& node, const T& x) {
     // When the tree is empty, create the node at root;
     if (node == nullptr) {
