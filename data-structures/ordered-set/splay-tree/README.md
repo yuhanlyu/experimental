@@ -1,4 +1,4 @@
-## Binary search tree
+## Splay tree
 [Splay tree](https://en.wikipedia.org/wiki/Splay_tree) is self-balancing binary search
 tree. The operations of insertion and deletion can be done in amortized O(lg n) time.
 
