@@ -106,16 +106,20 @@ struct Treap {
 
   // Insert a value without using rotation.
   static void InsertWithoutRotation(Node*& node, const T& x) {
-    Node* new_node = new Node(x);
-    Node** parent_pointer = &node;
-    while (*parent_pointer != nullptr &&
-           new_node->priority > (*parent_pointer)->priority) {
-      Node*& current = *parent_pointer;
-      parent_pointer = (x < current->value) ? &current->left : &current->right;
+    if (node == nullptr) {
+      node = new Node(x);
+      return;
     }
-    if (*parent_pointer != nullptr)
-      Split(*parent_pointer, x, new_node->left, new_node->right);
-    *parent_pointer = new_node;
+    Node *new_node = new Node(x), *parent = node, *current = node;
+    while (current != nullptr && new_node->priority > current->priority) {
+      parent = current;
+      current = x < current->value ? current->left : current->right;
+    }
+    Split(current, x, new_node->left, new_node->right);
+    if (current == node)
+      node = new_node;
+    else
+      (x < parent->value ? parent->left : parent->right) = new_node;
   }
 
   // Delete a value without using rotation.

@@ -1,4 +1,4 @@
-## Binary search tree
+## Treap
 [Treap](https://en.wikipedia.org/wiki/Treap) is a randomized self-balancing
 binary search tree. The operations of insertion and deletion can be done in
 O(lg n) time in expectation.
