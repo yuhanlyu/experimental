@@ -73,13 +73,10 @@ struct Treap {
       return true;
     }
     if (x == node->value) return false;
-    if (x < node->value) {
-      if (Insert(node->left, x) == false) return false;
-      if (node->left->priority < node->priority) node = RightRotate(node);
-    } else {
-      if (Insert(node->right, x) == false) return false;
-      if (node->right->priority < node->priority) node = LeftRotate(node);
-    }
+    bool is_right = x >= node->value;
+    if (!Insert(node->link[is_right], x)) return false;
+    if (node->link[is_right]->priority < node->priority)
+      node = Rotate(node, !is_right);
     return true;
   }
 
@@ -93,11 +90,11 @@ struct Treap {
     bool is_right = (parent == &dummy ? false : current == parent->right);
     // Rotate the node until the node does not have two children.
     while (current->left && current->right) {
-			bool next_is_right = current->left->priority < current->right->priority;
-			parent->link[is_right] = Rotate(current, next_is_right);
-			parent = parent->link[is_right];
-			current = parent->link[next_is_right];
-			is_right = next_is_right;
+      bool next_is_right = current->left->priority < current->right->priority;
+      parent->link[is_right] = Rotate(current, next_is_right);
+      parent = parent->link[is_right];
+      current = parent->link[next_is_right];
+      is_right = next_is_right;
     }
     parent->link[is_right] =
         current->left == nullptr ? current->right : current->left;
@@ -112,13 +109,13 @@ struct Treap {
       node = new Node(x);
       return;
     }
-    Node *new_node = new Node(x), *parent = node, *current = node;
+    Node *new_node = new Node(x), *parent = nullptr, *current = node;
     while (current != nullptr && new_node->priority > current->priority) {
       parent = current;
       current = x < current->value ? current->left : current->right;
     }
-    Split(current, x, new_node->left, new_node->right);
-    if (current == node)
+    Split(current, x, new_node);
+    if (parent == nullptr)
       node = new_node;
     else
       (x < parent->value ? parent->left : parent->right) = new_node;
@@ -133,34 +130,33 @@ struct Treap {
     }
     if (current == nullptr) return false;
     if (parent == nullptr)
-      Join(node, current->left, current->right);
+      Join(node, current);
     else
-      Join(parent->left == current ? parent->left : parent->right,
-           current->left, current->right);
+      Join(parent->left == current ? parent->left : parent->right, current);
     delete current;
     return true;
   }
 
   // Split the subtree rooted at node, so that all nodes that are smaller than
-  // x is rooted at left, and other nodes are rooted at right.
-  static void Split(Node* node, const T& x, Node*& left, Node*& right) {
-    Node **left_pointer = &left, **right_pointer = &right;
+  // x is rooted at result->left, and other nodes are rooted at result->right.
+  static void Split(Node* node, const T& x, Node* result) {
+    // trees[0] stores right tree, trees[1] stores left tree.
+    Node* trees[2] = {result, result};
+    bool sub_tree_is_right[2] = {true, false};
     while (node != nullptr && x != node->value) {
-      if (x < node->value) {
-        *right_pointer = node;
-        right_pointer = &node->left;
-        node = node->left;
-      } else {
-        *left_pointer = node;
-        left_pointer = &node->right;
-        node = node->right;
-      }
+      bool is_right = x >= node->value;
+      trees[is_right]->link[sub_tree_is_right[is_right]] = node;
+      trees[is_right] = node;
+      sub_tree_is_right[is_right] = is_right;
+      node = node->link[is_right];
     }
-    *left_pointer = *right_pointer = nullptr;
+    trees[0]->link[sub_tree_is_right[0]] =
+        trees[1]->link[sub_tree_is_right[1]] = nullptr;
   }
 
-  // Merge the trees that are rooted at left and right as node.
-  static void Join(Node*& node, Node* left, Node* right) {
+  // Merge the subtrees of current->left and current->right as node.
+  static void Join(Node*& node, Node* current) {
+    Node *left = current->left, *right = current->right;
     Node** parent_pointer = &node;
     while (left != nullptr && right != nullptr) {
       if (left->priority < right->priority) {
@@ -176,39 +172,13 @@ struct Treap {
     *parent_pointer = left != nullptr ? left : right;
   }
 
-  // Left rotation:
-  //    root           x    |
-  //    /  \          / \   |
-  //   a    x   To root  c  |
-  //       / \     /  \     |
-  //      b    c  a    b    |
+  // is_right == false -> LeftRotate(root)
+  // is_right == true -> RightRotate(root)
   template <typename Node>
-  static Node* LeftRotate(Node* root) {
-    Node* x = root->right;
-    root->right = x->left;
-    x->left = root;
-    return x;
-  }
-
-  // Right rotation:
-  //    root          x       |
-  //    /  \         / \      |
-  //   x    c  To   a  root   |
-  //  / \              /  \   |
-  // a   b            b    c  |
-  template <typename Node>
-  static Node* RightRotate(Node* root) {
-    Node* x = root->left;
-    root->left = x->right;
-    x->right = root;
-    return x;
-  }
-
-	template <typename Node>
   static Node* Rotate(Node* root, bool is_right) {
     Node* x = root->link[!is_right];
-		root->link[!is_right] = x->link[is_right];
-		x->link[is_right] = root;
+    root->link[!is_right] = x->link[is_right];
+    x->link[is_right] = root;
     return x;
   }
 

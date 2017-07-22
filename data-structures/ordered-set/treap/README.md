@@ -15,35 +15,43 @@ when doing insert/delete. Another implementation does not use rotations.
 Insert/Delete without rotations seems faster than the original method described
 in the paper.
 <pre>
------------------------------------------------------------------------------------------
-Benchmark                                                  Time           CPU Iterations
------------------------------------------------------------------------------------------
-TreapBenchmark/TreapInsert/1024                       120952 ns     120988 ns       5707
-TreapBenchmark/TreapInsert/4096                       590842 ns     590948 ns       1176
-TreapBenchmark/TreapInsert/16384                     3310175 ns    3310458 ns        210
-TreapBenchmark/TreapInsert/65536                    18473205 ns   18474659 ns         37
-TreapBenchmark/TreapInsert/262144                  144342513 ns  144350553 ns          6
-TreapBenchmark/TreapInsert/1048576                 915602047 ns  913382690 ns          1
-TreapBenchmark/TreapDelete/1024                        74373 ns      74314 ns       9317
-TreapBenchmark/TreapDelete/4096                       475054 ns     475042 ns       1472
-TreapBenchmark/TreapDelete/16384                     3106742 ns    3106719 ns        229
-TreapBenchmark/TreapDelete/65536                    21989357 ns   21991139 ns         31
-TreapBenchmark/TreapDelete/262144                  142160690 ns  142168520 ns          5
-TreapBenchmark/TreapDelete/1048576                 832655520 ns  832701624 ns          1
+--------------------------------------------------------------------------
+Benchmark                                   Time           CPU Iterations
+--------------------------------------------------------------------------
+TreapBenchmark/TreapInsert/1024        112439 ns     112476 ns       6168
+TreapBenchmark/TreapInsert/4096        558435 ns     558529 ns       1245
+TreapBenchmark/TreapInsert/16384      3276674 ns    3277137 ns        213
+TreapBenchmark/TreapInsert/65536     18998713 ns   19000740 ns         36
+TreapBenchmark/TreapInsert/262144   154481879 ns  154489500 ns          5
+TreapBenchmark/TreapInsert/1048576  984687652 ns  984745707 ns          1
+
+--------------------------------------------------------------------------
+Benchmark                                   Time           CPU Iterations
+--------------------------------------------------------------------------
+TreapBenchmark/TreapDelete/1024         56604 ns      56606 ns      12344
+TreapBenchmark/TreapDelete/4096        312676 ns     312658 ns       2249
+TreapBenchmark/TreapDelete/16384      2117197 ns    2117169 ns        335
+TreapBenchmark/TreapDelete/65536     13014243 ns   13014268 ns         54
+TreapBenchmark/TreapDelete/262144   110602907 ns  110598449 ns          6
+TreapBenchmark/TreapDelete/1048576  841492615 ns  841470680 ns          1
 
 -----------------------------------------------------------------------------------------
 Benchmark                                                  Time           CPU Iterations
 -----------------------------------------------------------------------------------------
-TreapBenchmark/TreapInsertWithoutRotation/1024         81463 ns      81334 ns       8464
-TreapBenchmark/TreapInsertWithoutRotation/4096        425331 ns     425371 ns       1668
-TreapBenchmark/TreapInsertWithoutRotation/16384      2799359 ns    2799478 ns        250
-TreapBenchmark/TreapInsertWithoutRotation/65536     16443520 ns   16402285 ns         43
-TreapBenchmark/TreapInsertWithoutRotation/262144   134721600 ns  134472696 ns          6
-TreapBenchmark/TreapInsertWithoutRotation/1048576  912164152 ns  912180108 ns          1
-TreapBenchmark/TreapDeleteWithoutRotation/1024         72617 ns      72648 ns       9568
-TreapBenchmark/TreapDeleteWithoutRotation/4096        463579 ns     463544 ns       1511
-TreapBenchmark/TreapDeleteWithoutRotation/16384      3047519 ns    3047552 ns        227
-TreapBenchmark/TreapDeleteWithoutRotation/65536     21832525 ns   21833010 ns         33
-TreapBenchmark/TreapDeleteWithoutRotation/262144   140607770 ns  140610778 ns          5
-TreapBenchmark/TreapDeleteWithoutRotation/1048576  839457914 ns  839475488 ns          1
+TreapBenchmark/TreapInsertWithoutRotation/1024         74764 ns      74785 ns       9127
+TreapBenchmark/TreapInsertWithoutRotation/4096        389576 ns     389650 ns       1798
+TreapBenchmark/TreapInsertWithoutRotation/16384      2526109 ns    2525958 ns        279
+TreapBenchmark/TreapInsertWithoutRotation/65536     15215452 ns   15216766 ns         48
+TreapBenchmark/TreapInsertWithoutRotation/262144   143947876 ns  143937747 ns          6
+TreapBenchmark/TreapInsertWithoutRotation/1048576  983096042 ns  983157490 ns          1
+
+-----------------------------------------------------------------------------------------
+Benchmark                                                  Time           CPU Iterations
+-----------------------------------------------------------------------------------------
+TreapBenchmark/TreapDeleteWithoutRotation/1024         47032 ns      47027 ns      14857
+TreapBenchmark/TreapDeleteWithoutRotation/4096        271903 ns     271899 ns       2642
+TreapBenchmark/TreapDeleteWithoutRotation/16384      1890706 ns    1890680 ns        366
+TreapBenchmark/TreapDeleteWithoutRotation/65536     11494211 ns   11495064 ns         62
+TreapBenchmark/TreapDeleteWithoutRotation/262144   100064178 ns  100070166 ns          7
+TreapBenchmark/TreapDeleteWithoutRotation/1048576  777080994 ns  777131576 ns          1
 </pre>
