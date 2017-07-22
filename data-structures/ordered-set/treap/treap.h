@@ -124,15 +124,18 @@ struct Treap {
 
   // Delete a value without using rotation.
   static bool DeleteWithoutRotation(Node*& node, const T& x) {
-    Node** parent_pointer = &node;
-    while (*parent_pointer != nullptr && (*parent_pointer)->value != x) {
-      Node*& current = *parent_pointer;
-      parent_pointer = (x < current->value) ? &current->left : &current->right;
+    Node *parent = nullptr, *current = node;
+    while (current != nullptr && current->value != x) {
+      parent = current;
+      current = (x < current->value) ? current->left : current->right;
     }
-    if (*parent_pointer == nullptr) return false;
-    Node* to_be_delete = *parent_pointer;
-    Join(*parent_pointer, (*parent_pointer)->left, (*parent_pointer)->right);
-    delete to_be_delete;
+    if (current == nullptr) return false;
+    if (parent == nullptr)
+      Join(node, current->left, current->right);
+    else
+      Join(parent->left == current ? parent->left : parent->right,
+           current->left, current->right);
+    delete current;
     return true;
   }
 
