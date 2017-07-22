@@ -1,4 +1,4 @@
-## Binary search tree
+## Scapegoat tree
 [Scapegoat tree](https://en.wikipedia.org/wiki/Scapegoat_tree) is a
 self-balancing binary search tree without storing any additional information
 in each tree node. In this module, the rebalance is done by copy all elements
