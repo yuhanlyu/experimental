@@ -42,10 +42,10 @@ struct Treap {
     while ((*parent_pointer)->left && (*parent_pointer)->right) {
       Node*& current = *parent_pointer;
       if (current->left->priority < current->right->priority) {
-        RightRotate(current);
+        current = RightRotate(current);
         parent_pointer = &current->right;
       } else {
-        LeftRotate(current);
+        current = LeftRotate(current);
         parent_pointer = &current->left;
       }
     }
@@ -97,6 +97,15 @@ struct Treap {
   Node*& root() { return root_; }
 
  private:
+  static bool IsHeap(const Node* node) {
+    if (node == nullptr) return true;
+    if (node->left != nullptr && node->priority > node->left->priority)
+      return false;
+    if (node->right != nullptr && node->priority > node->right->priority)
+      return false;
+    return IsHeap(node->left) && IsHeap(node->right);
+  }
+
   static bool Insert(Node*& node, const T& x) {
     if (node == nullptr) {
       node = new Node(x);
@@ -105,21 +114,12 @@ struct Treap {
     if (x == node->value) return false;
     if (x < node->value) {
       if (Insert(node->left, x) == false) return false;
-      if (node->left->priority < node->priority) RightRotate(node);
+      if (node->left->priority < node->priority) node = RightRotate(node);
     } else {
       if (Insert(node->right, x) == false) return false;
-      if (node->right->priority < node->priority) LeftRotate(node);
+      if (node->right->priority < node->priority) node = LeftRotate(node);
     }
     return true;
-  }
-
-  static bool IsHeap(const Node* node) {
-    if (node == nullptr) return true;
-    if (node->left != nullptr && node->priority > node->left->priority)
-      return false;
-    if (node->right != nullptr && node->priority > node->right->priority)
-      return false;
-    return IsHeap(node->left) && IsHeap(node->right);
   }
 
   // Split the subtree rooted at node, so that all nodes that are smaller than
@@ -155,6 +155,34 @@ struct Treap {
       }
     }
     *parent_pointer = left != nullptr ? left : right;
+  }
+
+  // Left rotation:
+  //    root           x    |
+  //    /  \          / \   |
+  //   a    x   To root  c  |
+  //       / \     /  \     |
+  //      b    c  a    b    |
+  template <typename Node>
+  static Node* LeftRotate(Node* root) {
+    Node* x = root->right;
+    root->right = x->left;
+    x->left = root;
+		return x;
+  }
+
+  // Right rotation:
+  //    root          x       |
+  //    /  \         / \      |
+  //   x    c  To   a  root   |
+  //  / \              /  \   |
+  // a   b            b    c  |
+  template <typename Node>
+  static Node* RightRotate(Node* root) {
+    Node* x = root->left;
+    root->left = x->right;
+    x->right = root;
+		return x;
   }
 
   Node* root_ = nullptr;
