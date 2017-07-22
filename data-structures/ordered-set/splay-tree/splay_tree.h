@@ -18,84 +18,13 @@ struct SplayTree {
     T value;
   };
 
-  bool Insert(const T& x) {
-    if (root_ == nullptr) {
-      root_ = new Node(x);
-      return true;
-    }
-    Splay(root_, x);
-    if (root_->value == x) return false;
-    Node* new_node = new Node(x);
-    // Attach the old tree to new_node and set root_ to the new_node.
-    if (x < root_->value) {
-      new_node->right = root_;
-      new_node->left = root_->left;
-      root_->left = nullptr;
-    } else {
-      new_node->left = root_;
-      new_node->right = root_->right;
-      root_->right = nullptr;
-    }
-    root_ = new_node;
-    return true;
-  }
+  bool Insert(const T& x) { return Insert(root_, x); }
 
-  bool Delete(const T& x) {
-    if (root_ == nullptr) return false;
-    Splay(root_, x);
-    if (root_->value != x) return false;
-    Node* new_tree;
-    // Combine the two subtrees and delete the node.
-    if (root_->left == nullptr) {
-      new_tree = root_->right;
-    } else {
-      Splay(root_->left, x);
-      new_tree = root_->left;
-      new_tree->right = root_->right;
-    }
-    delete root_;
-    root_ = new_tree;
-    return true;
-  }
+  bool Delete(const T& x) { return Delete(root_, x); }
 
-  bool InsertRec(const T& x) {
-    if (root_ == nullptr) {
-      root_ = new Node(x);
-      return true;
-    }
-    SplayRec(root_, x);
-    if (root_->value == x) return false;
-    Node* new_node = new Node(x);
-    // Attach the old tree to new_node and set root_ to the new_node.
-    if (x < root_->value) {
-      new_node->right = root_;
-      new_node->left = root_->left;
-      root_->left = nullptr;
-    } else {
-      new_node->left = root_;
-      new_node->right = root_->right;
-      root_->right = nullptr;
-    }
-    root_ = new_node;
-    return true;
-  }
+  bool InsertRec(const T& x) { return InsertRec(root_, x); }
 
-  bool DeleteRec(const T& x) {
-    SplayRec(root_, x);
-    if (root_ == nullptr || root_->value != x) return false;
-    Node* new_tree;
-    // Combine the two subtrees and delete the node.
-    if (root_->left == nullptr) {
-      new_tree = root_->right;
-    } else {
-      SplayRec(root_->left, x);
-      new_tree = root_->left;
-      new_tree->right = root_->right;
-    }
-    delete root_;
-    root_ = new_tree;
-    return true;
-  }
+  bool DeleteRec(const T& x) { return DeleteRec(root_, x); }
 
   ~SplayTree() { FreeTree(root_); }
 
@@ -108,6 +37,85 @@ struct SplayTree {
   Node*& root() { return root_; }
 
  private:
+  static bool Insert(Node*& node, const T& x) {
+    if (node == nullptr) {
+      node = new Node(x);
+      return true;
+    }
+    Splay(node, x);
+    if (node->value == x) return false;
+    Node* new_node = new Node(x);
+    // Attach the old tree to new_node and set node to the new_node.
+    if (x < node->value) {
+      new_node->right = node;
+      new_node->left = node->left;
+      node->left = nullptr;
+    } else {
+      new_node->left = node;
+      new_node->right = node->right;
+      node->right = nullptr;
+    }
+    node = new_node;
+    return true;
+  }
+
+  static bool Delete(Node*& node, const T& x) {
+    if (node == nullptr) return false;
+    Splay(node, x);
+    if (node->value != x) return false;
+    Node* new_tree;
+    // Combine the two subtrees and delete the node.
+    if (node->left == nullptr) {
+      new_tree = node->right;
+    } else {
+      Splay(node->left, x);
+      new_tree = node->left;
+      new_tree->right = node->right;
+    }
+    delete node;
+    node = new_tree;
+    return true;
+  }
+
+  static bool InsertRec(Node*& node, const T& x) {
+    if (node == nullptr) {
+      node = new Node(x);
+      return true;
+    }
+    SplayRec(node, x);
+    if (node->value == x) return false;
+    Node* new_node = new Node(x);
+    // Attach the old tree to new_node and set node to the new_node.
+    if (x < node->value) {
+      new_node->right = node;
+      new_node->left = node->left;
+      node->left = nullptr;
+    } else {
+      new_node->left = node;
+      new_node->right = node->right;
+      node->right = nullptr;
+    }
+    node = new_node;
+    return true;
+  }
+
+  static bool DeleteRec(Node*& node, const T& x) {
+    SplayRec(node, x);
+    if (node == nullptr || node->value != x) return false;
+    Node* new_tree;
+    // Combine the two subtrees and delete the node.
+    if (node->left == nullptr) {
+      new_tree = node->right;
+    } else {
+      SplayRec(node->left, x);
+      new_tree = node->left;
+      new_tree->right = node->right;
+    }
+    delete node;
+    node = new_tree;
+    return true;
+  }
+
   // Top-down splay.
   static void Splay(Node*& node, const T& x) {
     Node dummy, *left_tree = &dummy, *right_tree = &dummy;
