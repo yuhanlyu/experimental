@@ -42,7 +42,7 @@ struct SplayTree {
       node = new Node(x);
       return true;
     }
-    Splay(node, x);
+    node = Splay(node, x);
     if (node->value == x) return false;
     Node* new_node = new Node(x);
     // Attach the old tree to new_node and set node to the new_node.
@@ -61,14 +61,14 @@ struct SplayTree {
 
   static bool Delete(Node*& node, const T& x) {
     if (node == nullptr) return false;
-    Splay(node, x);
+    node = Splay(node, x);
     if (node->value != x) return false;
     Node* new_tree;
     // Combine the two subtrees and delete the node.
     if (node->left == nullptr) {
       new_tree = node->right;
     } else {
-      Splay(node->left, x);
+      node->left = Splay(node->left, x);
       new_tree = node->left;
       new_tree->right = node->right;
     }
@@ -82,7 +82,7 @@ struct SplayTree {
       node = new Node(x);
       return true;
     }
-    SplayRec(node, x);
+    node = SplayRec(node, x);
     if (node->value == x) return false;
     Node* new_node = new Node(x);
     // Attach the old tree to new_node and set node to the new_node.
@@ -100,14 +100,14 @@ struct SplayTree {
   }
 
   static bool DeleteRec(Node*& node, const T& x) {
-    SplayRec(node, x);
+    node = SplayRec(node, x);
     if (node == nullptr || node->value != x) return false;
     Node* new_tree;
     // Combine the two subtrees and delete the node.
     if (node->left == nullptr) {
       new_tree = node->right;
     } else {
-      SplayRec(node->left, x);
+      node->left = SplayRec(node->left, x);
       new_tree = node->left;
       new_tree->right = node->right;
     }
@@ -117,18 +117,20 @@ struct SplayTree {
   }
 
   // Top-down splay.
-  static void Splay(Node*& node, const T& x) {
+  static Node* Splay(Node* node, const T& x) {
     Node dummy, *left_tree = &dummy, *right_tree = &dummy;
     while (x != node->value) {
       if (x < node->value) {
-        if (node->left != nullptr && x < node->left->value) RightRotate(node);
+        if (node->left != nullptr && x < node->left->value)
+          node = RightRotate(node);
         if (node->left == nullptr) break;
         // Link right.
         right_tree->left = node;
         right_tree = node;
         node = node->left;
       } else {
-        if (node->right != nullptr && x > node->right->value) LeftRotate(node);
+        if (node->right != nullptr && x > node->right->value)
+          node = LeftRotate(node);
         if (node->right == nullptr) break;
         // Link left.
         left_tree->right = node;
@@ -140,35 +142,66 @@ struct SplayTree {
     right_tree->left = node->right;
     node->left = dummy.right;
     node->right = dummy.left;
+    return node;
   }
 
-  static void SplayRec(Node*& node, const T& x) {
-    if (node == nullptr || node->value == x) return;
+  static Node* SplayRec(Node* node, const T& x) {
+    if (node == nullptr || node->value == x) return node;
     if (x < node->value) {
-      if (node->left == nullptr) return;
+      if (node->left == nullptr) return node;
       // Zig-Zig case.
       if (x < node->left->value) {
-        SplayRec(node->left->left, x);
-        RightRotate(node);
+        node->left->left = SplayRec(node->left->left, x);
+        node = RightRotate(node);
       } else if (x > node->left->value) {
         // Zig-Zag case.
-        SplayRec(node->left->right, x);
-        if (node->left->right != nullptr) LeftRotate(node->left);
+        node->left->right = SplayRec(node->left->right, x);
+        if (node->left->right != nullptr) node->left = LeftRotate(node->left);
       }
-      if (node->left != nullptr) RightRotate(node);
+      if (node->left != nullptr) node = RightRotate(node);
     } else {
-      if (node->right == nullptr) return;
+      if (node->right == nullptr) return node;
       // Zag-Zig case.
       if (x < node->right->value) {
-        SplayRec(node->right->left, x);
-        if (node->right->left != nullptr) RightRotate(node->right);
+        node->right->left = SplayRec(node->right->left, x);
+        if (node->right->left != nullptr)
+          node->right = RightRotate(node->right);
       } else if (x > node->right->value) {
         // Zag-zag case.
-        SplayRec(node->right->right, x);
-        LeftRotate(node);
+        node->right->right = SplayRec(node->right->right, x);
+        node = LeftRotate(node);
       }
-      if (node->right != nullptr) LeftRotate(node);
+      if (node->right != nullptr) node = LeftRotate(node);
     }
+    return node;
+  }
+
+  // Left rotation:
+  //    root           x    |
+  //    /  \          / \   |
+  //   a    x   To root  c  |
+  //       / \     /  \     |
+  //      b    c  a    b    |
+  template <typename Node>
+  static Node* LeftRotate(Node* root) {
+    Node* x = root->right;
+    root->right = x->left;
+    x->left = root;
+    return x;
+  }
+
+  // Right rotation:
+  //    root          x       |
+  //    /  \         / \      |
+  //   x    c  To   a  root   |
+  //  / \              /  \   |
+  // a   b            b    c  |
+  template <typename Node>
+  static Node* RightRotate(Node* root) {
+    Node* x = root->left;
+    root->left = x->right;
+    x->right = root;
+    return x;
   }
 
   Node* root_ = nullptr;
