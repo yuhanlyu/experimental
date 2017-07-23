@@ -59,18 +59,19 @@ struct RBST {
   }
 
   static void Insert(Node*& node, const T& x) {
-    Node **parent_pointer = &node, *new_node = new Node(x);
-    while (*parent_pointer != nullptr &&
-           Random(++(*parent_pointer)->size) == 0) {
-      parent_pointer = (x < (*parent_pointer)->value)
-                           ? &(*parent_pointer)->left
-                           : &(*parent_pointer)->right;
+    Node *parent = nullptr, *current = node, *new_node = new Node(x);
+    while (current != nullptr && Random(++current->size) == 0) {
+      parent = current;
+      current = x < current->value ? current->left : current->right;
     }
-    if (*parent_pointer != nullptr) {
-      Split(*parent_pointer, x, new_node->left, new_node->right);
+    if (current != nullptr) {
+      Split(current, x, new_node->left, new_node->right);
       UpdateSize(new_node);
     }
-    *parent_pointer = new_node;
+    if (parent == nullptr)
+      node = new_node;
+    else
+      (x < parent->value ? parent->left : parent->right) = new_node;
   }
 
   static void Delete(Node*& node, const T& x) {
@@ -81,10 +82,11 @@ struct RBST {
       parent_pointer = (x < current->value) ? &current->left : &current->right;
     }
     Node* to_be_delete = *parent_pointer;
-    Join(*parent_pointer, (*parent_pointer)->left, (*parent_pointer)->right);
+    *parent_pointer = Join((*parent_pointer)->left, (*parent_pointer)->right);
     delete to_be_delete;
     if (*parent_pointer != nullptr) UpdateSize(*parent_pointer);
   }
+
   // Split the subtree rooted at node, so that all nodes that are smaller than
   // x is rooted at left, and other nodes are rooted at right.
   static void Split(Node* node, const T& x, Node*& left, Node*& right) {
@@ -103,20 +105,18 @@ struct RBST {
   }
 
   // Merge the trees that are rooted at left and right as root.
-  static void Join(Node*& node, Node* left, Node* right) {
-    if (left == nullptr || right == nullptr) {
-      node = left == nullptr ? right : left;
-      return;
-    }
+  static Node* Join(Node* left, Node* right) {
+    if (left == nullptr || right == nullptr)
+      return left == nullptr ? right : left;
     int n = size(left);
     if (Random(n + size(right) - 1) < n) {
-      Join(left->right, left->right, right);
-      node = left;
-    } else {
-      Join(right->left, left, right->left);
-      node = right;
+      left->right = Join(left->right, right);
+      UpdateSize(left);
+      return left;
     }
-    UpdateSize(node);
+    right->left = Join(left, right->left);
+    UpdateSize(right);
+    return right;
   }
 
   // Return a random number between 0 and n.
