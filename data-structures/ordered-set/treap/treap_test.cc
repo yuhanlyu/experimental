@@ -53,11 +53,13 @@ TEST(Treap, InsertRandom) {
     std::shuffle(inserted_elements.begin(), inserted_elements.end(), g);
     Treap<int> tree;
     for (int value : inserted_elements) EXPECT_TRUE(tree.Insert(value));
+    EXPECT_TRUE(tree.IsHeap());
     std::vector<int> actual_result;
     tree.InorderTraverse(actual_result);
     EXPECT_THAT(actual_result, ElementsAreArray(expected_result));
     for (int value : inserted_elements) {
       EXPECT_FALSE(tree.Insert(value));
+      EXPECT_TRUE(tree.IsHeap());
       actual_result.clear();
       tree.InorderTraverse(actual_result);
       EXPECT_THAT(actual_result, ElementsAreArray(expected_result));
@@ -100,8 +102,10 @@ TEST(Treap, DeleteRandom) {
     std::vector<int> temp(inserted_elements);
     Treap<int> tree;
     for (int value : inserted_elements) ASSERT_TRUE(tree.Insert(value));
-    for (int i = 0; i < size / 10; ++i)
+    for (int i = 0; i < size / 10; ++i) {
       EXPECT_TRUE(tree.Delete(inserted_elements[i]));
+      EXPECT_TRUE(tree.IsHeap());
+    }
     temp.erase(temp.begin(), temp.begin() + size / 10);
     std::vector<int> expected_result(temp);
     std::sort(expected_result.begin(), expected_result.end());
@@ -110,6 +114,7 @@ TEST(Treap, DeleteRandom) {
     EXPECT_THAT(actual_result, ElementsAreArray(expected_result));
     for (int i = 0; i < size / 10; ++i) {
       EXPECT_FALSE(tree.Delete(inserted_elements[i]));
+      EXPECT_TRUE(tree.IsHeap());
       actual_result.clear();
       tree.InorderTraverse(actual_result);
       EXPECT_THAT(actual_result, ElementsAreArray(expected_result));
@@ -146,7 +151,10 @@ TEST(Treap, InsertWithoutRotationRandom) {
     std::vector<int> inserted_elements(expected_result);
     std::shuffle(inserted_elements.begin(), inserted_elements.end(), g);
     Treap<int> tree;
-    for (int value : inserted_elements) tree.InsertWithoutRotation(value);
+    for (int value : inserted_elements) {
+      tree.InsertWithoutRotation(value);
+      EXPECT_TRUE(tree.IsHeap());
+    }
     std::vector<int> actual_result;
     tree.InorderTraverse(actual_result);
     EXPECT_THAT(actual_result, ElementsAreArray(expected_result));
@@ -170,6 +178,7 @@ TEST(Treap, DeleteWithoutRotation) {
       tree.InorderTraverse(actual_result);
       EXPECT_THAT(actual_result, ElementsAreArray(expected_result));
       EXPECT_FALSE(tree.DeleteWithoutRotation(temp[0]));
+      EXPECT_TRUE(tree.IsHeap());
       actual_result.clear();
       tree.InorderTraverse(actual_result);
       EXPECT_THAT(actual_result, ElementsAreArray(expected_result));
@@ -188,8 +197,10 @@ TEST(Treap, DeleteWithoutRotationRandom) {
     std::vector<int> temp(inserted_elements);
     Treap<int> tree;
     for (int value : inserted_elements) ASSERT_TRUE(tree.Insert(value));
-    for (int i = 0; i < size / 10; ++i)
+    for (int i = 0; i < size / 10; ++i) {
       EXPECT_TRUE(tree.DeleteWithoutRotation(inserted_elements[i]));
+      EXPECT_TRUE(tree.IsHeap());
+    }
     temp.erase(temp.begin(), temp.begin() + size / 10);
     std::vector<int> expected_result(temp);
     std::sort(expected_result.begin(), expected_result.end());
@@ -198,6 +209,7 @@ TEST(Treap, DeleteWithoutRotationRandom) {
     EXPECT_THAT(actual_result, ElementsAreArray(expected_result));
     for (int i = 0; i < size / 10; ++i) {
       EXPECT_FALSE(tree.DeleteWithoutRotation(inserted_elements[i]));
+      EXPECT_TRUE(tree.IsHeap());
       actual_result.clear();
       tree.InorderTraverse(actual_result);
       EXPECT_THAT(actual_result, ElementsAreArray(expected_result));
@@ -233,6 +245,7 @@ TEST(Treap, Mix) {
           EXPECT_FALSE(tree.Delete(value));
           break;
       }
+      EXPECT_TRUE(tree.IsHeap());
       std::vector<int> expected_result(expected_tree.begin(),
                                        expected_tree.end());
       std::vector<int> actual_result;
@@ -267,6 +280,7 @@ TEST(Treap, WithoutRotationMix) {
           EXPECT_FALSE(tree.DeleteWithoutRotation(value));
           break;
       }
+      EXPECT_TRUE(tree.IsHeap());
       std::vector<int> expected_result(expected_tree.begin(),
                                        expected_tree.end());
       std::vector<int> actual_result;
