@@ -69,8 +69,6 @@ struct ScapegoatTree {
       if (depth - 1 > height_alpha(subtree_size)) {
         (current == parent->left ? parent->left : parent->right) =
             NaiveRebalance(current);
-        // NaiveRebalance(current == parent->left ? parent->left :
-        // parent->right);
         return true;
       }
       subtree_size +=
