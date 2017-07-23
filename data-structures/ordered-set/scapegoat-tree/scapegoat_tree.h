@@ -20,40 +20,69 @@ struct ScapegoatTree {
   };
 
   bool Insert(const T& x) {
+    if (!Insert(root_, x, size)) return false;
+    if (++size > max_size) max_size = size;
+    return true;
+  }
+
+  bool Delete(const T& x) {
+    if (!Delete(root_, x, size, max_size)) return false;
+    if (--size < alpha * max_size) max_size = size;
+    return true;
+  }
+
+  ~ScapegoatTree() { FreeTree(root_); }
+
+  void InorderTraverse(std::vector<T>& result) const {
+    return ::InorderTraverse(root_, result);
+  }
+
+  Node* root() const { return root_; }
+
+  Node*& root() { return root_; }
+
+ private:
+  static int height_alpha(int size) {
+    return std::floor(std::log(size) * log_sqrt2);
+  }
+
+  static bool Insert(Node*& node, const T& x, int size) {
     // When the tree is empty, create the node at root;
-    if (root_ == nullptr) {
-      root_ = new Node(x);
+    if (node == nullptr) {
+      node = new Node(x);
       return true;
     }
     std::vector<Node*> ancestors;
-    for (Node* current = root_; current != nullptr;) {
+    for (Node* current = node; current != nullptr;) {
       if (current->value == x) return false;
       ancestors.push_back(current);
       current = (x < current->value) ? current->left : current->right;
     }
     Node* parent = ancestors[ancestors.size() - 1];
     ((x < parent->value) ? parent->left : parent->right) = new Node(x);
-    if (++size > max_size) max_size = size;
 
     // The distance betweeen new node and root is ancestors.size().
-    if (size <= 2 || ancestors.size() <= height_alpha(size)) return true;
+    if (++size <= 2 || ancestors.size() <= height_alpha(size)) return true;
     Node* current = x < parent->value ? parent->left : parent->right;
     for (int depth = 1, subtree_size = 1; depth <= ancestors.size(); ++depth) {
       parent = ancestors[ancestors.size() - depth];
       if (depth - 1 > height_alpha(subtree_size)) {
-        NaiveRebalance(current == parent->left ? parent->left : parent->right);
+        (current == parent->left ? parent->left : parent->right) =
+            NaiveRebalance(current);
+        // NaiveRebalance(current == parent->left ? parent->left :
+        // parent->right);
         return true;
       }
       subtree_size +=
           1 + TreeSize(current == parent->left ? parent->right : parent->left);
       current = parent;
     }
-    NaiveRebalance(root_);
+    node = NaiveRebalance(node);
     return true;
   }
 
-  bool Delete(const T& x) {
-    Node *parent = nullptr, *current = root_;
+  static bool Delete(Node*& node, const T& x, int size, int max_size) {
+    Node *parent = nullptr, *current = node;
     // Find the node to be deleted;
     while (current != nullptr && current->value != x) {
       parent = current;
@@ -78,30 +107,12 @@ struct ScapegoatTree {
         (current->left != nullptr ? current->left : current->right);
     // If root node will be deleted.
     if (parent == nullptr)
-      root_ = sub_tree;
+      node = sub_tree;
     else
       (parent->left == current ? parent->left : parent->right) = sub_tree;
     delete current;
-    if (--size < alpha * max_size) {
-      NaiveRebalance(root_);
-      max_size = size;
-    }
+    if (--size < alpha * max_size) node = NaiveRebalance(node);
     return true;
-  }
-
-  ~ScapegoatTree() { FreeTree(root_); }
-
-  void InorderTraverse(std::vector<T>& result) const {
-    return ::InorderTraverse(root_, result);
-  }
-
-  Node* root() const { return root_; }
-
-  Node*& root() { return root_; }
-
- private:
-  static int height_alpha(int size) {
-    return std::floor(std::log(size) * log_sqrt2);
   }
 
   Node* root_ = nullptr;
