@@ -20,33 +20,9 @@ struct RBST {
     T value;
   };
 
-  void Insert(const T& x) {
-    Node **parent_pointer = &root_, *new_node = new Node(x);
-    while (*parent_pointer != nullptr &&
-           Random(++(*parent_pointer)->size) == 0) {
-      parent_pointer = (x < (*parent_pointer)->value)
-                           ? &(*parent_pointer)->left
-                           : &(*parent_pointer)->right;
-    }
-    if (*parent_pointer != nullptr) {
-      Split(*parent_pointer, x, new_node->left, new_node->right);
-      UpdateSize(new_node);
-    }
-    *parent_pointer = new_node;
-  }
+  void Insert(const T& x) { Insert(root_, x); }
 
-  void Delete(const T& x) {
-    Node** parent_pointer = &root_;
-    while (*parent_pointer != nullptr && (*parent_pointer)->value != x) {
-      Node*& current = *parent_pointer;
-      --current->size;
-      parent_pointer = (x < current->value) ? &current->left : &current->right;
-    }
-    Node* to_be_delete = *parent_pointer;
-    Join(*parent_pointer, (*parent_pointer)->left, (*parent_pointer)->right);
-    delete to_be_delete;
-    if (*parent_pointer != nullptr) UpdateSize(*parent_pointer);
-  }
+  void Delete(const T& x) { Delete(root_, x); }
 
   ~RBST() { FreeTree(root_); }
 
@@ -80,6 +56,33 @@ struct RBST {
     node->size = size(node->left) + size(node->right) + 1;
   }
 
+  static void Insert(Node*& node, const T& x) {
+    Node **parent_pointer = &node, *new_node = new Node(x);
+    while (*parent_pointer != nullptr &&
+           Random(++(*parent_pointer)->size) == 0) {
+      parent_pointer = (x < (*parent_pointer)->value)
+                           ? &(*parent_pointer)->left
+                           : &(*parent_pointer)->right;
+    }
+    if (*parent_pointer != nullptr) {
+      Split(*parent_pointer, x, new_node->left, new_node->right);
+      UpdateSize(new_node);
+    }
+    *parent_pointer = new_node;
+  }
+
+  static void Delete(Node*& node, const T& x) {
+    Node** parent_pointer = &node;
+    while (*parent_pointer != nullptr && (*parent_pointer)->value != x) {
+      Node*& current = *parent_pointer;
+      --current->size;
+      parent_pointer = (x < current->value) ? &current->left : &current->right;
+    }
+    Node* to_be_delete = *parent_pointer;
+    Join(*parent_pointer, (*parent_pointer)->left, (*parent_pointer)->right);
+    delete to_be_delete;
+    if (*parent_pointer != nullptr) UpdateSize(*parent_pointer);
+  }
   // Split the subtree rooted at node, so that all nodes that are smaller than
   // x is rooted at left, and other nodes are rooted at right.
   static void Split(Node* node, const T& x, Node*& left, Node*& right) {
