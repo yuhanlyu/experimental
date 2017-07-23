@@ -155,8 +155,8 @@ struct Treap {
   }
 
   // Merge the subtrees of current->left and current->right as node.
-	// Note: On my machine, using links to implement this method tends to be
-	// slower.
+  // Note: On my machine, using links to implement this method tends to be
+  // slower.
   static void Join(Node*& node, Node* current) {
     Node *left = current->left, *right = current->right;
     Node** parent_pointer = &node;

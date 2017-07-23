@@ -1,7 +1,6 @@
 #include "wavl.h"
 
 #include <algorithm>
-#include <limits>
 #include <random>
 
 #include "benchmark/benchmark_api.h"

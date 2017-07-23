@@ -1,8 +1,6 @@
 #include "skip_list.h"
 
 #include <algorithm>
-#include <cstdlib>
-#include <limits>
 #include <random>
 
 #include "benchmark/benchmark_api.h"
