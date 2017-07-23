@@ -1,5 +1,5 @@
-## Binary search tree
-[Skip List](https://en.wikipedia.org/wiki/Skip_list) is a randomized dictionary.
+## Skip list
+[Skip list](https://en.wikipedia.org/wiki/Skip_list) is a randomized dictionary.
 The operations of insertion and deletion can be done in O(lg n) time in
 expectation.
 

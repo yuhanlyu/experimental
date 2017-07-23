@@ -1,4 +1,4 @@
-## Binary search tree
+## Weight-balanced tree
 [Weight-balanced tree](https://en.wikipedia.org/wiki/Weight-balanced_tree) is
 self-balancing binary search tree. The operations of insertion and deletion
 can be done in O(lg n) time in worst case. Moreover, the weight-balanced tree

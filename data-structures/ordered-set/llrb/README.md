@@ -1,4 +1,4 @@
-## Binary search tree
+## Left-leaning red-black tree
 [Left-leaning red–black tree](https://en.wikipedia.org/wiki/Left-leaning_red%E2%80%93black_tree)
 is self-balancing binary search tree. The operations of insertion and deletion
 can be done in O(lg n) time in worst case.

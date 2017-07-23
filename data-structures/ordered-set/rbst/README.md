@@ -1,4 +1,4 @@
-## Binary search tree
+## Randomized binary search tree
 [Randomized binary search tree](https://en.wikipedia.org/wiki/Treap#Randomized_binary_search_tree)
 is a randomized self-balancing binary search tree. The operations of insertion
 and deletion can be done in O(lg n) time in expectation.

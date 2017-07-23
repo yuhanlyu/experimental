@@ -1,4 +1,4 @@
-## Binary search tree
+## AVL tree
 [AVL tree](https://en.wikipedia.org/wiki/AVL_tree) is self-balancing binary search
 tree. The operations of insertion and deletion can be done in O(lg n) time in
 worst case.

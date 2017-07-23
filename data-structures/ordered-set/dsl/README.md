@@ -1,6 +1,5 @@
-## Binary search tree
-[Deterministic Skip List](https://en.wikipedia.org/wiki/Skip_list) is a
-self-balanced dictionary.
+## Deterministic skip list
+Deterministic Skip List is a self-balanced dictionary.
 The operations of insertion and deletion can be done in O(lg n) time in
 the worst case.
 
