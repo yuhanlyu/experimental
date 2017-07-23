@@ -75,16 +75,21 @@ struct RBST {
   }
 
   static void Delete(Node*& node, const T& x) {
-    Node** parent_pointer = &node;
-    while (*parent_pointer != nullptr && (*parent_pointer)->value != x) {
-      Node*& current = *parent_pointer;
+    Node *parent = nullptr, *current = node;
+    while (current != nullptr && current->value != x) {
+      parent = current;
       --current->size;
-      parent_pointer = (x < current->value) ? &current->left : &current->right;
+      current = (x < current->value) ? current->left : current->right;
     }
-    Node* to_be_delete = *parent_pointer;
-    *parent_pointer = Join((*parent_pointer)->left, (*parent_pointer)->right);
-    delete to_be_delete;
-    if (*parent_pointer != nullptr) UpdateSize(*parent_pointer);
+    Node* subtree = Join(current->left, current->right);
+    if (parent == nullptr) {
+      node = subtree;
+      if (node != nullptr) UpdateSize(node);
+    } else {
+      (parent->left == current ? parent->left : parent->right) = subtree;
+      UpdateSize(parent);
+    }
+    delete current;
   }
 
   // Split the subtree rooted at node, so that all nodes that are smaller than
