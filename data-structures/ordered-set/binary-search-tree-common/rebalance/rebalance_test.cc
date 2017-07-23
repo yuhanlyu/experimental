@@ -21,7 +21,7 @@ TEST(BinarySearchTreeRebalance, NaiveRebalance) {
       BinarySearchTree<int> tree;
       for (int value : inserted_elements) ASSERT_TRUE(tree.Insert(value));
       std::vector<int> actual_result;
-      NaiveRebalance(tree.root());
+      tree.root() = NaiveRebalance(tree.root());
       tree.InorderTraverse(actual_result);
       EXPECT_THAT(actual_result, ElementsAreArray(expected_result));
     } while (std::next_permutation(inserted_elements.begin(),

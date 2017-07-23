@@ -38,7 +38,7 @@ BENCHMARK_DEFINE_F(BSTRebalanceBenchmark, NaiveRebalance)
     BinarySearchTree<int> tree;
     BuildTree(state, tree);
     state.ResumeTiming();
-    NaiveRebalance(tree.root());
+    tree.root() = NaiveRebalance(tree.root());
   }
 }
 BENCHMARK_REGISTER_F(BSTRebalanceBenchmark, NaiveRebalance)

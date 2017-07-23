@@ -6,10 +6,10 @@
 
 // Rebalance the tree by copying all nodes to a vector and rebuild.
 template <typename Node>
-void NaiveRebalance(Node*& root) {
-  if (root == nullptr) return;
+Node* NaiveRebalance(Node* root) {
+  if (root == nullptr) return nullptr;
   std::vector<Node*> nodes = ConvertTreeToVector(root);
-  root = ConvertVectorToTree(nodes, 0, nodes.size());
+  return ConvertVectorToTree(nodes, 0, nodes.size());
 }
 
 // Build a tree from nodes.
