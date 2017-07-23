@@ -35,19 +35,17 @@ struct RBST {
     *parent_pointer = new_node;
   }
 
-  bool Delete(const T& x) {
+  void Delete(const T& x) {
     Node** parent_pointer = &root_;
     while (*parent_pointer != nullptr && (*parent_pointer)->value != x) {
       Node*& current = *parent_pointer;
       --current->size;
       parent_pointer = (x < current->value) ? &current->left : &current->right;
     }
-    if (*parent_pointer == nullptr) return false;
     Node* to_be_delete = *parent_pointer;
     Join(*parent_pointer, (*parent_pointer)->left, (*parent_pointer)->right);
     delete to_be_delete;
     if (*parent_pointer != nullptr) UpdateSize(*parent_pointer);
-    return true;
   }
 
   ~RBST() { FreeTree(root_); }
