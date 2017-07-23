@@ -1,6 +1,9 @@
 #include "skip_list.h"
 
 #include <algorithm>
+#include <random>
+#include <set>
+#include <unordered_map>
 #include <vector>
 
 #include "../binary-search-tree-common/binary_search_tree_common.h"
@@ -29,6 +32,23 @@ TEST(SkipList, Insert) {
   }
 }
 
+TEST(SkipList, InsertRandom) {
+  int sizes[] = {10, 100, 200, 500, 1000, 2000};
+  for (int size : sizes) {
+    std::random_device rd;
+    std::mt19937 g(rd());
+    std::vector<int> expected_result;
+    for (int i = 0; i < size; ++i) expected_result.push_back(i + 1);
+    std::vector<int> inserted_elements(expected_result);
+    std::shuffle(inserted_elements.begin(), inserted_elements.end(), g);
+    SkipList<int> tree;
+    for (int value : inserted_elements) tree.Insert(value);
+    std::vector<int> actual_result;
+    tree.InorderTraverse(actual_result);
+    EXPECT_THAT(actual_result, ElementsAreArray(expected_result));
+  }
+}
+
 TEST(SkipList, Delete) {
   for (int size = 1; size <= max_test_size; ++size) {
     std::vector<int> inserted_elements;
@@ -45,6 +65,59 @@ TEST(SkipList, Delete) {
       tree.InorderTraverse(actual_result);
       EXPECT_THAT(actual_result, ElementsAreArray(expected_result));
     } while (std::next_permutation(temp.begin(), temp.end()));
+  }
+}
+
+TEST(SkipList, DeleteRandom) {
+  int sizes[] = {10, 100, 200, 500, 1000, 2000, 5000};
+  for (int size : sizes) {
+    std::random_device rd;
+    std::mt19937 g(rd());
+    std::vector<int> inserted_elements;
+    for (int i = 0; i < size; ++i) inserted_elements.push_back(i + 1);
+    std::shuffle(inserted_elements.begin(), inserted_elements.end(), g);
+    std::vector<int> temp(inserted_elements);
+    SkipList<int> tree;
+    for (int value : inserted_elements) tree.Insert(value);
+    for (int i = 0; i < size / 10; ++i)
+      tree.Delete(inserted_elements[i]);
+    temp.erase(temp.begin(), temp.begin() + size / 10);
+    std::vector<int> expected_result(temp);
+    std::sort(expected_result.begin(), expected_result.end());
+    std::vector<int> actual_result;
+    tree.InorderTraverse(actual_result);
+    EXPECT_THAT(actual_result, ElementsAreArray(expected_result));
+  }
+}
+
+TEST(SkipList, Mix) {
+  int sizes[] = {10, 100, 200, 500};
+  for (int size : sizes) {
+    std::random_device rd;
+    std::mt19937 g(rd());
+    std::vector<int> elements;
+    for (int i = 0; i < size; ++i) elements.insert(elements.end(), 2, i + 1);
+    std::shuffle(elements.begin(), elements.end(), g);
+    SkipList<int> tree;
+    std::set<int> expected_tree;
+    std::unordered_map<int, int> count;
+    for (int value : elements) {
+      switch (++count[value]) {
+        case 1:
+          expected_tree.insert(value);
+          tree.Insert(value);
+          break;
+        case 2:
+          expected_tree.erase(value);
+          tree.Delete(value);
+          break;
+      }
+      std::vector<int> expected_result(expected_tree.begin(),
+                                       expected_tree.end());
+      std::vector<int> actual_result;
+      tree.InorderTraverse(actual_result);
+      EXPECT_THAT(actual_result, ElementsAreArray(expected_result));
+    }
   }
 }
 
