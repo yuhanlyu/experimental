@@ -19,6 +19,7 @@ struct DSL {
 
   bool Insert(const T& x) {
     bottom->value = x;
+    bool success = true;
     for (Node* cur = header; cur != bottom; cur = cur->down) {
       while (x > cur->value) cur = cur->right;
       // If gap = 3, or at the bottom level.
@@ -26,11 +27,13 @@ struct DSL {
         cur->right = new Node(cur->value, cur->right, cur->down->right->right);
         cur->value = cur->down->right->value;
       } else if (cur->down == bottom)
-        return false;
+        // Cannot find the key. Since the header may need to be raised,
+        // should not return yet.
+        success = false;
     }
     // Raise the header.
     if (header->right != tail) header = new Node(tail, header);
-    return true;
+    return success;
   }
 
   bool Delete(const T& x) {
@@ -74,12 +77,10 @@ struct DSL {
           previous->value = tmp->value;
           cur->down = tmp->right;
         }
-      } else if (next == bottom) {
+      } else if (next == bottom)
         // Cannot find the key. Since the header may need to be lowered,
         // should not return yet.
         success = false;
-        break;
-      }
       last_above = cur->value;
     }
     if (success) {
