@@ -30,10 +30,17 @@ struct RBST {
     return ::InorderTraverse(root_, result);
   }
 
+  int rank(const T& x) const { return rank(root_, x); }
+
+  Node* root() const { return root_; }
+
+  Node*& root() { return root_; }
+
+ private:
   // Compute the number of elements in the tree that is smaller than x.
-  int rank(const T& x) const {
+  static int rank(const Node* node, const T& x) {
     int rank = 0;
-    for (Node* current = root_; current != nullptr;) {
+    for (const Node* current = node; current != nullptr;) {
       if (x == current->value) return rank + size(current->left);
       if (x < current->value) {
         current = current->left;
@@ -45,11 +52,6 @@ struct RBST {
     return rank;
   }
 
-  Node* root() const { return root_; }
-
-  Node*& root() { return root_; }
-
- private:
   static int size(Node* node) { return node == nullptr ? 0 : node->size; }
 
   static void UpdateSize(Node* node) {
