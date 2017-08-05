@@ -51,26 +51,29 @@ struct AATree {
       return true;
     }
     if (x == node->value) return false;
-    bool is_inserted =
-        (x < node->value) ? Insert(node->left, x) : Insert(node->right, x);
-    if (is_inserted) {
-      Skew(node);
-      Split(node);
-    }
-    return is_inserted;
+    if (!((x < node->value) ? Insert(node->left, x) : Insert(node->right, x)))
+      return false;
+    Skew(node);
+    Split(node);
+    return true;
   }
 
   static bool Delete(Node*& node, const T& x) {
     if (node == sentinel) return false;
-    if (x < node->value) return Delete(node->left, x);
-    if (x > node->value) return Delete(node->right, x);
-    if (node->left != sentinel && node->right != sentinel) {
-      DeleteMinAndSet(node, node->right);
-    } else {
-      Node* old_node = node;
-      node = (node->left != sentinel) ? node->left : node->right;
-      delete old_node;
-    }
+    if (x == node->value) {
+      if (node->left == sentinel && node->right == sentinel) {
+        delete node;
+        node = sentinel;
+        return true;
+      }
+      // When there are two subtrees, find the successor.
+      // When there is one subtree, must find predecessor/successor accordingly,
+      // instead of promoting the only child.
+      node->left == sentinel ? DeleteMinAndSet(node, node->right)
+                             : DeleteMaxAndSet(node, node->left);
+    } else if (!((x < node->value) ? Delete(node->left, x)
+                                   : Delete(node->right, x)))
+      return false;
     RebalanceAfterDelete(node);
     return true;
   }
@@ -78,28 +81,42 @@ struct AATree {
   // Find the minimum in the subtree rooted at node, set be_deleted->value to be
   // the minimum and delete the minimum node.
   static void DeleteMinAndSet(Node* be_deleted, Node*& node) {
-    if (node->left == sentinel) {
+    if (node->left != sentinel) {
+      DeleteMinAndSet(be_deleted, node->left);
+      RebalanceAfterDelete(node);
+    } else {
       be_deleted->value = node->value;
       Node* old_node = node;
       node = node->right;
       delete old_node;
-    } else {
-      DeleteMinAndSet(be_deleted, node->left);
+    }
+  }
+
+  // Find the maximum in the subtree rooted at node, set be_deleted->value to be
+  // the minimum and delete the minimum node.
+  static void DeleteMaxAndSet(Node* be_deleted, Node*& node) {
+    if (node->right != sentinel) {
+      DeleteMaxAndSet(be_deleted, node->right);
       RebalanceAfterDelete(node);
+    } else {
+      be_deleted->value = node->value;
+      Node* old_node = node;
+      node = node->right;
+      delete old_node;
     }
   }
 
   // If the tree is imbalance after deletion, rebalance the tree.
   static void RebalanceAfterDelete(Node*& node) {
-    if (node->left->level < node->level - 1 ||
-        node->right->level < node->level - 1) {
-      if (node->right->level > --node->level) node->right->level = node->level;
-      Skew(node);
-      Skew(node->right);
-      Skew(node->right->right);
-      Split(node);
-      Split(node->right);
-    }
+    if (node->left->level >= node->level - 1 &&
+        node->right->level >= node->level - 1)
+      return;
+    if (node->right->level > --node->level) node->right->level = node->level;
+    Skew(node);
+    Skew(node->right);
+    Skew(node->right->right);
+    Split(node);
+    Split(node->right);
   }
 
   // Right rotation:
@@ -109,12 +126,11 @@ struct AATree {
   //  / \              /  \   |
   // a   b            b    c  |
   static void Skew(Node*& root) {
-    if (root->left->level == root->level) {
-      Node* x = root->left;
-      root->left = x->right;
-      x->right = root;
-      root = x;
-    }
+    if (root->left->level != root->level) return;
+    Node* x = root->left;
+    root->left = x->right;
+    x->right = root;
+    root = x;
   }
 
   // Left rotation:
@@ -124,13 +140,12 @@ struct AATree {
   //       / \     /  \     |
   //      b    c  a    b    |
   static void Split(Node*& root) {
-    if (root->right->right->level == root->level) {
-      Node* x = root->right;
-      root->right = x->left;
-      x->left = root;
-      ++x->level;
-      root = x;
-    }
+    if (root->right->right->level != root->level) return;
+    Node* x = root->right;
+    root->right = x->left;
+    x->left = root;
+    ++x->level;
+    root = x;
   }
 
   static Node dummy;

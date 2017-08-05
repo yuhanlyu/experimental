@@ -8,16 +8,16 @@ worst case.
 ----------------------------------------------------------------------------
 Benchmark                                     Time           CPU Iterations
 ----------------------------------------------------------------------------
-AATreeBenchmark/AATreeInsert/1024         96927 ns      96790 ns       7257
-AATreeBenchmark/AATreeInsert/4096        460424 ns     460502 ns       1525
-AATreeBenchmark/AATreeInsert/16384      2669953 ns    2670500 ns        263
-AATreeBenchmark/AATreeInsert/65536     14799021 ns   14800879 ns         48
-AATreeBenchmark/AATreeInsert/262144    92401499 ns   92416537 ns          9
-AATreeBenchmark/AATreeInsert/1048576  675905149 ns  676005196 ns          1
-AATreeBenchmark/AATreeDelete/1024         72603 ns      72632 ns       9711
-AATreeBenchmark/AATreeDelete/4096        430970 ns     431005 ns       1625
-AATreeBenchmark/AATreeDelete/16384      2452925 ns    2453229 ns        283
-AATreeBenchmark/AATreeDelete/65536     15046931 ns   15049055 ns         47
-AATreeBenchmark/AATreeDelete/262144    94841594 ns   94855289 ns          7
-AATreeBenchmark/AATreeDelete/1048576  551894631 ns  551937451 ns          1
+AATreeBenchmark/AATreeInsert/1024         98516 ns      98544 ns       7063
+AATreeBenchmark/AATreeInsert/4096        462199 ns     462213 ns       1518
+AATreeBenchmark/AATreeInsert/16384      2688019 ns    2688070 ns        260
+AATreeBenchmark/AATreeInsert/65536     14645814 ns   14645880 ns         47
+AATreeBenchmark/AATreeInsert/262144    93200115 ns   93200366 ns          8
+AATreeBenchmark/AATreeInsert/1048576  692331070 ns  692328198 ns          1
+AATreeBenchmark/AATreeDelete/1024         84495 ns      84503 ns       8148
+AATreeBenchmark/AATreeDelete/4096        415080 ns     415071 ns       1688
+AATreeBenchmark/AATreeDelete/16384      2445725 ns    2444998 ns        287
+AATreeBenchmark/AATreeDelete/65536     13583732 ns   13580556 ns         52
+AATreeBenchmark/AATreeDelete/262144    87933682 ns   87899280 ns          8
+AATreeBenchmark/AATreeDelete/1048576  756963568 ns  756740038 ns          1
 </pre>
