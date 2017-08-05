@@ -1,6 +1,7 @@
 #ifndef LLRB_H
 #define LLRB_H
 
+#include <string>
 #include <vector>
 
 #include "../binary-search-tree-common/binary_search_tree_common.h"
@@ -14,6 +15,7 @@ struct LLRB {
     Node() = default;
     Node* left = sentinel;
     Node* right = sentinel;
+		std::string ToString() const { return red ? "R" : "B"; }
     T value;
     bool red = false;
   };
@@ -50,14 +52,6 @@ struct LLRB {
 
   void PrintTree() const { PrintTree(root_, "root"); }
 
-  static void PrintTree(const Node* root, std::string prefix) {
-    if (root == sentinel) return;
-    PrintTree(root->left, prefix + "->left");
-    std::cerr << prefix << " = " << root->value << ' '
-              << (root->red ? 'R' : 'B') << '\n';
-    PrintTree(root->right, prefix + "->right");
-  }
-
  private:
   static int BlackHeight(const Node* node) {
     if (node == sentinel) return 1;
@@ -74,11 +68,8 @@ struct LLRB {
       return true;
     }
     if (x == node->value) return false;
-    if (x < node->value) {
-      if (!Insert(node->left, x)) return false;
-    } else {
-      if (!Insert(node->right, x)) return false;
-    }
+		if (!(x < node->value ? Insert(node->left, x) : Insert(node->right, x)))
+			return false;
     // Enforce left-leaning.
     if (node->right->red) {
       // The current node might be red or black;
