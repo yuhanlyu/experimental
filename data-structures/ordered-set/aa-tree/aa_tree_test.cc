@@ -33,6 +33,9 @@ TEST(AATree, Insert) {
       for (int value : inserted_elements) {
         EXPECT_FALSE(tree.Insert(value));
         EXPECT_TRUE(tree.IsBalanced());
+        actual_result.clear();
+        tree.InorderTraverse(actual_result);
+        EXPECT_THAT(actual_result, ElementsAreArray(expected_result));
       }
     } while (std::next_permutation(inserted_elements.begin(),
                                    inserted_elements.end()));
