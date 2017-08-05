@@ -111,7 +111,7 @@ TEST(AATree, DeleteRandom) {
     std::sort(expected_result.begin(), expected_result.end());
     std::vector<int> actual_result;
     tree.InorderTraverse(actual_result);
-    ASSERT_THAT(actual_result, ElementsAreArray(expected_result));
+    EXPECT_THAT(actual_result, ElementsAreArray(expected_result));
     for (int i = 0; i < size / 10; ++i) {
       EXPECT_FALSE(tree.Delete(inserted_elements[i]));
       EXPECT_TRUE(tree.IsBalanced());
