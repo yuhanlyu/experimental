@@ -49,7 +49,7 @@ TEST(WeightBalancedTree, InsertRandom) {
     for (int value : inserted_elements) {
       tree.Insert(value);
       EXPECT_TRUE(tree.IsBalanced());
-		}
+    }
     std::vector<int> actual_result;
     tree.InorderTraverse(actual_result);
     EXPECT_THAT(actual_result, ElementsAreArray(expected_result));
@@ -91,9 +91,9 @@ TEST(WeightBalancedTree, DeleteRandom) {
     WeightBalancedTree<int> tree;
     for (int value : inserted_elements) tree.Insert(value);
     for (int i = 0; i < size / 10; ++i) {
-			tree.Delete(inserted_elements[i]);
+      tree.Delete(inserted_elements[i]);
       EXPECT_TRUE(tree.IsBalanced());
-		}
+    }
     temp.erase(temp.begin(), temp.begin() + size / 10);
     std::vector<int> expected_result(temp);
     std::sort(expected_result.begin(), expected_result.end());
