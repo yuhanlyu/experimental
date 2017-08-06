@@ -118,8 +118,7 @@ struct WeightBalancedTree {
         Node* child = current->link[is_right];
         // When mode is true and x < child->value, then x will be inserted to
         // inner. Similarly, when mode is false and x > child->value, then x
-        // will
-        // be inserted to inner.
+        // will be inserted to inner.
         need_single_rotation_after_insert(child->link[!is_right],
                                           child->link[is_right],
                                           is_right == (x < child->value))
