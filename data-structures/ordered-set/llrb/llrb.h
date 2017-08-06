@@ -15,7 +15,7 @@ struct LLRB {
     Node() = default;
     Node* left = sentinel;
     Node* right = sentinel;
-		std::string ToString() const { return red ? "R" : "B"; }
+    std::string ToString() const { return red ? "R" : "B"; }
     T value;
     bool red = false;
   };
@@ -68,7 +68,7 @@ struct LLRB {
       return true;
     }
     if (x == node->value) return false;
-		if (!Insert(x < node->value ? node->left : node->right, x)) return false;
+    if (!Insert(x < node->value ? node->left : node->right, x)) return false;
     // Enforce left-leaning.
     if (node->right->red) {
       // The current node might be red or black;
@@ -169,7 +169,7 @@ struct LLRB {
     Node* x = root->right;
     root->right = x->left;
     x->left = root;
-		return x;
+    return x;
   }
 
   // Right rotation:
@@ -182,7 +182,7 @@ struct LLRB {
     Node* x = root->left;
     root->left = x->right;
     x->right = root;
-		return x;
+    return x;
   }
 
   // LR rotation:
@@ -199,7 +199,7 @@ struct LLRB {
     root->left = y->right;
     y->left = x;
     y->right = root;
-		return y;
+    return y;
   }
 
   // RL rotation:
@@ -216,7 +216,7 @@ struct LLRB {
     root->right = y->left;
     y->left = root;
     y->right = x;
-		return y;
+    return y;
   }
 
   static Node dummy;
