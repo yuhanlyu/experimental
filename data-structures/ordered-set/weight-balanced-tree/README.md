@@ -26,20 +26,20 @@ symmetry of cases.
 ----------------------------------------------------------------------
 Benchmark                               Time           CPU Iterations
 ----------------------------------------------------------------------
-WBTBenchmark/WBTInsert/1024         73295 ns      73307 ns       9436
-WBTBenchmark/WBTInsert/4096        363342 ns     363320 ns       1946
-WBTBenchmark/WBTInsert/16384      2166377 ns    2166230 ns        325
-WBTBenchmark/WBTInsert/65536     11878268 ns   11876806 ns         59
-WBTBenchmark/WBTInsert/262144    73615756 ns   73609235 ns         10
-WBTBenchmark/WBTInsert/1048576  543782022 ns  543738739 ns          1
+WBTBenchmark/WBTInsert/1024         64347 ns      64359 ns      10845
+WBTBenchmark/WBTInsert/4096        323753 ns     323764 ns       2168
+WBTBenchmark/WBTInsert/16384      2013228 ns    2013208 ns        350
+WBTBenchmark/WBTInsert/65536     11511031 ns   11510702 ns         62
+WBTBenchmark/WBTInsert/262144    78715375 ns   78712818 ns         11
+WBTBenchmark/WBTInsert/1048576  548661947 ns  548647568 ns          1
 
 ----------------------------------------------------------------------
 Benchmark                               Time           CPU Iterations
 ----------------------------------------------------------------------
-WBTBenchmark/WBTDelete/1024         61058 ns      61054 ns      11518
-WBTBenchmark/WBTDelete/4096        311420 ns     311397 ns       2291
-WBTBenchmark/WBTDelete/16384      1916533 ns    1916334 ns        369
-WBTBenchmark/WBTDelete/65536     10835475 ns   10834715 ns         65
-WBTBenchmark/WBTDelete/262144    65703348 ns   65698357 ns         11
-WBTBenchmark/WBTDelete/1048576  506542678 ns  506508165 ns          1
+WBTBenchmark/WBTDelete/1024         47585 ns      47585 ns      14754
+WBTBenchmark/WBTDelete/4096        244020 ns     244004 ns       2864
+WBTBenchmark/WBTDelete/16384      1563659 ns    1563595 ns        448
+WBTBenchmark/WBTDelete/65536      9257967 ns    9257659 ns         77
+WBTBenchmark/WBTDelete/262144    63169563 ns   63155189 ns         12
+WBTBenchmark/WBTDelete/1048576  531399663 ns  531214655 ns          2
 </pre>

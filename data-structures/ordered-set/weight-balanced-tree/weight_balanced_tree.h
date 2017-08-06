@@ -1,7 +1,6 @@
 #ifndef WEIGHT_BALANCED_TREE_H
 #define WEIGHT_BALANCED_TREE_H
 
-#include <type_traits>
 #include <vector>
 
 #include "../binary-search-tree-common/binary_search_tree_common.h"
@@ -175,7 +174,7 @@ struct WeightBalancedTree {
     delete to_be_delete;
   }
 
-  static void DeleteMin(Node*& to_be_delete, Node**& parent_pointer,
+  static void DeleteMin(Node* to_be_delete, Node**& parent_pointer,
                         bool is_right) {
     parent_pointer = &to_be_delete->link[is_right];
     while ((*parent_pointer)->link[!is_right] != sentinel) {
