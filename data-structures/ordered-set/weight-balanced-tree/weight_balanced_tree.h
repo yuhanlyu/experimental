@@ -12,7 +12,6 @@ struct WeightBalancedTree {
   struct Node {
     using value_type = T;
     explicit Node(const T& x) : value(x) {}
-    Node(Node* l, Node* r) : left(l), right(r) {}
     Node(Node* l, Node* r, int s) : left(l), right(r), size(s) {}
     Node() = default;
     Node* left = sentinel;
@@ -253,7 +252,7 @@ struct WeightBalancedTree {
     y->left = x;
     y->right = root;
     root = y;
-    calculate_size2(root);
+    calculate_size2(y);
   }
 
   // RL rotation:
@@ -271,7 +270,7 @@ struct WeightBalancedTree {
     y->left = root;
     y->right = x;
     root = y;
-    calculate_size2(root);
+    calculate_size2(y);
   }
 
   static Node dummy;
