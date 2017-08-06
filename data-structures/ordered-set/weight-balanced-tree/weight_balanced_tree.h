@@ -123,8 +123,8 @@ struct WeightBalancedTree {
         need_single_rotation_after_insert(child->link[!is_right],
                                           child->link[is_right],
                                           is_right == (x < child->value))
-            ? LeftRotate(current, is_right)
-            : RLRotate(current, is_right);
+            ? Rotate(current, is_right)
+            : DoubleRotate(current, is_right);
       }
       // Since the tree might be rotated, the subtree needed to be inserted
       // might change.
@@ -138,22 +138,16 @@ struct WeightBalancedTree {
     Node** parent_pointer = &node;
     while (*parent_pointer != sentinel) {
       Node*& current = *parent_pointer;
-      if (current->value == x) break;
+      if (x == current->value) break;
+      bool is_right = x >= current->value;
       // Rotate the tree when the size is imbalanced.
-      if (x < current->value) {
-        if (!is_balanced_after_remove(current->left, current->right)) {
-          Node* child = current->right;
-          need_single_rotation_after_remove(child->left, child->right)
-              ? LeftRotate(current)
-              : RLRotate(current);
-        }
-      } else {
-        if (!is_balanced_after_remove(current->right, current->left)) {
-          Node* child = current->left;
-          need_single_rotation_after_remove(child->right, child->left)
-              ? RightRotate(current)
-              : LRRotate(current);
-        }
+      if (!is_balanced_after_remove(current->link[is_right],
+                                    current->link[!is_right])) {
+        Node* child = current->link[!is_right];
+        need_single_rotation_after_remove(child->link[is_right],
+                                          child->link[!is_right])
+            ? Rotate(current, !is_right)
+            : DoubleRotate(current, !is_right);
       }
       // Since the tree might be rotated, the subtree needed to be removed
       // might change.
@@ -168,36 +162,10 @@ struct WeightBalancedTree {
     if (to_be_delete->left != sentinel && to_be_delete->right != sentinel) {
       --to_be_delete->size;
       // If the right subtree size is larger, then promote the minimum of the
-      // right subtree.
-      if (size(to_be_delete->right) > size(to_be_delete->left)) {
-        parent_pointer = &to_be_delete->right;
-        while ((*parent_pointer)->left != sentinel) {
-          Node*& current = *parent_pointer;
-          if (!is_balanced_after_remove(current->left, current->right)) {
-            Node* child = current->right;
-            need_single_rotation_after_remove(child->left, child->right)
-                ? LeftRotate(current)
-                : RLRotate(current);
-          }
-          --current->size;
-          parent_pointer = &current->left;
-        }
-      } else {
-        // If the left subtree size is larger, then promote the maximum of the
-        // left subtree.
-        parent_pointer = &to_be_delete->left;
-        while ((*parent_pointer)->right != sentinel) {
-          Node*& current = *parent_pointer;
-          if (!is_balanced_after_remove(current->right, current->left)) {
-            Node* child = current->left;
-            need_single_rotation_after_remove(child->right, child->left)
-                ? RightRotate(current)
-                : LRRotate(current);
-          }
-          --current->size;
-          parent_pointer = &current->right;
-        }
-      }
+      // right subtree. Otherwise, promote the maximum of the left subtree.
+      size(to_be_delete->right) > size(to_be_delete->left)
+          ? DeleteMin(to_be_delete, parent_pointer, true)
+          : DeleteMin(to_be_delete, parent_pointer, false);
       to_be_delete->value = (*parent_pointer)->value;
       to_be_delete = *parent_pointer;
     }
@@ -208,28 +176,32 @@ struct WeightBalancedTree {
     delete to_be_delete;
   }
 
-  // Left rotation:
-  //    root           x    |
-  //    /  \          / \   |
-  //   a    x   To root  c  |
-  //       / \     /  \     |
-  //      b    c  a    b    |
-  static void LeftRotate(Node*& root) {
-    Node* x = root->right;
-    root->right = x->left;
-    x->left = root;
-    root = x;
-    calculate_size(x->left);
-    calculate_size(x);
+  static void DeleteMin(Node*& to_be_delete, Node**& parent_pointer,
+                        bool is_right) {
+    parent_pointer = &to_be_delete->link[is_right];
+    while ((*parent_pointer)->link[!is_right] != sentinel) {
+      Node*& current = *parent_pointer;
+      if (!is_balanced_after_remove(current->link[!is_right],
+                                    current->link[is_right])) {
+        Node* child = current->link[is_right];
+        need_single_rotation_after_remove(child->link[!is_right],
+                                          child->link[is_right])
+            ? Rotate(current, is_right)
+            : DoubleRotate(current, is_right);
+      }
+      --current->size;
+      parent_pointer = &current->link[!is_right];
+    }
   }
 
-  // Left rotation:
+  // Left rotation, when is_right = true
   //    root           x    |
   //    /  \          / \   |
   //   a    x   To root  c  |
   //       / \     /  \     |
   //      b    c  a    b    |
-  static void LeftRotate(Node*& root, bool is_right) {
+  // otherwise, right rotation.
+  static void Rotate(Node*& root, bool is_right) {
     Node* x = root->link[is_right];
     root->link[is_right] = x->link[!is_right];
     x->link[!is_right] = root;
@@ -238,40 +210,7 @@ struct WeightBalancedTree {
     calculate_size(x);
   }
 
-  // Right rotation:
-  //    root          x       |
-  //    /  \         / \      |
-  //   x    c  To   a  root   |
-  //  / \              /  \   |
-  // a   b            b    c  |
-  static void RightRotate(Node*& root) {
-    Node* x = root->left;
-    root->left = x->right;
-    x->right = root;
-    root = x;
-    calculate_size(x->right);
-    calculate_size(x);
-  }
-
-  // LR rotation:
-  //    root             y         |
-  //    /  \           /   \       |
-  //   x    d         x    root    |
-  //  / \      To    / \   /  \    |
-  // a   y          a   b c    d   |
-  //    / \                        |
-  //   b   c                       |
-  static void LRRotate(Node*& root) {
-    Node *x = root->left, *y = x->right;
-    x->right = y->left;
-    root->left = y->right;
-    y->left = x;
-    y->right = root;
-    root = y;
-    calculate_size2(y);
-  }
-
-  // RL rotation:
+  // RL rotation, when is_right = true.
   //    root              y        |
   //    /  \            /   \      |
   //   a    x         root   x     |
@@ -279,25 +218,8 @@ struct WeightBalancedTree {
   //      y   d      a   b c   d   |
   //     / \                       |
   //    b   c                      |
-  static void RLRotate(Node*& root) {
-    Node *x = root->right, *y = x->left;
-    x->left = y->right;
-    root->right = y->left;
-    y->left = root;
-    y->right = x;
-    root = y;
-    calculate_size2(y);
-  }
-
-  // RL rotation:
-  //    root              y        |
-  //    /  \            /   \      |
-  //   a    x         root   x     |
-  //       / \   To   / \   / \    |
-  //      y   d      a   b c   d   |
-  //     / \                       |
-  //    b   c                      |
-  static void RLRotate(Node*& root, bool is_right) {
+  // Otherwise, LRrotation.
+  static void DoubleRotate(Node*& root, bool is_right) {
     Node *x = root->link[is_right], *y = x->link[!is_right];
     x->link[!is_right] = y->link[is_right];
     root->link[is_right] = y->link[!is_right];
