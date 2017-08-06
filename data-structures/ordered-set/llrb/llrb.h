@@ -68,20 +68,19 @@ struct LLRB {
       return true;
     }
     if (x == node->value) return false;
-		if (!(x < node->value ? Insert(node->left, x) : Insert(node->right, x)))
-			return false;
+		if (!Insert(x < node->value ? node->left : node->right, x)) return false;
     // Enforce left-leaning.
     if (node->right->red) {
       // The current node might be red or black;
       node->right->red = node->red;
       node->red = true;
-      LeftRotate(node);
+      node = LeftRotate(node);
     }
     // No two reds in a row.
     if (node->left->red && node->left->left->red) {
       // The current node must be black. Rotate and flip color.
       node->left->left->red = false;
-      RightRotate(node);
+      node = RightRotate(node);
       return true;
     }
     // When two children are red, flip color.
@@ -102,7 +101,7 @@ struct LLRB {
         node->red = false;
         node->left->red = true;
         if (node->right->left->red)
-          RLRotate(node);
+          node = RLRotate(node);
         else
           node->right->red = true;
       }
@@ -112,7 +111,7 @@ struct LLRB {
       if (node->left->red) {
         node->left->red = false;
         node->red = true;
-        RightRotate(node);
+        node = RightRotate(node);
       }
       // Delete a leaf.
       if (x == node->value && node->right == sentinel) {
@@ -128,7 +127,7 @@ struct LLRB {
         node->left->red = node->right->red = true;
         if (node->left->left->red) {
           node->left->left->red = false;
-          RightRotate(node);
+          node = RightRotate(node);
         }
       }
       // When the target value is found, replaced the node by the successor.
@@ -144,12 +143,12 @@ struct LLRB {
     if (node->right->red) {
       node->right->red = false;
       node->red = true;
-      LeftRotate(node);
+      node = LeftRotate(node);
     }
     // No two reds in a row.
     if (node->left->red && node->left->left->red) {
       node->left->left->red = false;
-      RightRotate(node);
+      node = RightRotate(node);
       return deleted;
     }
     // Flip color to enforce 2-3 tree.
@@ -166,11 +165,11 @@ struct LLRB {
   //   a    x   To root  c  |
   //       / \     /  \     |
   //      b    c  a    b    |
-  static void LeftRotate(Node*& root) {
+  static Node* LeftRotate(Node* root) {
     Node* x = root->right;
     root->right = x->left;
     x->left = root;
-    root = x;
+		return x;
   }
 
   // Right rotation:
@@ -179,11 +178,11 @@ struct LLRB {
   //   x    c  To   a  root   |
   //  / \              /  \   |
   // a   b            b    c  |
-  static void RightRotate(Node*& root) {
+  static Node* RightRotate(Node* root) {
     Node* x = root->left;
     root->left = x->right;
     x->right = root;
-    root = x;
+		return x;
   }
 
   // LR rotation:
@@ -194,13 +193,13 @@ struct LLRB {
   // a   y          a   b c    d   |
   //    / \                        |
   //   b   c                       |
-  static void LRRotate(Node*& root) {
+  static Node* LRRotate(Node* root) {
     Node *x = root->left, *y = x->right;
     x->right = y->left;
     root->left = y->right;
     y->left = x;
     y->right = root;
-    root = y;
+		return y;
   }
 
   // RL rotation:
@@ -211,13 +210,13 @@ struct LLRB {
   //      y   d      a   b c   d   |
   //     / \                       |
   //    b   c                      |
-  static void RLRotate(Node*& root) {
+  static Node* RLRotate(Node* root) {
     Node *x = root->right, *y = x->left;
     x->left = y->right;
     root->right = y->left;
     y->left = root;
     y->right = x;
-    root = y;
+		return y;
   }
 
   static Node dummy;
