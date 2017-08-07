@@ -65,13 +65,16 @@ struct AATree {
         node = sentinel;
         return true;
       }
-      // When there are two subtrees, find the successor.
-      // When there is one subtree, must find predecessor/successor accordingly,
-      // instead of promoting the only child.
-      if (node->left == sentinel)
-        node->right = DeleteMinAndSet(node, node->right);
-      else
-        node->left = DeleteMaxAndSet(node, node->left);
+			// When node->left is sentinel, node->right must have level 1.
+      if (node->left == sentinel) {
+				node->value = node->right->value;
+				delete node->right;
+				node->right = sentinel;
+				return true;
+			}
+			// When node->left is not sentinel, node->right is not sentinel as well.
+			// Move the predecessor to node and delete predecessor.
+      node->left = DeleteMaxAndSet(node, node->left);
     } else if (!Delete(x < node->value ? node->left : node->right, x))
       return false;
     node = RebalanceAfterDelete(node);
