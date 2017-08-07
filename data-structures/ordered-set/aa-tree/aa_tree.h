@@ -60,17 +60,12 @@ struct AATree {
   static bool Delete(Node*& node, const T& x) {
     if (node == sentinel) return false;
     if (x == node->value) {
-      // When node is leaf, delete directly.
-      if (node->left == sentinel && node->right == sentinel) {
-        delete node;
-        node = sentinel;
-        return true;
-      }
-      // When node->left is sentinel, node->right must have level 1.
+      // When node->left is sentinel, node->right is either sentinel or
+      // a leaf.
       if (node->left == sentinel) {
-        node->value = node->right->value;
-        delete node->right;
-        node->right = sentinel;
+        Node* old = node;
+        node = node->right;
+        delete old;
         return true;
       }
       // When node->left is not sentinel, node->right is not sentinel as well.
