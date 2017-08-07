@@ -60,20 +60,21 @@ struct AATree {
   static bool Delete(Node*& node, const T& x) {
     if (node == sentinel) return false;
     if (x == node->value) {
+      // When node is leaf, delete directly.
       if (node->left == sentinel && node->right == sentinel) {
         delete node;
         node = sentinel;
         return true;
       }
-			// When node->left is sentinel, node->right must have level 1.
+      // When node->left is sentinel, node->right must have level 1.
       if (node->left == sentinel) {
-				node->value = node->right->value;
-				delete node->right;
-				node->right = sentinel;
-				return true;
-			}
-			// When node->left is not sentinel, node->right is not sentinel as well.
-			// Move the predecessor to node and delete predecessor.
+        node->value = node->right->value;
+        delete node->right;
+        node->right = sentinel;
+        return true;
+      }
+      // When node->left is not sentinel, node->right is not sentinel as well.
+      // Move the predecessor to node and delete predecessor.
       node->left = DeleteMaxAndSet(node, node->left);
     } else if (!Delete(x < node->value ? node->left : node->right, x))
       return false;
@@ -81,34 +82,16 @@ struct AATree {
     return true;
   }
 
-  // Find the minimum in the subtree rooted at node, set be_deleted->value to be
-  // the minimum and delete the minimum node.
-  static Node* DeleteMinAndSet(Node* be_deleted, Node* node) {
-    if (node->left != sentinel) {
-      node->left = DeleteMinAndSet(be_deleted, node->left);
-      node = RebalanceAfterDelete(node);
-    } else {
-      be_deleted->value = node->value;
-      Node* old_node = node;
-      node = node->right;
-      delete old_node;
-    }
-    return node;
-  }
-
   // Find the maximum in the subtree rooted at node, set be_deleted->value to be
   // the minimum and delete the minimum node.
   static Node* DeleteMaxAndSet(Node* be_deleted, Node* node) {
-    if (node->right != sentinel) {
-      node->right = DeleteMaxAndSet(be_deleted, node->right);
-      node = RebalanceAfterDelete(node);
-    } else {
+    if (node->right == sentinel) {
       be_deleted->value = node->value;
-      Node* old_node = node;
-      node = node->right;
-      delete old_node;
+      delete node;
+      return sentinel;
     }
-    return node;
+    node->right = DeleteMaxAndSet(be_deleted, node->right);
+    return RebalanceAfterDelete(node);
   }
 
   // If the tree is imbalance after deletion, rebalance the tree.
