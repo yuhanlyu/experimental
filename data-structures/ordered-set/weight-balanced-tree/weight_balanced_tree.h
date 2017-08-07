@@ -161,8 +161,21 @@ struct WeightBalancedTree {
       --to_be_delete->size;
       // If the right subtree size is larger, then promote the minimum of the
       // right subtree. Otherwise, promote the maximum of the left subtree.
-      parent_pointer = DeleteMin(
-          to_be_delete, size(to_be_delete->right) > size(to_be_delete->left));
+      bool is_right = size(to_be_delete->right) > size(to_be_delete->left);
+      parent_pointer = &to_be_delete->link[is_right];
+      while ((*parent_pointer)->link[!is_right] != sentinel) {
+        Node*& current = *parent_pointer;
+        if (!is_balanced_after_remove(current->link[!is_right],
+                                      current->link[is_right])) {
+          Node* child = current->link[is_right];
+          current = need_single_rotation_after_remove(child->link[!is_right],
+                                                      child->link[is_right])
+                        ? Rotate(current, is_right)
+                        : DoubleRotate(current, is_right);
+        }
+        --current->size;
+        parent_pointer = &current->link[!is_right];
+      }
       to_be_delete->value = (*parent_pointer)->value;
       to_be_delete = *parent_pointer;
     }
@@ -171,24 +184,6 @@ struct WeightBalancedTree {
     *parent_pointer = (to_be_delete->left != sentinel ? to_be_delete->left
                                                       : to_be_delete->right);
     delete to_be_delete;
-  }
-
-  static Node** DeleteMin(Node* to_be_delete, bool is_right) {
-    Node** parent_pointer = &to_be_delete->link[is_right];
-    while ((*parent_pointer)->link[!is_right] != sentinel) {
-      Node*& current = *parent_pointer;
-      if (!is_balanced_after_remove(current->link[!is_right],
-                                    current->link[is_right])) {
-        Node* child = current->link[is_right];
-        current = need_single_rotation_after_remove(child->link[!is_right],
-                                                    child->link[is_right])
-                      ? Rotate(current, is_right)
-                      : DoubleRotate(current, is_right);
-      }
-      --current->size;
-      parent_pointer = &current->link[!is_right];
-    }
-    return parent_pointer;
   }
 
   // Left rotation, when is_right = true
