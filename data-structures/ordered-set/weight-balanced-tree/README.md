@@ -26,12 +26,12 @@ symmetry of cases.
 ----------------------------------------------------------------------
 Benchmark                               Time           CPU Iterations
 ----------------------------------------------------------------------
-WBTBenchmark/WBTInsert/1024         64347 ns      64359 ns      10845
-WBTBenchmark/WBTInsert/4096        323753 ns     323764 ns       2168
-WBTBenchmark/WBTInsert/16384      2013228 ns    2013208 ns        350
-WBTBenchmark/WBTInsert/65536     11511031 ns   11510702 ns         62
-WBTBenchmark/WBTInsert/262144    78715375 ns   78712818 ns         11
-WBTBenchmark/WBTInsert/1048576  548661947 ns  548647568 ns          1
+WBTBenchmark/WBTInsert/1024         63266 ns      63268 ns      10903
+WBTBenchmark/WBTInsert/4096        312897 ns     312897 ns       2250
+WBTBenchmark/WBTInsert/16384      1961589 ns    1961532 ns        355
+WBTBenchmark/WBTInsert/65536     11324838 ns   11324909 ns         61
+WBTBenchmark/WBTInsert/262144    80174599 ns   80170161 ns         10
+WBTBenchmark/WBTInsert/1048576  571112625 ns  571107180 ns          1
 
 ----------------------------------------------------------------------
 Benchmark                               Time           CPU Iterations
