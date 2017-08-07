@@ -186,23 +186,23 @@ struct WeightBalancedTree {
     delete to_be_delete;
   }
 
-  // Left rotation, when is_right = true
+  // Left rotation, when left_rotate = true
   //    root           x    |
   //    /  \          / \   |
   //   a    x   To root  c  |
   //       / \     /  \     |
   //      b    c  a    b    |
   // otherwise, right rotation.
-  static Node* Rotate(Node* root, bool is_right) {
-    Node* x = root->link[is_right];
-    root->link[is_right] = x->link[!is_right];
-    x->link[!is_right] = root;
-    calculate_size(x->link[!is_right]);
+  static Node* Rotate(Node* root, bool left_rotate) {
+    Node* x = root->link[left_rotate];
+    root->link[left_rotate] = x->link[!left_rotate];
+    x->link[!left_rotate] = root;
+    calculate_size(x->link[!left_rotate]);
     calculate_size(x);
     return x;
   }
 
-  // RL rotation, when is_right = true.
+  // RL rotation, when rl_rotate = true.
   //    root              y        |
   //    /  \            /   \      |
   //   a    x         root   x     |
@@ -211,12 +211,12 @@ struct WeightBalancedTree {
   //     / \                       |
   //    b   c                      |
   // Otherwise, LRrotation.
-  static Node* DoubleRotate(Node* root, bool is_right) {
-    Node *x = root->link[is_right], *y = x->link[!is_right];
-    x->link[!is_right] = y->link[is_right];
-    root->link[is_right] = y->link[!is_right];
-    y->link[!is_right] = root;
-    y->link[is_right] = x;
+  static Node* DoubleRotate(Node* root, bool rl_rotate) {
+    Node *x = root->link[rl_rotate], *y = x->link[!rl_rotate];
+    x->link[!rl_rotate] = y->link[rl_rotate];
+    root->link[rl_rotate] = y->link[!rl_rotate];
+    y->link[!rl_rotate] = root;
+    y->link[rl_rotate] = x;
     calculate_size2(y);
     return y;
   }
