@@ -21,51 +21,10 @@ struct AVLTree {
 
   bool RecursiveInsert(const T& x) {
     bool done = false;
-    return Insert(root_, x, done);
+    return RecursiveInsert(root_, x, done);
   }
 
-  bool Insert(const T& x) {
-    if (root_ == nullptr) {
-      root_ = new Node(x);
-      return true;
-    }
-    Node **parent = &root_, **safe_node = &root_;
-    // Find the lowest node that has non zero balance_factor as safe_node,
-    // and the position to be inserted as parent.
-    while ((*parent) != nullptr) {
-      Node*& current = *parent;
-      if (x == current->value) return false;
-      if (current->balance_factor != 0) safe_node = parent;
-      parent = x < current->value ? &current->left : &current->right;
-    }
-    *parent = new Node(x);
-    // Update balance_factor on the path from safe_node to parent.
-    for (Node* current = *safe_node; current->value != x;) {
-      if (x < current->value) {
-        --current->balance_factor;
-        current = current->left;
-      } else {
-        ++current->balance_factor;
-        current = current->right;
-      }
-    }
-    Node*& node = *safe_node;
-    // Rebalance the safe_node.
-    if (node->balance_factor == -2) {
-      if (node->left->balance_factor == -1) {
-        node->balance_factor = node->left->balance_factor = 0;
-        RightRotate(node);
-      } else
-        LRRotate(node);
-    } else if (node->balance_factor == 2) {
-      if (node->right->balance_factor == 1) {
-        node->balance_factor = node->right->balance_factor = 0;
-        LeftRotate(node);
-      } else
-        RLRotate(node);
-    }
-    return true;
-  }
+  bool Insert(const T& x) { return Insert(root_, x); }
 
   bool Delete(const T& x) {
     bool done = false;
@@ -95,7 +54,50 @@ struct AVLTree {
     return std::max(left_height, right_height) + 1;
   }
 
-  static bool Insert(Node*& node, const T& x, bool& done) {
+  static bool Insert(Node*& node, const T& x) {
+    if (node == nullptr) {
+      node = new Node(x);
+      return true;
+    }
+    Node **parent = &node, **safe_node = &node;
+    // Find the lowest node that has non zero balance_factor as safe_node,
+    // and the position to be inserted as parent.
+    while ((*parent) != nullptr) {
+      Node*& current = *parent;
+      if (x == current->value) return false;
+      if (current->balance_factor != 0) safe_node = parent;
+      parent = x < current->value ? &current->left : &current->right;
+    }
+    *parent = new Node(x);
+    // Update balance_factor on the path from safe_node to parent.
+    for (Node* current = *safe_node; current->value != x;) {
+      if (x < current->value) {
+        --current->balance_factor;
+        current = current->left;
+      } else {
+        ++current->balance_factor;
+        current = current->right;
+      }
+    }
+    Node*& update_node = *safe_node;
+    // Rebalance the safe_node.
+    if (update_node->balance_factor == -2) {
+      if (update_node->left->balance_factor == -1) {
+        update_node->balance_factor = update_node->left->balance_factor = 0;
+        RightRotate(update_node);
+      } else
+        LRRotate(update_node);
+    } else if (update_node->balance_factor == 2) {
+      if (update_node->right->balance_factor == 1) {
+        update_node->balance_factor = update_node->right->balance_factor = 0;
+        LeftRotate(update_node);
+      } else
+        RLRotate(update_node);
+    }
+    return true;
+  }
+
+  static bool RecursiveInsert(Node*& node, const T& x, bool& done) {
     // When the tree is empty, create the node at root;
     if (node == nullptr) {
       node = new Node(x);
@@ -103,7 +105,7 @@ struct AVLTree {
     }
     if (x == node->value) return false;
     if (x < node->value) {
-      if (!Insert(node->left, x, done)) return false;
+      if (!RecursiveInsert(node->left, x, done)) return false;
       // The balance_factor changes from 0 to -1 -> the height of the subtree
       // increases, propagate up to rebalance the tree.
       if (done || --node->balance_factor == -1) return true;
@@ -120,7 +122,7 @@ struct AVLTree {
       } else
         LRRotate(node);
     } else {
-      if (!Insert(node->right, x, done)) return false;
+      if (!RecursiveInsert(node->right, x, done)) return false;
       // The balance_factor changes from 0 to 1 -> the height of the subtree
       // increases, propagate up to rebalance the tree.
       if (done || ++node->balance_factor == 1) return true;
