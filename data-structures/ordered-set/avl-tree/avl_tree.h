@@ -84,15 +84,15 @@ struct AVLTree {
     if (update_node->balance_factor == -2) {
       if (update_node->left->balance_factor == -1) {
         update_node->balance_factor = update_node->left->balance_factor = 0;
-        RightRotate(update_node);
+        update_node = RightRotate(update_node);
       } else
-        LRRotate(update_node);
+        update_node = LRRotate(update_node);
     } else if (update_node->balance_factor == 2) {
       if (update_node->right->balance_factor == 1) {
         update_node->balance_factor = update_node->right->balance_factor = 0;
-        LeftRotate(update_node);
+        update_node = LeftRotate(update_node);
       } else
-        RLRotate(update_node);
+        update_node = RLRotate(update_node);
     }
     return true;
   }
@@ -118,9 +118,9 @@ struct AVLTree {
       // node->left->balance_factor is either 1 or -1.
       if (node->left->balance_factor == -1) {
         node->balance_factor = node->left->balance_factor = 0;
-        RightRotate(node);
+        node = RightRotate(node);
       } else
-        LRRotate(node);
+        node = LRRotate(node);
     } else {
       if (!RecursiveInsert(node->right, x, done)) return false;
       // The balance_factor changes from 0 to 1 -> the height of the subtree
@@ -135,9 +135,9 @@ struct AVLTree {
       // node->right->balance_factor is either 1 or -1.
       if (node->right->balance_factor == 1) {
         node->balance_factor = node->right->balance_factor = 0;
-        LeftRotate(node);
+        node = LeftRotate(node);
       } else
-        RLRotate(node);
+        node = RLRotate(node);
     }
     return true;
   }
@@ -174,9 +174,9 @@ struct AVLTree {
           node->balance_factor = 1;
           node->right->balance_factor = -1;
         }
-        LeftRotate(node);
+        node = LeftRotate(node);
       } else
-        RLRotate(node);
+        node = RLRotate(node);
     } else {
       if (!Delete(node->right, *delete_value, done)) return false;
       // The balance_factor changes from 1 to 0 -> the height of the subtree
@@ -194,9 +194,9 @@ struct AVLTree {
           node->balance_factor = -1;
           node->left->balance_factor = 1;
         }
-        RightRotate(node);
+        node = RightRotate(node);
       } else
-        LRRotate(node);
+        node = LRRotate(node);
     }
     return true;
   }
@@ -207,11 +207,11 @@ struct AVLTree {
   //   a    x   To root  c  |
   //       / \     /  \     |
   //      b    c  a    b    |
-  static void LeftRotate(Node*& root) {
+  static Node* LeftRotate(Node* root) {
     Node* x = root->right;
     root->right = x->left;
     x->left = root;
-    root = x;
+		return x;
   }
 
   // Right rotation:
@@ -220,11 +220,11 @@ struct AVLTree {
   //   x    c  To   a  root   |
   //  / \              /  \   |
   // a   b            b    c  |
-  static void RightRotate(Node*& root) {
+  static Node* RightRotate(Node* root) {
     Node* x = root->left;
     root->left = x->right;
     x->right = root;
-    root = x;
+		return x;
   }
 
   // LR rotation:
@@ -235,7 +235,7 @@ struct AVLTree {
   // a   y          a   b c    d   |
   //    / \                        |
   //   b   c                       |
-  static void LRRotate(Node*& root) {
+  static Node* LRRotate(Node* root) {
     Node *x = root->left, *y = x->right;
     if (y->balance_factor == 0) {
       x->balance_factor = root->balance_factor = 0;
@@ -251,7 +251,7 @@ struct AVLTree {
     root->left = y->right;
     y->left = x;
     y->right = root;
-    root = y;
+		return y;
   }
 
   // RL rotation:
@@ -262,7 +262,7 @@ struct AVLTree {
   //      y   d      a   b c   d   |
   //     / \                       |
   //    b   c                      |
-  static void RLRotate(Node*& root) {
+  static Node* RLRotate(Node* root) {
     Node *x = root->right, *y = x->left;
     if (y->balance_factor == 0) {
       x->balance_factor = root->balance_factor = 0;
@@ -278,7 +278,7 @@ struct AVLTree {
     root->right = y->left;
     y->left = root;
     y->right = x;
-    root = y;
+		return y;
   }
 
   Node* root_ = nullptr;
