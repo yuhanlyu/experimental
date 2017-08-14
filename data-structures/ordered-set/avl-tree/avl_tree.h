@@ -13,8 +13,13 @@ struct AVLTree {
     explicit Node(const T& x) : value(x) {}
     Node(Node* l, Node* r) : left(l), right(r) {}
     Node() = default;
-    Node* left = nullptr;
-    Node* right = nullptr;
+    union {
+      Node* link[2] = {nullptr, nullptr};
+      struct {
+        Node* left;
+        Node* right;
+      };
+    };
     T value;
     signed char balance_factor = 0;
   };
@@ -98,47 +103,34 @@ struct AVLTree {
   }
 
   static bool RecursiveInsert(Node*& node, const T& x, bool& done) {
-    // When the tree is empty, create the node at root;
     if (node == nullptr) {
       node = new Node(x);
       return true;
     }
     if (x == node->value) return false;
-    if (x < node->value) {
-      if (!RecursiveInsert(node->left, x, done)) return false;
-      // The balance_factor changes from 0 to -1 -> the height of the subtree
-      // increases, propagate up to rebalance the tree.
-      if (done || --node->balance_factor == -1) return true;
-      // At this point, node->balance_factor is either 0 or -2.
-      done = true;
-      // The balance_factor changes from 1 to 0, the height of the subtree does
-      // not change, we are done.
-      if (node->balance_factor == 0) return true;
-      // When node->balance_factor is -2, rotation is required.
-      // node->left->balance_factor is either 1 or -1.
-      if (node->left->balance_factor == -1) {
-        node->balance_factor = node->left->balance_factor = 0;
-        node = RightRotate(node);
-      } else
-        node = LRRotate(node);
-    } else {
-      if (!RecursiveInsert(node->right, x, done)) return false;
-      // The balance_factor changes from 0 to 1 -> the height of the subtree
-      // increases, propagate up to rebalance the tree.
-      if (done || ++node->balance_factor == 1) return true;
-      // At this point, node->balance_factor is either 0 or 2.
-      done = true;
-      // The balance_factor changes from -1 to 0, the height of the subtree does
-      // not change, we are done.
-      if (node->balance_factor == 0) return true;
-      // When node->balance_factor is 2, rotation is required.
-      // node->right->balance_factor is either 1 or -1.
-      if (node->right->balance_factor == 1) {
-        node->balance_factor = node->right->balance_factor = 0;
-        node = LeftRotate(node);
-      } else
-        node = RLRotate(node);
+    bool is_right = x >= node->value;
+    if (!RecursiveInsert(node->link[is_right], x, done)) return false;
+    if (done) return true;
+    node->balance_factor += is_right * 2 - 1;
+    // If the balance_factor changes from 0 to 1 or -1, propagate up to 
+		// rebalance the tree.
+    if (node->balance_factor == is_right * 2 - 1) return true;
+		// At this point, node->balance_factor is either 0, 2, or -2.
+    done = true;
+    // The balance_factor changes from 1 or -1 to 0, the height of the subtree
+    // does not change, we are done.
+    if (node->balance_factor == 0) return true;
+		// At this point, node->balance_factor is either 2 or -2.
+		// When balance_factor has different signs with the inserted subtree's
+		// balance_factor, double rotation.
+    if ((node->link[is_right]->balance_factor ^ node->balance_factor) < 0) {
+      node = DoubleRotate(node, is_right);
+      return true;
     }
+		// When balance_factor has the same sign with the inserted subtree's
+		// balance_factor, single rotation.
+    node->balance_factor = node->link[is_right]->balance_factor = 0;
+    node = Rotate(node, is_right);
     return true;
   }
 
@@ -211,7 +203,7 @@ struct AVLTree {
     Node* x = root->right;
     root->right = x->left;
     x->left = root;
-		return x;
+    return x;
   }
 
   // Right rotation:
@@ -224,7 +216,7 @@ struct AVLTree {
     Node* x = root->left;
     root->left = x->right;
     x->right = root;
-		return x;
+    return x;
   }
 
   // LR rotation:
@@ -251,7 +243,7 @@ struct AVLTree {
     root->left = y->right;
     y->left = x;
     y->right = root;
-		return y;
+    return y;
   }
 
   // RL rotation:
@@ -278,7 +270,49 @@ struct AVLTree {
     root->right = y->left;
     y->left = root;
     y->right = x;
-		return y;
+    return y;
+  }
+
+  // Left rotation, when left_rotate = true
+  //    root           x    |
+  //    /  \          / \   |
+  //   a    x   To root  c  |
+  //       / \     /  \     |
+  //      b    c  a    b    |
+  // otherwise, right rotation.
+  static Node* Rotate(Node* root, bool left_rotate) {
+    Node* x = root->link[left_rotate];
+    root->link[left_rotate] = x->link[!left_rotate];
+    x->link[!left_rotate] = root;
+    return x;
+  }
+
+  // RL rotation, when rl_rotate = true.
+  //    root              y        |
+  //    /  \            /   \      |
+  //   a    x         root   x     |
+  //       / \   To   / \   / \    |
+  //      y   d      a   b c   d   |
+  //     / \                       |
+  //    b   c                      |
+  // Otherwise, LRrotation.
+  static Node* DoubleRotate(Node* root, bool rl_rotate) {
+    Node *x = root->link[rl_rotate], *y = x->link[!rl_rotate];
+    if (y->balance_factor == 0) {
+      x->balance_factor = root->balance_factor = 0;
+    } else if (y->balance_factor == 2 * rl_rotate - 1) {
+      x->balance_factor = 0;
+      root->balance_factor = -y->balance_factor;
+    } else {
+      x->balance_factor = -y->balance_factor;
+      root->balance_factor = 0;
+    }
+    y->balance_factor = 0;
+    x->link[!rl_rotate] = y->link[rl_rotate];
+    root->link[rl_rotate] = y->link[!rl_rotate];
+    y->link[!rl_rotate] = root;
+    y->link[rl_rotate] = x;
+    return y;
   }
 
   Node* root_ = nullptr;
