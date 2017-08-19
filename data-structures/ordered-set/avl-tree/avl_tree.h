@@ -84,21 +84,22 @@ struct AVLTree {
         current = current->right;
       }
     }
+    if (std::abs((*safe_node)->balance_factor) < 2) return true;
     Node*& update_node = *safe_node;
-    // Rebalance the safe_node.
-    if (update_node->balance_factor == -2) {
-      if (update_node->left->balance_factor == -1) {
-        update_node->balance_factor = update_node->left->balance_factor = 0;
-        update_node = RightRotate(update_node);
-      } else
-        update_node = LRRotate(update_node);
-    } else if (update_node->balance_factor == 2) {
-      if (update_node->right->balance_factor == 1) {
-        update_node->balance_factor = update_node->right->balance_factor = 0;
-        update_node = LeftRotate(update_node);
-      } else
-        update_node = RLRotate(update_node);
+    bool is_right = x >= update_node->value;
+    // At this point, node->balance_factor is either 2 or -2.
+    // When balance_factor has different signs with the inserted subtree's
+    // balance_factor, double rotation.
+    if ((update_node->link[is_right]->balance_factor ^
+         update_node->balance_factor) < 0) {
+      update_node = DoubleRotate(update_node, is_right);
+      return true;
     }
+    // When balance_factor has the same sign with the inserted subtree's
+    // balance_factor, single rotation.
+    update_node->balance_factor = update_node->link[is_right]->balance_factor =
+        0;
+    update_node = Rotate(update_node, is_right);
     return true;
   }
 
@@ -112,23 +113,23 @@ struct AVLTree {
     if (!RecursiveInsert(node->link[is_right], x, done)) return false;
     if (done) return true;
     node->balance_factor += is_right * 2 - 1;
-    // If the balance_factor changes from 0 to 1 or -1, propagate up to 
-		// rebalance the tree.
+    // If the balance_factor changes from 0 to 1 or -1, propagate up to
+    // rebalance the tree.
     if (node->balance_factor == is_right * 2 - 1) return true;
-		// At this point, node->balance_factor is either 0, 2, or -2.
+    // At this point, node->balance_factor is either 0, 2, or -2.
     done = true;
     // The balance_factor changes from 1 or -1 to 0, the height of the subtree
     // does not change, we are done.
     if (node->balance_factor == 0) return true;
-		// At this point, node->balance_factor is either 2 or -2.
-		// When balance_factor has different signs with the inserted subtree's
-		// balance_factor, double rotation.
+    // At this point, node->balance_factor is either 2 or -2.
+    // When balance_factor has different signs with the inserted subtree's
+    // balance_factor, double rotation.
     if ((node->link[is_right]->balance_factor ^ node->balance_factor) < 0) {
       node = DoubleRotate(node, is_right);
       return true;
     }
-		// When balance_factor has the same sign with the inserted subtree's
-		// balance_factor, single rotation.
+    // When balance_factor has the same sign with the inserted subtree's
+    // balance_factor, single rotation.
     node->balance_factor = node->link[is_right]->balance_factor = 0;
     node = Rotate(node, is_right);
     return true;
