@@ -150,128 +150,31 @@ struct AVLTree {
       node->value = successor->value;
       delete_value = &node->value;
     }
-    if (*delete_value < node->value) {
-      if (!Delete(node->left, *delete_value, done)) return false;
-      // The balance_factor changes from -1 to 0 -> the height of the subtree
-      // decreases, propagate up to rebalance the tree.
-      if (done || ++node->balance_factor == 0) return true;
-      // The balance_factor changes from 0 to 1, the height of the subtree does
-      // not change, we are done.
-      if (node->balance_factor == 1) return done = true;
-      // node->right->balance_factor can be either 0, 1, -1.
-      if (node->right->balance_factor != -1) {
-        if (node->right->balance_factor == 1) {
-          node->balance_factor = node->right->balance_factor = 0;
-        } else {
-          done = true;
-          node->balance_factor = 1;
-          node->right->balance_factor = -1;
-        }
-        node = LeftRotate(node);
-      } else
-        node = RLRotate(node);
-    } else {
-      if (!Delete(node->right, *delete_value, done)) return false;
-      // The balance_factor changes from 1 to 0 -> the height of the subtree
-      // decreases, propagate up to rebalance the tree.
-      if (done || --node->balance_factor == 0) return true;
-      // The balance_factor changes from 0 to -1, the height of the subtree does
-      // not change, we are done.
-      if (node->balance_factor == -1) return done = true;
-      // node->left->balance_factor can be either 0, 1, -1.
-      if (node->left->balance_factor != 1) {
-        if (node->left->balance_factor == -1) {
-          node->balance_factor = node->left->balance_factor = 0;
-        } else {
-          done = true;
-          node->balance_factor = -1;
-          node->left->balance_factor = 1;
-        }
-        node = RightRotate(node);
-      } else
-        node = LRRotate(node);
+    bool is_right = *delete_value >= node->value;
+    if (!Delete(node->link[is_right], *delete_value, done)) return false;
+    if (done) return true;
+    node->balance_factor += !is_right * 2 - 1;
+    // The balance_factor changes from 1 or -1 to 0 -> the height of the
+    // subtree decreases, propagate up to rebalance the tree.
+    if (node->balance_factor == 0) return true;
+    // The balance_factor changes from 0 to 1 or -1, the height of the subtree
+    // does not change, we are done.
+    if (std::abs(node->balance_factor) == 1) return done = true;
+    // node->link[!is_right]->balance_factor can be either 0, 1, or -1.
+    if (node->link[!is_right]->balance_factor == 0) {
+      node->balance_factor = 2 * !is_right - 1;
+      node->link[!is_right]->balance_factor = 2 * is_right - 1;
+      node = Rotate(node, !is_right);
+      return done = true;
     }
+    // node->link[!is_right]->balance_factor can be either 1 or -1.
+    if (node->link[!is_right]->balance_factor == 2 * is_right - 1) {
+      node = DoubleRotate(node, !is_right);
+      return true;
+    }
+    node->balance_factor = node->link[!is_right]->balance_factor = 0;
+    node = Rotate(node, !is_right);
     return true;
-  }
-
-  // Left rotation:
-  //    root           x    |
-  //    /  \          / \   |
-  //   a    x   To root  c  |
-  //       / \     /  \     |
-  //      b    c  a    b    |
-  static Node* LeftRotate(Node* root) {
-    Node* x = root->right;
-    root->right = x->left;
-    x->left = root;
-    return x;
-  }
-
-  // Right rotation:
-  //    root          x       |
-  //    /  \         / \      |
-  //   x    c  To   a  root   |
-  //  / \              /  \   |
-  // a   b            b    c  |
-  static Node* RightRotate(Node* root) {
-    Node* x = root->left;
-    root->left = x->right;
-    x->right = root;
-    return x;
-  }
-
-  // LR rotation:
-  //    root             y         |
-  //    /  \           /   \       |
-  //   x    d         x    root    |
-  //  / \      To    / \   /  \    |
-  // a   y          a   b c    d   |
-  //    / \                        |
-  //   b   c                       |
-  static Node* LRRotate(Node* root) {
-    Node *x = root->left, *y = x->right;
-    if (y->balance_factor == 0) {
-      x->balance_factor = root->balance_factor = 0;
-    } else if (y->balance_factor == -1) {
-      x->balance_factor = 0;
-      root->balance_factor = 1;
-    } else {
-      x->balance_factor = -1;
-      root->balance_factor = 0;
-    }
-    y->balance_factor = 0;
-    x->right = y->left;
-    root->left = y->right;
-    y->left = x;
-    y->right = root;
-    return y;
-  }
-
-  // RL rotation:
-  //    root              y        |
-  //    /  \            /   \      |
-  //   a    x         root   x     |
-  //       / \   To   / \   / \    |
-  //      y   d      a   b c   d   |
-  //     / \                       |
-  //    b   c                      |
-  static Node* RLRotate(Node* root) {
-    Node *x = root->right, *y = x->left;
-    if (y->balance_factor == 0) {
-      x->balance_factor = root->balance_factor = 0;
-    } else if (y->balance_factor == 1) {
-      x->balance_factor = 0;
-      root->balance_factor = -1;
-    } else {
-      x->balance_factor = 1;
-      root->balance_factor = 0;
-    }
-    y->balance_factor = 0;
-    x->left = y->right;
-    root->right = y->left;
-    y->left = root;
-    y->right = x;
-    return y;
   }
 
   // Left rotation, when left_rotate = true

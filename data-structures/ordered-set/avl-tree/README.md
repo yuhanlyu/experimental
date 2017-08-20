@@ -7,25 +7,34 @@ This module implements two versions of insertion: iterative and recursive.
 
 ## Benchmark
 <pre>
+------------------------------------------------------------------------------
+Benchmark                                       Time           CPU Iterations
+------------------------------------------------------------------------------
+AVLTreeBenchmark/AVLTreeInsert/1024         72937 ns      72948 ns       9595
+AVLTreeBenchmark/AVLTreeInsert/4096        348960 ns     348985 ns       2008
+AVLTreeBenchmark/AVLTreeInsert/16384      2148532 ns    2148662 ns        327
+AVLTreeBenchmark/AVLTreeInsert/65536     12520012 ns   12520554 ns         56
+AVLTreeBenchmark/AVLTreeInsert/262144    92225872 ns   92219973 ns          9
+AVLTreeBenchmark/AVLTreeInsert/1048576  666060821 ns  666043249 ns          1
+
 ---------------------------------------------------------------------------------------
 Benchmark                                                Time           CPU Iterations
 ---------------------------------------------------------------------------------------
-AVLTreeBenchmark/AVLTreeInsert/1024                  72628 ns      72235 ns       9682
-AVLTreeBenchmark/AVLTreeInsert/4096                 347650 ns     347615 ns       2077
-AVLTreeBenchmark/AVLTreeInsert/16384               1969666 ns    1969722 ns        357
-AVLTreeBenchmark/AVLTreeInsert/65536              11038753 ns   11039022 ns         65
-AVLTreeBenchmark/AVLTreeInsert/262144             73801868 ns   73802630 ns         11
-AVLTreeBenchmark/AVLTreeInsert/1048576           611745160 ns  611748579 ns          2
-AVLTreeBenchmark/AVLTreeRecursiveInsert/1024         89660 ns      89679 ns       7828
-AVLTreeBenchmark/AVLTreeRecursiveInsert/4096        423173 ns     423176 ns       1654
-AVLTreeBenchmark/AVLTreeRecursiveInsert/16384      2467116 ns    2467019 ns        290
-AVLTreeBenchmark/AVLTreeRecursiveInsert/65536     13015728 ns   13015609 ns         54
-AVLTreeBenchmark/AVLTreeRecursiveInsert/262144    75742422 ns   75742083 ns         10
-AVLTreeBenchmark/AVLTreeRecursiveInsert/1048576  546857404 ns  546850044 ns          1
-AVLTreeBenchmark/AVLTreeDelete/1024                  76162 ns      76156 ns       9202
-AVLTreeBenchmark/AVLTreeDelete/4096                 368958 ns     368946 ns       1931
-AVLTreeBenchmark/AVLTreeDelete/16384               2106325 ns    2106276 ns        333
-AVLTreeBenchmark/AVLTreeDelete/65536              11615579 ns   11615369 ns         60
-AVLTreeBenchmark/AVLTreeDelete/262144             84285326 ns   84283426 ns          9
-AVLTreeBenchmark/AVLTreeDelete/1048576           592924746 ns  592911882 ns          1
+AVLTreeBenchmark/AVLTreeRecursiveInsert/1024         81015 ns      81038 ns       8682
+AVLTreeBenchmark/AVLTreeRecursiveInsert/4096        392373 ns     392416 ns       1800
+AVLTreeBenchmark/AVLTreeRecursiveInsert/16384      2319821 ns    2319940 ns        303
+AVLTreeBenchmark/AVLTreeRecursiveInsert/65536     13099606 ns   13100278 ns         54
+AVLTreeBenchmark/AVLTreeRecursiveInsert/262144    99317652 ns   99318749 ns          8
+AVLTreeBenchmark/AVLTreeRecursiveInsert/1048576  711118690 ns  711123539 ns          1
+
+------------------------------------------------------------------------------
+Benchmark                                       Time           CPU Iterations
+------------------------------------------------------------------------------
+AVLTreeBenchmark/AVLTreeDelete/1024         75716 ns      75713 ns       9241
+AVLTreeBenchmark/AVLTreeDelete/4096        370785 ns     370760 ns       1885
+AVLTreeBenchmark/AVLTreeDelete/16384      2218886 ns    2218832 ns        317
+AVLTreeBenchmark/AVLTreeDelete/65536     12511040 ns   12510510 ns         56
+AVLTreeBenchmark/AVLTreeDelete/262144    94937598 ns   94929954 ns          8
+AVLTreeBenchmark/AVLTreeDelete/1048576  673104485 ns  673095207 ns          1
+
 </pre>
