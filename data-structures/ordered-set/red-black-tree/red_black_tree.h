@@ -121,9 +121,11 @@ struct RBTree {
     // black, and grand_child is red.
     update_node->red = true;
     if (x < update_node->value)
-      update_node = x < next->value ? RightRotate(update_node) : LRRotate(update_node);
+      update_node =
+          x < next->value ? RightRotate(update_node) : LRRotate(update_node);
     else
-      update_node = x < next->value ? RLRotate(update_node) : LeftRotate(update_node);
+      update_node =
+          x < next->value ? RLRotate(update_node) : LeftRotate(update_node);
     update_node->red = false;
     return true;
   }
@@ -216,9 +218,11 @@ struct RBTree {
     Node*& update_node = *safe_node;
     bool old_node_color = update_node->red;
     if (*delete_value < update_node->value)
-      update_node = sibling->right->red ? LeftRotate(update_node) : RLRotate(update_node);
+      update_node =
+          sibling->right->red ? LeftRotate(update_node) : RLRotate(update_node);
     else
-      update_node = sibling->left->red ? RightRotate(update_node) : LRRotate(update_node);
+      update_node =
+          sibling->left->red ? RightRotate(update_node) : LRRotate(update_node);
     update_node->red = old_node_color;
     update_node->left->red = update_node->right->red = false;
     return true;
@@ -376,10 +380,10 @@ struct RBTree {
         (*gg_parent)->red = true;
         if (x < (*gg_parent)->value)
           *gg_parent = x > (*g_parent)->value ? LRRotate(*gg_parent)
-                                 : RightRotate(*gg_parent);
+                                              : RightRotate(*gg_parent);
         else
           *gg_parent = x < (*g_parent)->value ? RLRotate(*gg_parent)
-                                 : LeftRotate(*gg_parent);
+                                              : LeftRotate(*gg_parent);
         (*gg_parent)->red = false;
         // When rotation occurs, rotation cannot occurs in the next iteration.
         // 	 After double rotation, since current becomes black, red nodes
@@ -446,10 +450,12 @@ struct RBTree {
       // If sibling has one red child, rebalance base on whether the
       // current node is left or right of its parent.
       if (*parent == (*g_parent)->left) {
-        *g_parent = sibling->right->red ? LeftRotate(*g_parent) : RLRotate(*g_parent);
+        *g_parent =
+            sibling->right->red ? LeftRotate(*g_parent) : RLRotate(*g_parent);
         parent = &(*g_parent)->left->left;
       } else {
-        *g_parent = sibling->left->red ? RightRotate(*g_parent) : LRRotate(*g_parent);
+        *g_parent =
+            sibling->left->red ? RightRotate(*g_parent) : LRRotate(*g_parent);
         parent = &(*g_parent)->right->right;
       }
       current->red = (*g_parent)->red = true;
@@ -476,7 +482,7 @@ struct RBTree {
     Node* x = root->right;
     root->right = x->left;
     x->left = root;
-		return x;
+    return x;
   }
 
   // Right rotation:
@@ -489,7 +495,7 @@ struct RBTree {
     Node* x = root->left;
     root->left = x->right;
     x->right = root;
-		return x;
+    return x;
   }
 
   // LR rotation:
@@ -506,7 +512,7 @@ struct RBTree {
     root->left = y->right;
     y->left = x;
     y->right = root;
-		return y;
+    return y;
   }
 
   // RL rotation:
@@ -523,7 +529,7 @@ struct RBTree {
     root->right = y->left;
     y->left = root;
     y->right = x;
-		return y;
+    return y;
   }
 
   static Node dummy;
