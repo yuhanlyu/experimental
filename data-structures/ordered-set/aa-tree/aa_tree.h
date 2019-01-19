@@ -11,13 +11,12 @@ struct AATree {
   struct Node {
     using value_type = T;
     explicit Node(const T& x) : value(x) {}
-    Node(Node* l, Node* r, int lv) : left(l), right(r), level(lv) {}
-    Node(Node* l, Node* r) : left(l), right(r) {}
-    Node() = default;
+    Node(Node* l, Node* r, int lv = 1) : left(l), right(r), level(lv) {}
+    constexpr Node() : left(this), right(this), level(0) {}
     Node* left = sentinel;
     Node* right = sentinel;
     int level = 1;
-    T value;
+    T value{};
   };
 
   bool Insert(const T& x) { return Insert(root_, x); }
@@ -137,7 +136,4 @@ struct AATree {
   Node* root_ = sentinel;
 };
 
-// TODO(C++17): use inline variable.
-template <typename T>
-typename AATree<T>::Node AATree<T>::dummy{&dummy, &dummy, 0};
 #endif
