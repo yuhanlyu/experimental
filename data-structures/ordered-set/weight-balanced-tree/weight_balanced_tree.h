@@ -12,7 +12,7 @@ struct WeightBalancedTree {
     using value_type = T;
     explicit Node(const T& x) : value(x) {}
     Node(Node* l, Node* r, int s) : left(l), right(r), size(s) {}
-    Node() = default;
+    constexpr Node() : left(this), right(this), size(0) {}
     union {
       Node* link[2] = {sentinel, sentinel};
       struct {
@@ -221,15 +221,11 @@ struct WeightBalancedTree {
     return y;
   }
 
-  static Node dummy;
+  static inline Node dummy;
   static constexpr Node* sentinel{&dummy};
   static constexpr int delta = 3;
   static constexpr int gamma = 2;
   Node* root_ = sentinel;
 };
 
-// TODO(C++17): use inline variable.
-template <typename T>
-typename WeightBalancedTree<T>::Node WeightBalancedTree<T>::dummy{&dummy,
-                                                                  &dummy, 0};
 #endif

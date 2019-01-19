@@ -532,13 +532,10 @@ struct RBTree {
     return y;
   }
 
-  static Node dummy;
+  static inline Node dummy;
   static constexpr Node* sentinel = &dummy;
 
   Node* root_ = sentinel;
 };
 
-// TODO(C++17): use inline variable.
-template <typename T>
-typename RBTree<T>::Node RBTree<T>::dummy;
 #endif
