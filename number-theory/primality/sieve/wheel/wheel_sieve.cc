@@ -168,12 +168,6 @@ void SegmentedWheelSieveBitImpl(uint64_t n, uint32_t prime[]) {
   }
 }
 
-// TODO(C++17): remove this method when std::size is supported by the compiler.
-template <class T, std::size_t N>
-constexpr size_t size(const T (&array)[N]) noexcept {
-  return N;
-}
-
 inline uint64_t WheelIndex(uint64_t n, uint64_t primorial,
                            uint64_t number_of_coprimes,
                            const uint64_t coprime_indices[]) {
@@ -183,7 +177,7 @@ inline uint64_t WheelIndex(uint64_t n, uint64_t primorial,
 // This is a producing the values of all required values for a Wheel class.
 template <typename Wheel>
 void Precompute() {
-  uint64_t n = size(Wheel::wheel_primes);
+  uint64_t n = std::size(Wheel::wheel_primes);
   uint64_t primorial = 1;
   for (int i = 0; i < n; ++i) primorial *= Wheel::wheel_primes[i];
   bool is_coprime[primorial + 1];
