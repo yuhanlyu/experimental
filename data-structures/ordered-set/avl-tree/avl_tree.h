@@ -12,7 +12,6 @@ struct AVLTree {
     using value_type = T;
     explicit Node(const T& x) : value(x) {}
     Node(Node* l, Node* r) : left(l), right(r) {}
-    Node() = default;
     union {
       Node* link[2] = {nullptr, nullptr};
       struct {
