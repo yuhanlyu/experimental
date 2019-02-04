@@ -10,13 +10,12 @@ struct AATree {
  public:
   struct Node {
     using value_type = T;
-    explicit Node(const T& x) : value(x) {}
-    Node(Node* l, Node* r, int lv = 1) : left(l), right(r), level(lv) {}
-    constexpr Node() : left(this), right(this), level(0) {}
+    explicit Node(const T& x) : level(1), value(x) {}
+		constexpr Node() = default;
     Node* left = sentinel;
     Node* right = sentinel;
-    int level = 1;
-    T value{};
+    int level = 0;
+    T value;
   };
 
   bool Insert(const T& x) { return Insert(root_, x); }
@@ -131,7 +130,7 @@ struct AATree {
     return x;
   }
 
-  static Node dummy;
+  static inline Node dummy;
   static constexpr Node* sentinel{&dummy};
   Node* root_ = sentinel;
 };
