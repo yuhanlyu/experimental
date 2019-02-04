@@ -12,7 +12,7 @@ struct BinarySearchTree {
     using value_type = T;
     explicit Node(const T& x) : value(x) {}
     Node(Node* l, Node* r) : left(l), right(r) {}
-    Node() = default;
+    //Node() = default;
     Node* left = nullptr;
     Node* right = nullptr;
     T value;
