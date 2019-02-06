@@ -12,7 +12,7 @@ struct WeightBalancedTree {
     using value_type = T;
     explicit Node(const T& x) : value(x) {}
     Node(Node* l, Node* r, int s) : left(l), right(r), size(s) {}
-    constexpr Node() : left(this), right(this), size(0) {}
+    Node() : left(this), right(this), size(0) {}
     union {
       Node* link[2] = {sentinel, sentinel};
       struct {
