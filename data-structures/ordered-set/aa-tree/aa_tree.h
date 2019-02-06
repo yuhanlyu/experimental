@@ -11,7 +11,7 @@ struct AATree {
   struct Node {
     using value_type = T;
     explicit Node(const T& x) : level(1), value(x) {}
-		constexpr Node() = default;
+		Node() = default;
     Node* left = sentinel;
     Node* right = sentinel;
     int level = 0;
