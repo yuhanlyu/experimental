@@ -127,7 +127,6 @@ TEST(DSL, DeleteRandom) {
 
 TEST(DSL, Mix) {
   int sizes[] = {10, 100, 200, 500};
-  // int sizes[] = {9};
   for (int size : sizes) {
     std::random_device rd;
     std::mt19937 g(rd());
