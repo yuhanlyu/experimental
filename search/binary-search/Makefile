@@ -8,7 +8,7 @@ PTHREAD = -lpthread
 
 CFLAGS = -std=c++23 -pedantic -Wall -Wextra -fno-rtti -fno-exceptions -no-pie
 SANITIZE_FLAGS = -fsanitize=address -fsanitize=undefined
-OPT_FLAGS = -O3 -march=native -mtune=native -flto=full -falign-loops=64 -mbranches-within-32B-boundaries
+OPT_FLAGS = -O3 -march=native -mtune=native -flto=full -falign-loops=64 -mllvm -x86-cmov-converter=false
 
 CLANG_FORMAT_FLAGS = -i -style=Google -sort-includes
 
