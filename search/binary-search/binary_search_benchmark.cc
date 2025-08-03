@@ -44,6 +44,7 @@ BENCHMARK_DEFINE_F(SearchBenchmark, Random)(benchmark::State& state) {
   }
 }
 BENCHMARK_REGISTER_F(SearchBenchmark, Random)->Apply(CustomArguments);
+
 BENCHMARK_DEFINE_F(SearchBenchmark, BinarySearch)
 (benchmark::State& state) {
   while (state.KeepRunning()) {
@@ -52,6 +53,7 @@ BENCHMARK_DEFINE_F(SearchBenchmark, BinarySearch)
   }
 }
 BENCHMARK_REGISTER_F(SearchBenchmark, BinarySearch)->Apply(CustomArguments);
+
 BENCHMARK_DEFINE_F(SearchBenchmark, BinarySearch1)
 (benchmark::State& state) {
   while (state.KeepRunning()) {
@@ -60,6 +62,7 @@ BENCHMARK_DEFINE_F(SearchBenchmark, BinarySearch1)
   }
 }
 BENCHMARK_REGISTER_F(SearchBenchmark, BinarySearch1)->Apply(CustomArguments);
+
 BENCHMARK_DEFINE_F(SearchBenchmark, BinarySearch2)
 (benchmark::State& state) {
   while (state.KeepRunning()) {
@@ -68,6 +71,7 @@ BENCHMARK_DEFINE_F(SearchBenchmark, BinarySearch2)
   }
 }
 BENCHMARK_REGISTER_F(SearchBenchmark, BinarySearch2)->Apply(CustomArguments);
+
 BENCHMARK_DEFINE_F(SearchBenchmark, BinarySearch3)
 (benchmark::State& state) {
   while (state.KeepRunning()) {
@@ -76,6 +80,7 @@ BENCHMARK_DEFINE_F(SearchBenchmark, BinarySearch3)
   }
 }
 BENCHMARK_REGISTER_F(SearchBenchmark, BinarySearch3)->Apply(CustomArguments);
+
 BENCHMARK_DEFINE_F(SearchBenchmark, Shar1)
 (benchmark::State& state) {
   while (state.KeepRunning()) {
@@ -84,6 +89,7 @@ BENCHMARK_DEFINE_F(SearchBenchmark, Shar1)
   }
 }
 BENCHMARK_REGISTER_F(SearchBenchmark, Shar1)->Apply(CustomArguments);
+
 BENCHMARK_DEFINE_F(SearchBenchmark, Shar2)
 (benchmark::State& state) {
   while (state.KeepRunning()) {
@@ -92,6 +98,7 @@ BENCHMARK_DEFINE_F(SearchBenchmark, Shar2)
   }
 }
 BENCHMARK_REGISTER_F(SearchBenchmark, Shar2)->Apply(CustomArguments);
+
 BENCHMARK_DEFINE_F(SearchBenchmark, SkewedBinarySearch)
 (benchmark::State& state) {
   while (state.KeepRunning()) {
@@ -112,6 +119,14 @@ BENCHMARK_DEFINE_F(SearchBenchmark, SharUnroll)
 }
 BENCHMARK_REGISTER_F(SearchBenchmark, SharUnroll)->Apply(CustomArguments);
 
+BENCHMARK_DEFINE_F(SearchBenchmark, STLSearch)(benchmark::State& state) {
+  while (state.KeepRunning()) {
+    int r = distribution_(generator_);
+    benchmark::DoNotOptimize(std::lower_bound(test, test + state.range(0), r));
+  }
+}
+BENCHMARK_REGISTER_F(SearchBenchmark, STLSearch)->Apply(CustomArguments);
+
 int compare(const void* p, const void* q) {
   int x = *reinterpret_cast<const int*>(p);
   int y = *reinterpret_cast<const int*>(q);
@@ -126,6 +141,7 @@ BENCHMARK_DEFINE_F(SearchBenchmark, BSearch)(benchmark::State& state) {
   }
 }
 BENCHMARK_REGISTER_F(SearchBenchmark, BSearch)->Apply(CustomArguments);
+
 }  // namespace
 
 BENCHMARK_MAIN();

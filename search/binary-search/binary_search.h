@@ -109,7 +109,7 @@ __attribute((hot)) const T* Shar2(const T* first, const T* last, T x) {
 // Returns an iterator pointing to the first element in the range [first, last)
 // that is not less than (i.e. greater or equal to) value. The range [first,
 // last) must be ordered. This algorithm is from the following paper:
-// Amr Elmasry1 and Jyrki Katajainen, Branchless Search Programs
+// Amr Elmasry and Jyrki Katajainen, Branchless Search Programs
 // Experimental Algorithms. SEA 2013. Lecture Notes in Computer Science, vol
 // 7933
 template <typename T>
