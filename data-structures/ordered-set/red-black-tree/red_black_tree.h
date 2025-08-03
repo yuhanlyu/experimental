@@ -6,19 +6,14 @@
 #include "../binary-search-tree-common/binary_search_tree_common.h"
 
 template <typename T>
-struct RBTree {
+struct alignas(32) RBTree {
  public:
   struct Node {
     using value_type = T;
     explicit Node(const T& x, bool is_red = true) : value(x), red(is_red) {}
     Node() = default;
-    union {
-      Node* link[2] = {sentinel, sentinel};
-      struct {
-        Node* left;
-        Node* right;
-      };
-    };
+    Node* left = sentinel;
+    Node* right = sentinel;
     T value;
     bool red = false;
   };
@@ -85,32 +80,33 @@ struct RBTree {
   }
 
   static bool Insert(Node*& node, const T& x) {
+    // When tree is empty, insert the new node and return.
     if (node == sentinel) {
       node = new Node(x, false);
       return true;
     }
+    // If both of root's children are red, then flip the color.
     if (node->left->red && node->right->red)
       node->left->red = node->right->red = false;
-    Node **parent = &node, **safe_node = &node;
+    Node **link = &node, **safe_node = &node;
     // Find the lowest black node that has one black child.
-    while ((*parent) != sentinel) {
-      Node*& current = *parent;
+    do {
+      Node*& current = *link;
+      if (!current->red && (!current->left->red || !current->right->red))
+        safe_node = link;
       if (x == current->value) return false;
-      // Use bitwise or is faster than the logical or.
-      if (!current->red && (!current->left->red | !current->right->red))
-        safe_node = parent;
-      parent = x < current->value ? &current->left : &current->right;
-    }
-    *parent = new Node(x);
+      link = x < current->value ? &current->left : &current->right;
+    } while ((*link) != sentinel);
+    *link = new Node(x);
     Node *&update_node = *safe_node,
          *next =
              x < update_node->value ? update_node->left : update_node->right,
          *current = next;
-    if (next == *parent) return true;
+    if (next == *link) return true;
     bool need_rotation = next->red;
     if (need_rotation) current = x < next->value ? next->left : next->right;
     // Flip color from the current to parent.
-    while (current != *parent) {
+    while (current != *link) {
       current->red = true;
       current->left->red = current->right->red = false;
       current = x < current->value ? current->left : current->right;
