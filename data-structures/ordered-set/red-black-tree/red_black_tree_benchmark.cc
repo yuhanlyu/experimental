@@ -1,9 +1,10 @@
-#include "red_black_tree.h"
-
 #include <algorithm>
+#include <random>
 #include <set>
 
-#include "benchmark/benchmark_api.h"
+#include "benchmark/benchmark.h"
+#include "red_black_tree.h"
+#include "red_black_tree_standard.h"
 
 namespace {
 
@@ -32,6 +33,15 @@ class RBTreeBenchmark : public benchmark::Fixture {
     std::shuffle(test, test + state.range(0), g);
   }
 
+  static void BuildTree(const ::benchmark::State& state,
+                        RBTreeStandard<int>& tree) {
+    std::random_device rd;
+    std::mt19937 g(rd());
+    std::shuffle(test, test + state.range(0), g);
+    for (int i = 0; i < state.range(0); ++i) tree.Insert(test[i]);
+    std::shuffle(test, test + state.range(0), g);
+  }
+
   static void BuildTree(const ::benchmark::State& state, std::set<int>& tree) {
     std::random_device rd;
     std::mt19937 g(rd());
@@ -40,6 +50,22 @@ class RBTreeBenchmark : public benchmark::Fixture {
     std::shuffle(test, test + state.range(0), g);
   }
 };
+
+BENCHMARK_DEFINE_F(RBTreeBenchmark, RBTreeStandardInsert)
+(benchmark::State& state) {
+  while (state.KeepRunning()) {
+    state.PauseTiming();
+    Shuffle(state);
+    state.ResumeTiming();
+    RBTreeStandard<int> tree;
+    for (int i = 0; i < state.range(0); ++i) {
+      tree.Insert(test[i]);
+    }
+  }
+}
+BENCHMARK_REGISTER_F(RBTreeBenchmark, RBTreeStandardInsert)
+    ->RangeMultiplier(multiplier)
+    ->Range(min_size, max_size);
 
 BENCHMARK_DEFINE_F(RBTreeBenchmark, RBTreeInsert)
 (benchmark::State& state) {
@@ -102,6 +128,22 @@ BENCHMARK_DEFINE_F(RBTreeBenchmark, STLInsert)
   }
 }
 BENCHMARK_REGISTER_F(RBTreeBenchmark, STLInsert)
+    ->RangeMultiplier(multiplier)
+    ->Range(min_size, max_size);
+
+BENCHMARK_DEFINE_F(RBTreeBenchmark, RBTreeStandardDelete)
+(benchmark::State& state) {
+  while (state.KeepRunning()) {
+    state.PauseTiming();
+    RBTreeStandard<int> tree;
+    BuildTree(state, tree);
+    state.ResumeTiming();
+    for (int i = 0; i < state.range(0); ++i) {
+      tree.Delete(test[i]);
+    }
+  }
+}
+BENCHMARK_REGISTER_F(RBTreeBenchmark, RBTreeStandardDelete)
     ->RangeMultiplier(multiplier)
     ->Range(min_size, max_size);
 
@@ -171,4 +213,4 @@ BENCHMARK_REGISTER_F(RBTreeBenchmark, STLDelete)
 
 }  // namespace
 
-BENCHMARK_MAIN()
+BENCHMARK_MAIN();
