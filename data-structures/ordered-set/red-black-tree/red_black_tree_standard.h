@@ -98,11 +98,11 @@ struct alignas(64) RBTreeStandard {
     // afterwards anyway.
     if (parent == grand_parent->left) {
       if (current != parent->left) {
-        //       G             G            C
-        //      / \           / \         /   \
-        //     p   U  -->    c   U -->   p     g
-        //      \           / \           \   / \
-        //       c         p   S           T S   U
+        //       G             G                C
+        //      / \           / \   (later)   /   \
+        //     p   U  -->    c   U  ----->   p     g
+        //      \           / \               \   / \
+        //       c         p   S               T S   U
         //      / \         \
         //     T   S         T
         //
@@ -155,7 +155,7 @@ struct alignas(64) RBTreeStandard {
       current = *link;
     }
     if (current == sentinel_) return false;
-    // When the node to be deleted has two children, find the successor.
+    // When the node to be deleted has two children, find the predecessor.
     if (current->left != sentinel_ && current->right != sentinel_) {
       Node *max = current->left;
       link = &(current->left);
@@ -275,17 +275,14 @@ struct alignas(64) RBTreeStandard {
                                       : parent->parent->right) = sibling;
       sibling->parent = parent->parent;
 
-      // When sibling is the sentinel_, since the left pointer in the sentinel_
-      // is the root_, we can't change the pointer.
       sibling->left = parent;
       parent->parent = sibling;
 
       parent->right = close_nephew;
       close_nephew->parent = parent;
 
-      distant_nephew->red = false;
       sibling->red = parent->red;
-      parent->red = false;
+      parent->red = distant_nephew->red = false;
     } else {
       if (sibling->red) {
         parent->left = sibling->right;
@@ -330,9 +327,8 @@ struct alignas(64) RBTreeStandard {
       parent->left = close_nephew;
       close_nephew->parent = parent;
 
-      distant_nephew->red = false;
       sibling->red = parent->red;
-      parent->red = false;
+      parent->red = distant_nephew->red = false;
     }
     return true;
   }

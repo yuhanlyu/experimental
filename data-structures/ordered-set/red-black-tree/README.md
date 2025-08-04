@@ -6,6 +6,9 @@ worst case.
 This module implements three versions of insertion/deletion:
 1. Iterative Standard algorithm: This is the method discussed in most textbooks, originating from
    [Updating a balanced search tree in O(1) rotations](https://doi.org/10.1016/0020-0190(83)90099-6)
+1. Iterative Standard algorithm, but use array of pointer instead of left/right pointers:
+   Lin Chen, Rene Schott
+   [Optimal operations on red-black trees](https://doi.org/10.1109/ICCI.1993.315316) 
 1. Iterative bottom-up: this is the method inspired by the technical report:  
    Robert Endre Tarjan  
    [Efficient Top-Down Updating of Red-Black Trees](https://www.cs.princeton.edu/research/techreps/TR-006-85)
@@ -51,14 +54,16 @@ are required.
 
 ## Benchmark
 <pre>
-RBTreeBenchmark/RBTreeStandardInsert/1048576                625681737 ns    625674261 ns           66
-RBTreeBenchmark/RBTreeInsert/1048576                        751765798 ns    751756309 ns           56
-RBTreeBenchmark/RBTreeBottomUpInsert/1048576                908580650 ns    908570615 ns           46
-RBTreeBenchmark/RBTreeTopDownInsert/1048576                 809661853 ns    809653314 ns           53
-RBTreeBenchmark/STLInsert/1048576                           682002263 ns    681993340 ns           62
-RBTreeBenchmark/RBTreeStandardDelete/1048576                545968168 ns    545959250 ns           77
-RBTreeBenchmark/RBTreeDelete/1048576                        660281126 ns    660269545 ns           64
-RBTreeBenchmark/RBTreeBottomUpDelete/1048576                832234530 ns    832219334 ns           51
-RBTreeBenchmark/RBTreeTopDownDelete/1048576                 772958214 ns    772942769 ns           55
-RBTreeBenchmark/STLDelete/1048576                           781583089 ns    781568875 ns           53
+RBTreeBenchmark/RBTreeStandardInsert/1048576      680242913 ns    680233459 ns           61
+RBTreeBenchmark/RBTreeStandardLinkInsert/1048576  649025020 ns    649016173 ns           63
+RBTreeBenchmark/RBTreeInsert/1048576              863828629 ns    863816763 ns           50
+RBTreeBenchmark/RBTreeBottomUpInsert/1048576     1007509412 ns   1007496152 ns           42
+RBTreeBenchmark/RBTreeTopDownInsert/1048576       900973072 ns    900962778 ns           47
+RBTreeBenchmark/STLInsert/1048576                 721012117 ns    721003658 ns           58
+RBTreeBenchmark/RBTreeStandardDelete/1048576      619120076 ns    619110159 ns           67
+RBTreeBenchmark/RBTreeStandardLinkDelete/1048576  590480422 ns    590470287 ns           71
+RBTreeBenchmark/RBTreeDelete/1048576              754865954 ns    754853827 ns           58
+RBTreeBenchmark/RBTreeBottomUpDelete/1048576      929938652 ns    929923570 ns           46
+RBTreeBenchmark/RBTreeTopDownDelete/1048576       851128819 ns    851114621 ns           49
+RBTreeBenchmark/STLDelete/1048576                 879691104 ns    879675935 ns           48
 </pre>

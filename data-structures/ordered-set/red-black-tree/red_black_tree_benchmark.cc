@@ -5,6 +5,7 @@
 #include "benchmark/benchmark.h"
 #include "red_black_tree.h"
 #include "red_black_tree_standard.h"
+#include "red_black_tree_standard_link.h"
 
 namespace {
 
@@ -25,16 +26,8 @@ class RBTreeBenchmark : public benchmark::Fixture {
     std::shuffle(test, test + state.range(0), g);
   }
 
-  static void BuildTree(const ::benchmark::State& state, RBTree<int>& tree) {
-    std::random_device rd;
-    std::mt19937 g(rd());
-    std::shuffle(test, test + state.range(0), g);
-    for (int i = 0; i < state.range(0); ++i) tree.Insert(test[i]);
-    std::shuffle(test, test + state.range(0), g);
-  }
-
-  static void BuildTree(const ::benchmark::State& state,
-                        RBTreeStandard<int>& tree) {
+  template <typename T>
+  static void BuildTree(const ::benchmark::State& state, T& tree) {
     std::random_device rd;
     std::mt19937 g(rd());
     std::shuffle(test, test + state.range(0), g);
@@ -64,6 +57,22 @@ BENCHMARK_DEFINE_F(RBTreeBenchmark, RBTreeStandardInsert)
   }
 }
 BENCHMARK_REGISTER_F(RBTreeBenchmark, RBTreeStandardInsert)
+    ->RangeMultiplier(multiplier)
+    ->Range(min_size, max_size);
+
+BENCHMARK_DEFINE_F(RBTreeBenchmark, RBTreeStandardLinkInsert)
+(benchmark::State& state) {
+  while (state.KeepRunning()) {
+    state.PauseTiming();
+    Shuffle(state);
+    state.ResumeTiming();
+    RBTreeStandardLink<int> tree;
+    for (int i = 0; i < state.range(0); ++i) {
+      tree.Insert(test[i]);
+    }
+  }
+}
+BENCHMARK_REGISTER_F(RBTreeBenchmark, RBTreeStandardLinkInsert)
     ->RangeMultiplier(multiplier)
     ->Range(min_size, max_size);
 
@@ -144,6 +153,22 @@ BENCHMARK_DEFINE_F(RBTreeBenchmark, RBTreeStandardDelete)
   }
 }
 BENCHMARK_REGISTER_F(RBTreeBenchmark, RBTreeStandardDelete)
+    ->RangeMultiplier(multiplier)
+    ->Range(min_size, max_size);
+
+BENCHMARK_DEFINE_F(RBTreeBenchmark, RBTreeStandardLinkDelete)
+(benchmark::State& state) {
+  while (state.KeepRunning()) {
+    state.PauseTiming();
+    RBTreeStandardLink<int> tree;
+    BuildTree(state, tree);
+    state.ResumeTiming();
+    for (int i = 0; i < state.range(0); ++i) {
+      tree.Delete(test[i]);
+    }
+  }
+}
+BENCHMARK_REGISTER_F(RBTreeBenchmark, RBTreeStandardLinkDelete)
     ->RangeMultiplier(multiplier)
     ->Range(min_size, max_size);
 

@@ -16,7 +16,7 @@ TEST_FLAGS = $(DEBUG_SYMBOL) $(SANITIZE_FLAGS) -lgtest -lgtest_main $(PTHREAD)
 
 BENCHMARK_FLAGS = $(OPT_FLAGS) $(PTHREAD) -lbenchmark -g
 
-SRC = red_black_tree.h red_black_tree_test.cc red_black_tree_benchmark.cc red_black_tree_standard.h
+SRC = red_black_tree.h red_black_tree_test.cc red_black_tree_benchmark.cc red_black_tree_standard.h red_black_tree_standard_link.h
 
 test: red_black_tree.h red_black_tree_test.cc
 	$(CC) $(CFLAGS) red_black_tree_test.cc $(TEST_FLAGS) -o red_black_tree_test
