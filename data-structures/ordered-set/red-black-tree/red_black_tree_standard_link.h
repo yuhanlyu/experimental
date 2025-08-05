@@ -123,16 +123,19 @@ struct alignas(64) RBTreeStandardLink {
       current = current->link[dir];
     }
     if (current == sentinel_) return false;
-    // When the node to be deleted has two children, find the predecessor.
+    // When the node to be deleted has two children, find the successor.
     if (current->link[0] != sentinel_ && current->link[1] != sentinel_) {
-      dir = 0;
-      Node *max = current->link[0];
-      for (parent = current; max->link[1] != sentinel_; max = max->link[1]) {
-        parent = max;
-        dir = 1;
+      dir = default_dir_in_deletion;
+      default_dir_in_deletion = !default_dir_in_deletion;
+      Node *replacement = current->link[dir];
+      const bool opposite_dir = 1 - dir;
+      for (parent = current; replacement->link[opposite_dir] != sentinel_;
+           replacement = replacement->link[opposite_dir]) {
+        parent = replacement;
+        dir = opposite_dir;
       }
-      current->value = max->value;
-      current = max;
+      current->value = replacement->value;
+      current = replacement;
     }
 
     // Now, the node to be deleted should have at most one child.
@@ -208,6 +211,8 @@ struct alignas(64) RBTreeStandardLink {
     Node *close_nephew = sibling->link[dir],
          *distant_nephew = sibling->link[1 - dir];
     if (!distant_nephew->red) {
+      // Note that we did not set the color, since the color
+      // will be set by the following case.
       parent->link[1 - dir] = close_nephew;
       close_nephew->parent = parent;
 
@@ -242,9 +247,6 @@ struct alignas(64) RBTreeStandardLink {
     if (header_.link[0] != root_) return false;
     if (header_.red) return false;
     return BlackHeight(root_) != -1;
-    ;
-    ;
-    ;
   }
 
   ~RBTreeStandardLink() { Free(root_, sentinel_); }
@@ -302,6 +304,8 @@ struct alignas(64) RBTreeStandardLink {
   // The sentinel's link[0]/link[1] pointers can be changed arbitrarily in
   // Delete. Thus, the code should not depending on sentinel's parent pointer.
   Node *sentinel_ = &dummy_;
+
+  bool default_dir_in_deletion = false;
 };
 
 #endif

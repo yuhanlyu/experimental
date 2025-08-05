@@ -155,14 +155,15 @@ struct alignas(64) RBTreeStandard {
       current = *link;
     }
     if (current == sentinel_) return false;
-    // When the node to be deleted has two children, find the predecessor.
+    // When the node to be deleted has two children, find the successor with
+    // equal probability.
     if (current->left != sentinel_ && current->right != sentinel_) {
-      Node *max = current->left;
-      link = &(current->left);
-      for (; max->right != sentinel_; link = &max->right, max = max->right) {
+      Node *min = current->right;
+      link = &(current->right);
+      for (; min->left != sentinel_; link = &min->left, min = min->left) {
       }
-      current->value = max->value;
-      current = max;
+      current->value = min->value;
+      current = min;
     }
 
     // Now, the node to be deleted should have at most one child.

@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <random>
 #include <set>
+#include <unordered_set>
 
 #include "benchmark/benchmark.h"
 #include "red_black_tree.h"
@@ -12,6 +13,7 @@ namespace {
 constexpr int min_size = 1 << 10;
 constexpr int max_size = 1 << 20;
 constexpr int multiplier = 4;
+constexpr int batch_size = 10;
 int test[max_size];
 
 class RBTreeBenchmark : public benchmark::Fixture {
@@ -41,6 +43,29 @@ class RBTreeBenchmark : public benchmark::Fixture {
     std::shuffle(test, test + state.range(0), g);
     for (int i = 0; i < state.range(0); ++i) tree.insert(test[i]);
     std::shuffle(test, test + state.range(0), g);
+  }
+
+  static void RandomElement(const ::benchmark::State& state, int insert[], int removal[]) {
+    std::random_device rd;
+    std::mt19937 g(rd());
+    std::uniform_int_distribution<int> dist(0, state.range(0) - 1);
+    for (int i = 0; i < batch_size; ++i) {
+      int random;
+      bool found;
+      do {
+        random = dist(g);
+        found = false;
+        for (int j = 0; j < i; ++j) {
+          if (removal[j] == random) {
+            found = true;
+            break;
+          }
+        }
+      } while (found);
+      removal[i] = insert[i] = random;
+    }
+    std::shuffle(insert, insert + batch_size, g);
+    std::shuffle(removal, removal + batch_size, g);
   }
 };
 
@@ -187,7 +212,6 @@ BENCHMARK_DEFINE_F(RBTreeBenchmark, RBTreeDelete)
 BENCHMARK_REGISTER_F(RBTreeBenchmark, RBTreeDelete)
     ->RangeMultiplier(multiplier)
     ->Range(min_size, max_size);
-
 BENCHMARK_DEFINE_F(RBTreeBenchmark, RBTreeBottomUpDelete)
 (benchmark::State& state) {
   while (state.KeepRunning()) {
@@ -233,6 +257,138 @@ BENCHMARK_DEFINE_F(RBTreeBenchmark, STLDelete)
   }
 }
 BENCHMARK_REGISTER_F(RBTreeBenchmark, STLDelete)
+    ->RangeMultiplier(multiplier)
+    ->Range(min_size, max_size);
+
+BENCHMARK_DEFINE_F(RBTreeBenchmark, RBTreeStandardMix)
+(benchmark::State& state) {
+  while (state.KeepRunning()) {
+    state.PauseTiming();
+    RBTreeStandard<int> tree;
+    BuildTree(state, tree);
+    int insert[batch_size];
+    int removal[batch_size];
+    RandomElement(state, insert, removal);
+    state.ResumeTiming();
+    for (int i = 0; i < batch_size; ++i) {
+      tree.Delete(removal[i]);
+    }
+    for (int i = 0; i < batch_size; ++i) {
+      tree.Insert(insert[i]);
+    }
+  }
+}
+BENCHMARK_REGISTER_F(RBTreeBenchmark, RBTreeStandardMix)
+    ->RangeMultiplier(multiplier)
+    ->Range(min_size, max_size);
+
+BENCHMARK_DEFINE_F(RBTreeBenchmark, RBTreeStandardLinkMix)
+(benchmark::State& state) {
+  while (state.KeepRunning()) {
+    state.PauseTiming();
+    RBTreeStandardLink<int> tree;
+    BuildTree(state, tree);
+    int insert[batch_size];
+    int removal[batch_size];
+    RandomElement(state, insert, removal);
+    state.ResumeTiming();
+    for (int i = 0; i < batch_size; ++i) {
+      tree.Delete(removal[i]);
+    }
+    for (int i = 0; i < batch_size; ++i) {
+      tree.Insert(insert[i]);
+    }
+  }
+}
+BENCHMARK_REGISTER_F(RBTreeBenchmark, RBTreeStandardLinkMix)
+    ->RangeMultiplier(multiplier)
+    ->Range(min_size, max_size);
+
+BENCHMARK_DEFINE_F(RBTreeBenchmark, RBTreeMix)
+(benchmark::State& state) {
+  while (state.KeepRunning()) {
+    state.PauseTiming();
+    RBTree<int> tree;
+    BuildTree(state, tree);
+    int insert[batch_size];
+    int removal[batch_size];
+    RandomElement(state, insert, removal);
+    state.ResumeTiming();
+    for (int i = 0; i < batch_size; ++i) {
+      tree.Delete(removal[i]);
+    }
+    for (int i = 0; i < batch_size; ++i) {
+      tree.Insert(insert[i]);
+    }
+  }
+}
+BENCHMARK_REGISTER_F(RBTreeBenchmark, RBTreeMix)
+    ->RangeMultiplier(multiplier)
+    ->Range(min_size, max_size);
+
+BENCHMARK_DEFINE_F(RBTreeBenchmark, RBTreeBottomUpMix)
+(benchmark::State& state) {
+  while (state.KeepRunning()) {
+    state.PauseTiming();
+    RBTree<int> tree;
+    BuildTree(state, tree);
+    int insert[batch_size];
+    int removal[batch_size];
+    RandomElement(state, insert, removal);
+    state.ResumeTiming();
+    for (int i = 0; i < batch_size; ++i) {
+      tree.BottomUpDelete(removal[i]);
+    }
+    for (int i = 0; i < batch_size; ++i) {
+      tree.BottomUpInsert(insert[i]);
+    }
+  }
+}
+BENCHMARK_REGISTER_F(RBTreeBenchmark, RBTreeBottomUpMix)
+    ->RangeMultiplier(multiplier)
+    ->Range(min_size, max_size);
+
+BENCHMARK_DEFINE_F(RBTreeBenchmark, RBTreeTopDownMix)
+(benchmark::State& state) {
+  while (state.KeepRunning()) {
+    state.PauseTiming();
+    RBTree<int> tree;
+    BuildTree(state, tree);
+    int insert[batch_size];
+    int removal[batch_size];
+    RandomElement(state, insert, removal);
+    state.ResumeTiming();
+    for (int i = 0; i < batch_size; ++i) {
+      tree.TopDownDelete(removal[i]);
+    }
+    for (int i = 0; i < batch_size; ++i) {
+      tree.TopDownInsert(insert[i]);
+    }
+  }
+}
+BENCHMARK_REGISTER_F(RBTreeBenchmark, RBTreeTopDownMix)
+    ->RangeMultiplier(multiplier)
+    ->Range(min_size, max_size);
+
+BENCHMARK_DEFINE_F(RBTreeBenchmark, RBTreeSTLMix)
+(benchmark::State& state) {
+  while (state.KeepRunning()) {
+    state.PauseTiming();
+    std::set<int> tree;
+    BuildTree(state, tree);
+    int insert[batch_size];
+    int removal[batch_size];
+    RandomElement(state, insert, removal);
+    state.ResumeTiming();
+    for (int i = 0; i < batch_size; ++i) {
+      tree.insert(removal[i]);
+    }
+    for (int i = 0; i < batch_size; ++i) {
+      tree.erase(insert[i]);
+    }
+  }
+}
+BENCHMARK_REGISTER_F(RBTreeBenchmark, RBTreeSTLMix)
     ->RangeMultiplier(multiplier)
     ->Range(min_size, max_size);
 
