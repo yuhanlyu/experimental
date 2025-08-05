@@ -45,7 +45,8 @@ class RBTreeBenchmark : public benchmark::Fixture {
     std::shuffle(test, test + state.range(0), g);
   }
 
-  static void RandomElement(const ::benchmark::State& state, int insert[], int removal[]) {
+  static void RandomElement(const ::benchmark::State& state, int insert[],
+                            int removal[]) {
     std::random_device rd;
     std::mt19937 g(rd());
     std::uniform_int_distribution<int> dist(0, state.range(0) - 1);

@@ -53,12 +53,11 @@ struct alignas(64) RBTreeStandardLink {
     } while (current != sentinel_);
     current = parent->link[dir] = NewNode(x, parent, true);
 
-    // When root's both children are red, switch the children to black.
-    // The purpose of this switching is to avoid setting root to red during
-    // the color flipping in the loop below, which require an additional
-    // checking if (grand_parent == root_) return true; before setting
-    // the grand parent to red.
+    // Set the root to black so that the loop below can terminate naturally.
     root_->red = false;
+    // When root's both children are red, switch the children to black.
+    // Removing this switch does not effect the correctness, but the result
+    // tree may have a red root.
     if (root_->link[0]->red && root_->link[1]->red)
       root_->link[0]->red = root_->link[1]->red = false;
     // Invariant: Current must be red.
