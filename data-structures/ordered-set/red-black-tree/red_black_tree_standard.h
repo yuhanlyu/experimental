@@ -242,8 +242,8 @@ struct alignas(64) RBTreeStandard {
         parent->red = true;
       }
       // Now, sibling must be black and one of the sibling's child must be red.
-      close_nephew = sibling->left;
       distant_nephew = sibling->right;
+      close_nephew = sibling->left;
       if (!distant_nephew->red) {
         //
         //    (p)           (p)                       (Cn)
@@ -264,8 +264,8 @@ struct alignas(64) RBTreeStandard {
         sibling->parent = close_nephew;
 
         sibling = close_nephew;
-        close_nephew = sibling->left;
         distant_nephew = sibling->right;
+        close_nephew = sibling->left;
       }
       // Now, sibling must be black and distant_nephew must be red.
       //      (p)             (s)
@@ -295,8 +295,8 @@ struct alignas(64) RBTreeStandard {
         }
         parent->red = true;
       }
-      close_nephew = sibling->right;
       distant_nephew = sibling->left;
+      close_nephew = sibling->right;
       if (!distant_nephew->red) {
         sibling->right = close_nephew->left;
         close_nephew->left->parent = sibling;
@@ -305,8 +305,8 @@ struct alignas(64) RBTreeStandard {
         sibling->parent = close_nephew;
 
         sibling = close_nephew;
-        close_nephew = sibling->right;
         distant_nephew = sibling->left;
+        close_nephew = sibling->right;
       }
       sibling->right = parent;
       parent->left = close_nephew;

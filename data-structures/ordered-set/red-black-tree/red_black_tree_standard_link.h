@@ -194,8 +194,7 @@ struct alignas(64) RBTreeStandardLink {
     }
 
     // Now, sibling must be black and one of the sibling's child must be red.
-    Node *close_nephew = sibling->link[dir],
-         *distant_nephew = sibling->link[1 - dir];
+    Node *distant_nephew = sibling->link[1 - dir], *close_nephew = sibling->link[dir];
     if (!distant_nephew->red) {
       // Since one additional rotation is required after this block,
       // the code in this block omit the links between parent and
@@ -208,8 +207,8 @@ struct alignas(64) RBTreeStandardLink {
       sibling->parent = close_nephew;
 
       sibling = close_nephew;
-      close_nephew = sibling->link[dir];
       distant_nephew = sibling->link[1 - dir];
+      close_nephew = sibling->link[dir];
     }
     Rotate(parent, sibling, 1 - dir);
     sibling->red = parent->red;
