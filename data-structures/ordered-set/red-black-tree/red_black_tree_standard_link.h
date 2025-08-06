@@ -96,6 +96,10 @@ struct alignas(64) RBTreeStandardLink {
     // 3. parent = grand_parent->link[dir] and uncle  =
     // grand_parent->link[1-dir] Then, we just need to rotate accordingly.
     if (current == parent->link[1 - dir]) {
+      // Since one additional rotation is required after this block,
+      // the code in this block omit the links between grandparent and current.
+      // The code in this block also omit the color change, since the color
+      // will be changed afterwards.
       parent->link[1 - dir] = current->link[dir];
       current->link[dir]->parent = parent;
       current->link[dir] = parent;
@@ -105,11 +109,11 @@ struct alignas(64) RBTreeStandardLink {
     grand_parent->link[dir] = parent->link[1 - dir];
     parent->link[1 - dir]->parent = grand_parent;
     parent->parent = grand_parent->parent;
+    link = parent;
     parent->link[1 - dir] = grand_parent;
     grand_parent->parent = parent;
     grand_parent->red = true;
     parent->red = false;
-    link = parent;
     return true;
   }
 
@@ -213,11 +217,10 @@ struct alignas(64) RBTreeStandardLink {
     Node *close_nephew = sibling->link[dir],
          *distant_nephew = sibling->link[1 - dir];
     if (!distant_nephew->red) {
-      // Note that we did not set the color, since the color
-      // will be set by the following case.
-      parent->link[1 - dir] = close_nephew;
-      close_nephew->parent = parent;
-
+      // Since one additional rotation is required after this block,
+      // the code in this block omit the links between parent and
+      // close_nephew. The code in this block also omit the color change,
+      // since the color will be changed afterwards.
       sibling->link[dir] = close_nephew->link[1 - dir];
       close_nephew->link[1 - dir]->parent = sibling;
 

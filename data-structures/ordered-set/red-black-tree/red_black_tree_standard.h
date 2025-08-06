@@ -104,7 +104,10 @@ struct alignas(64) RBTreeStandard {
         //       c         p   S               T S   U
         //      / \         \
         //     T   S         T
-        //
+        // Since one additional rotation is required after this block,
+        // the code in this block omit the links between grandparent and
+        // current. The code in this block also omit the color change, since the
+        // color will be changed afterwards.
         parent->right = current->left;
         current->left->parent = parent;
         current->left = parent;
@@ -121,11 +124,11 @@ struct alignas(64) RBTreeStandard {
       grand_parent->left = parent->right;
       parent->right->parent = grand_parent;
       parent->parent = grand_parent->parent;
+      root_link = parent;
       parent->right = grand_parent;
       grand_parent->parent = parent;
       grand_parent->red = true;
       parent->red = false;
-      root_link = parent;
     } else {
       if (current == parent->left) {
         parent->left = current->right;
@@ -137,11 +140,11 @@ struct alignas(64) RBTreeStandard {
       grand_parent->right = parent->left;
       parent->left->parent = grand_parent;
       parent->parent = grand_parent->parent;
+      root_link = parent;
       parent->left = grand_parent;
       grand_parent->parent = parent;
       grand_parent->red = true;
       parent->red = false;
-      root_link = parent;
     }
     return true;
   }
@@ -212,14 +215,14 @@ struct alignas(64) RBTreeStandard {
       parent = current->parent;
     }
 
+    Node *close_nephew, *distant_nephew;
     if (current == parent->left) {
       if (sibling->red) {
         //     P               S
         //    / \             / \
-				//   N   s    -->    p   Sr
+				//   c   s    -->    p  Dn
         //      / \         / \
-				//     Sl  Sr      N   Sl
-        //
+				//     Cn Dn       c  Cn
         parent->right = sibling->left;
         sibling->left->parent = parent;
 
@@ -239,21 +242,21 @@ struct alignas(64) RBTreeStandard {
         parent->red = true;
       }
       // Now, sibling must be black and one of the sibling's child must be red.
-      Node *close_nephew = sibling->left, *distant_nephew = sibling->right;
+      close_nephew = sibling->left;
+      distant_nephew = sibling->right;
       if (!distant_nephew->red) {
         //
-        //    (p)           (p)
-        //    / \           / \
-				//   N   S    -->  N   sl
-        //      / \             \
-				//     sl  Sr            S
+        //    (p)           (p)                       (Cn)
+        //    / \           / \         (later)       /  \
+        //   C   S    -->  C  cn        ------->     P    S
+        //      / \           / \                   / \
+				//     cn Dn         X   S                 C   X
         //                        \
-				//                         Sr
-        // Note that we did not set the color, since the color
-        // will be set by the following case.
-        parent->right = close_nephew;
-        close_nephew->parent = parent;
-
+				//                        Dn
+        // Since one additional rotation is required after this block,
+        // the code in this block omit the links between parent and
+        // close_nephew. The code in this block also omit the color change,
+        // since the color will be changed afterwards.
         sibling->left = close_nephew->right;
         close_nephew->right->parent = sibling;
 
@@ -267,22 +270,12 @@ struct alignas(64) RBTreeStandard {
       // Now, sibling must be black and distant_nephew must be red.
       //      (p)             (s)
       //      / \             / \
-			//     N   S     -->   P   Sr
+			//     C   S     -->   P   Dn
       //        / \         / \
-			//      (sl) sr      N  (sl)
-      //
-      (parent == parent->parent->left ? parent->parent->left
-                                      : parent->parent->right) = sibling;
-      sibling->parent = parent->parent;
-
+			//      (cn) dn      C  (cn)
+      // Most color/pointers changing are in the end of the function.
       sibling->left = parent;
-      parent->parent = sibling;
-
       parent->right = close_nephew;
-      close_nephew->parent = parent;
-
-      sibling->red = parent->red;
-      parent->red = distant_nephew->red = false;
     } else {
       if (sibling->red) {
         parent->left = sibling->right;
@@ -302,11 +295,9 @@ struct alignas(64) RBTreeStandard {
         }
         parent->red = true;
       }
-      Node *close_nephew = sibling->right, *distant_nephew = sibling->left;
+      close_nephew = sibling->right;
+      distant_nephew = sibling->left;
       if (!distant_nephew->red) {
-        parent->left = close_nephew;
-        close_nephew->parent = parent;
-
         sibling->right = close_nephew->left;
         close_nephew->left->parent = sibling;
 
@@ -317,19 +308,16 @@ struct alignas(64) RBTreeStandard {
         close_nephew = sibling->right;
         distant_nephew = sibling->left;
       }
-      (parent == parent->parent->left ? parent->parent->left
-                                      : parent->parent->right) = sibling;
-      sibling->parent = parent->parent;
-
       sibling->right = parent;
-      parent->parent = sibling;
-
       parent->left = close_nephew;
-      close_nephew->parent = parent;
-
-      sibling->red = parent->red;
-      parent->red = distant_nephew->red = false;
     }
+    (parent == parent->parent->left ? parent->parent->left
+                                    : parent->parent->right) = sibling;
+    sibling->parent = parent->parent;
+    parent->parent = sibling;
+    close_nephew->parent = parent;
+    sibling->red = parent->red;
+    parent->red = distant_nephew->red = false;
     return true;
   }
 
