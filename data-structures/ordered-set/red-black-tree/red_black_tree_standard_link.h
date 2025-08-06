@@ -25,16 +25,6 @@ struct alignas(64) RBTreeStandardLink {
     dummy_.red = header_.red = false;
   }
 
-  struct Node *NewNode(const T &x, Node *parent, bool red) {
-    Node *new_node = new Node();
-    new_node->link[0] = sentinel_;
-    new_node->link[1] = sentinel_;
-    new_node->parent = parent;
-    new_node->red = red;
-    new_node->value = x;
-    return new_node;
-  }
-
   bool Insert(const T &x) {
     // Empty tree.
     if (root_ == sentinel_) {
@@ -249,6 +239,16 @@ struct alignas(64) RBTreeStandardLink {
     int lh = BlackHeight(node->link[0]), rh = BlackHeight(node->link[1]);
     if (lh == -1 || rh == -1 || lh != rh) return -1;
     return lh + (node->red ? 0 : 1);
+  }
+
+  Node *NewNode(const T &x, Node *parent, bool red) {
+    Node *new_node = new Node();
+    new_node->link[0] = sentinel_;
+    new_node->link[1] = sentinel_;
+    new_node->parent = parent;
+    new_node->red = red;
+    new_node->value = x;
+    return new_node;
   }
 
   static void Free(const Node *root, const Node *sentinel = nullptr) {

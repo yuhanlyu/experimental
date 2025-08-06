@@ -29,8 +29,5 @@ benchmark: red_black_tree.h red_black_tree_standard.h red_black_tree_benchmark.c
 format: $(SRC)
 	$(CLANG_FORMAT) $(CLANG_FORMAT_FLAGS) $(SRC)
 
-clang-tidy: $(SRC)
-	$(CLANG_TIDY) $(SRC) $(CLANG_TIDY_FLAGS)
-
 clean:
 	rm red_black_tree_test red_black_tree_benchmark red_black_tree_perf perf.data*

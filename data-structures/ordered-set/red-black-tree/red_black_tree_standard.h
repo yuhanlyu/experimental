@@ -24,17 +24,6 @@ struct alignas(64) RBTreeStandard {
     dummy_.parent = header_.parent = sentinel_;
     dummy_.red = header_.red = false;
   }
-
-  struct Node *NewNode(const T &x, Node *parent, bool red) {
-    Node *new_node = new Node();
-    new_node->left = sentinel_;
-    new_node->right = sentinel_;
-    new_node->parent = parent;
-    new_node->red = red;
-    new_node->value = x;
-    return new_node;
-  }
-
   bool Insert(const T &x) {
     // Empty tree.
     if (root_ == sentinel_) {
@@ -356,6 +345,16 @@ struct alignas(64) RBTreeStandard {
     int lh = BlackHeight(node->left), rh = BlackHeight(node->right);
     if (lh == -1 || rh == -1 || lh != rh) return -1;
     return lh + (node->red ? 0 : 1);
+  }
+
+  Node *NewNode(const T &x, Node *parent, bool red) {
+    Node *new_node = new Node();
+    new_node->left = sentinel_;
+    new_node->right = sentinel_;
+    new_node->parent = parent;
+    new_node->red = red;
+    new_node->value = x;
+    return new_node;
   }
 
   // Use a header node so that the left pointer points to the real root.
