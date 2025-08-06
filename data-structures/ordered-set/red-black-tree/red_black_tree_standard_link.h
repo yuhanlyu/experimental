@@ -83,12 +83,6 @@ struct alignas(64) RBTreeStandardLink {
       grand_parent = parent->parent;
     }
 
-    // grand_parent->parent may be the header node.
-    // Without the header node, the code needs to test whether grand_parent is
-    // root explicitly.
-    Node *&link = ((grand_parent == grand_parent->parent->link[0])
-                       ? grand_parent->parent->link[0]
-                       : grand_parent->parent->link[1]);
     // The properties we know at this point:
     // 1. Current and parent must be red, and uncle is black due to the loop.
     // 2. Grandparent must be black, sibling must be black, and children of
@@ -106,12 +100,7 @@ struct alignas(64) RBTreeStandardLink {
       parent->parent = current;
       parent = current;
     }
-    grand_parent->link[dir] = parent->link[1 - dir];
-    parent->link[1 - dir]->parent = grand_parent;
-    parent->parent = grand_parent->parent;
-    link = parent;
-    parent->link[1 - dir] = grand_parent;
-    grand_parent->parent = parent;
+    Rotate(grand_parent, parent, dir);
     grand_parent->red = true;
     parent->red = false;
     return true;
@@ -194,16 +183,7 @@ struct alignas(64) RBTreeStandardLink {
     }
 
     if (sibling->red) {
-      parent->link[1 - dir] = sibling->link[dir];
-      sibling->link[dir]->parent = parent;
-
-      sibling->parent = parent->parent;
-      (parent->parent->link[dir] == parent ? parent->parent->link[dir]
-                                           : parent->parent->link[1 - dir]) =
-          sibling;
-      sibling->link[dir] = parent;
-      parent->parent = sibling;
-
+      Rotate(parent, sibling, 1 - dir);
       sibling->red = false;
       sibling = parent->link[1 - dir];
       if (!sibling->link[0]->red && !sibling->link[1]->red) {
@@ -231,17 +211,7 @@ struct alignas(64) RBTreeStandardLink {
       close_nephew = sibling->link[dir];
       distant_nephew = sibling->link[1 - dir];
     }
-    (parent == parent->parent->link[dir] ? parent->parent->link[dir]
-                                         : parent->parent->link[1 - dir]) =
-        sibling;
-    sibling->parent = parent->parent;
-
-    sibling->link[dir] = parent;
-    parent->parent = sibling;
-
-    parent->link[1 - dir] = close_nephew;
-    close_nephew->parent = parent;
-
+    Rotate(parent, sibling, 1 - dir);
     sibling->red = parent->red;
     parent->red = distant_nephew->red = false;
     return true;
@@ -297,6 +267,18 @@ struct alignas(64) RBTreeStandardLink {
     Traverse(root->link[0], sentinel, result);
     result.push_back(root->value);
     Traverse(root->link[1], sentinel, result);
+  }
+
+  static void Rotate(Node *parent, Node *current, bool dir) {
+    parent->link[dir] = current->link[1 - dir];
+    current->link[1 - dir]->parent = parent;
+
+    current->parent = parent->parent;
+    ((parent == parent->parent->link[0]) ? parent->parent->link[0]
+                                         : parent->parent->link[1]) = current;
+
+    current->link[1 - dir] = parent;
+    parent->parent = current;
   }
 
   // Use a header node so that the link[0] pointer points to the real root.
