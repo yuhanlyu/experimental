@@ -53,9 +53,7 @@ struct alignas(64) RBTreeStandard {
     for (;;) {
       // If the parent is black, since all requirements are satisfied, we are
       // done.
-      if (!parent->red) {
-        return true;
-      }
+      if (!parent->red) return true;
 
       Node *uncle = (parent == grand_parent->left) ? grand_parent->right
                                                    : grand_parent->left;

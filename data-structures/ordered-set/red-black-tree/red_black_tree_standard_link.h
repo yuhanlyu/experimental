@@ -55,9 +55,7 @@ struct alignas(64) RBTreeStandardLink {
     for (;;) {
       // If the parent is black, since all requirements are satisfied, we are
       // done.
-      if (!parent->red) {
-        return true;
-      }
+      if (!parent->red) return true;
 
       dir = (parent != grand_parent->link[0]);
       Node *uncle = grand_parent->link[1 - dir];
