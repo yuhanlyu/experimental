@@ -150,6 +150,9 @@ struct alignas(64) RBTreeStandard {
       link = &(current->right);
       for (; min->left != sentinel_; link = &min->left, min = min->left) {
       }
+      // For simplicity, just copy the value.
+      // If the application needs to ensure pointer stability, then the
+      // code should swap current and min.
       current->value = min->value;
       current = min;
     }

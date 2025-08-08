@@ -114,6 +114,9 @@ struct alignas(64) RBTreeStandardLink {
         parent = replacement;
         dir = opposite_dir;
       }
+      // For simplicity, just copy the value.
+      // If the application needs to ensure pointer stability, then the
+      // code should swap current and replacement.
       current->value = replacement->value;
       current = replacement;
       // Change the default so that the algorithm find predecessor or successor
