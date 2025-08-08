@@ -45,26 +45,24 @@ class RBTreeBenchmark : public benchmark::Fixture {
     std::shuffle(test, test + state.range(0), g);
   }
 
+  // Floyd's algorithm.
   static void RandomElement(const ::benchmark::State& state, int insert[],
                             int removal[]) {
     std::random_device rd;
     std::mt19937 g(rd());
-    std::uniform_int_distribution<int> dist(0, state.range(0) - 1);
-    for (int i = 0; i < batch_size; ++i) {
-      int random;
-      bool found;
-      do {
-        random = dist(g);
-        found = false;
-        for (int j = 0; j < i; ++j) {
-          if (removal[j] == random) {
-            found = true;
-            break;
-          }
-        }
-      } while (found);
-      removal[i] = insert[i] = random;
+    std::unordered_set<int> samples;
+    for (int i = state.range(0) - batch_size; i < state.range(0); ++i) {
+      std::uniform_int_distribution<int> dist(0, i);
+      int r = dist(g);
+      samples.insert(samples.find(r) == samples.end() ? r : i);
     }
+
+    int i = 0;
+    for (int s : samples) {
+      insert[i] = removal[i] = s;
+      ++i;
+    }
+
     std::shuffle(insert, insert + batch_size, g);
     std::shuffle(removal, removal + batch_size, g);
   }
