@@ -33,12 +33,12 @@ struct alignas(64) RBTreeStandard {
 
     // Below, the tree cannot be empty.
     Node **link = &root_, *parent;
-    while ((*link) != sentinel_) {
+    do {
       Node *current = *link;
       if (x == current->value) return false;
       link = x < current->value ? &current->left : &current->right;
       parent = current;
-    }
+    } while ((*link) != sentinel_);
     *link = NewNode(x, parent, true);
 
     // Set the root to black so that the loop below can terminate naturally.

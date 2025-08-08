@@ -35,12 +35,12 @@ struct alignas(64) RBTreeStandardLink {
     // Below, the tree cannot be empty.
     bool dir = 0;
     Node *current = root_, *parent;
-    while (current != sentinel_) {
+    do {
       if (x == current->value) return false;
       dir = x >= current->value;
       parent = current;
       current = current->link[dir];
-    }
+    } while (current != sentinel_);
     current = parent->link[dir] = NewNode(x, parent, true);
 
     // Set the root to black so that the loop below can terminate naturally.
