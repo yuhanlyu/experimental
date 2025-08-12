@@ -1,25 +1,32 @@
-include ../../../flags.mk
-SRC = wavl.h wavl_test.cc wavl_benchmark.cc
+CC = clang++-19
+CLANG_TIDY = clang-tidy
+CLANG_FORMAT = clang-format
 
-test: wavl.h wavl_test.cc
-	$(CC) $(CFLAGS) -L$(LIB_DIR) -I$(INCLUDE_DIR) wavl_test.cc $(TEST_FLAGS) -o wavl_test
+DEBUG_SYMBOL = -g
+PTHREAD = -lpthread
+
+CFLAGS = -std=c++23 -pedantic -Wall -Wextra -fno-rtti -fno-exceptions -no-pie
+SANITIZE_FLAGS = -fsanitize=address -fsanitize=undefined
+OPT_FLAGS = -O3 -march=native -mtune=native -flto=full
+
+CLANG_FORMAT_FLAGS = -i -sort-includes -style='{BasedOnStyle: Google, UseTab: Never, IndentWidth: 2}'
+
+TEST_FLAGS = $(DEBUG_SYMBOL) $(SANITIZE_FLAGS) -lgtest -lgtest_main $(PTHREAD)
+
+BENCHMARK_FLAGS = $(OPT_FLAGS) $(PTHREAD) -lbenchmark -g
+
+SRC = wavl.h wavl_standard.h wavl_test.cc wavl_benchmark.cc
+
+test: wavl.h wavl_standard.h wavl_test.cc
+	$(CC) $(CFLAGS) wavl_test.cc $(TEST_FLAGS) -o wavl_test
 	./wavl_test
 
 benchmark: wavl.h wavl_benchmark.cc
-	$(CC) $(CFLAGS) -L$(LIB_DIR) -I$(INCLUDE_DIR) wavl_benchmark.cc $(BENCHMARK_FLAGS) -o wavl_benchmark
+	$(CC) $(CFLAGS) wavl_benchmark.cc $(BENCHMARK_FLAGS) -o wavl_benchmark
 	./wavl_benchmark
-
-perf: wavl.h wavl_benchmark.cc
-	$(CC) $(CFLAGS) -L$(LIB_DIR) -I$(INCLUDE_DIR) wavl_benchmark.cc $(PERF_FLAGS) -o wavl_perf
 
 format: $(SRC)
 	$(CLANG_FORMAT) $(CLANG_FORMAT_FLAGS) $(SRC)
-
-clang-tidy: $(SRC)
-	$(CLANG_TIDY) $(SRC) $(CLANG_TIDY_FLAGS)
-
-cppcheck: $(SRC)
-	$(CPPCHECK) $(CPPCHECK_FLAGS) $(SRC)
 
 clean:
 	rm wavl_test wavl_benchmark wavl_perf perf.data*
