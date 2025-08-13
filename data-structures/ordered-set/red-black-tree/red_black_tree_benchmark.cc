@@ -209,7 +209,7 @@ BENCHMARK_DEFINE_F(RBTreeBenchmark, RBTreeStandardDelete)
     RandomElement(state, element, batch_size);
     for (int i = 0; i < batch_size; ++i) {
       state.ResumeTiming();
-      [[clang::noinline]] tree.Delete(element[i]);
+      tree.Delete(element[i]);
       state.PauseTiming();
     }
     for (int i = 0; i < batch_size; ++i) {
