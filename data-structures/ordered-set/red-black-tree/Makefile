@@ -14,7 +14,7 @@ CLANG_FORMAT_FLAGS = -i -sort-includes -style='{BasedOnStyle: Google, UseTab: Ne
 
 TEST_FLAGS = $(DEBUG_SYMBOL) $(SANITIZE_FLAGS) -lgtest -lgtest_main $(PTHREAD)
 
-BENCHMARK_FLAGS = $(OPT_FLAGS) $(PTHREAD) -lbenchmark -g
+BENCHMARK_FLAGS = $(OPT_FLAGS) $(PTHREAD) -Wno-vla-cxx-extension -lbenchmark -g
 
 SRC = red_black_tree.h red_black_tree_test.cc red_black_tree_benchmark.cc red_black_tree_standard.h red_black_tree_standard_link.h
 
@@ -24,7 +24,7 @@ test: red_black_tree.h red_black_tree_test.cc
 
 benchmark: red_black_tree.h red_black_tree_standard.h red_black_tree_benchmark.cc
 	$(CC) $(CFLAGS) red_black_tree_benchmark.cc $(BENCHMARK_FLAGS) -o red_black_tree_benchmark
-	./red_black_tree_benchmark --benchmark_min_time=30s
+	./red_black_tree_benchmark --benchmark_repetitions=100 --benchmark_report_aggregates_only=true --benchmark_out=benchmark.out
 
 format: $(SRC)
 	$(CLANG_FORMAT) $(CLANG_FORMAT_FLAGS) $(SRC)

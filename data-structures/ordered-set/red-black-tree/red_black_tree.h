@@ -236,7 +236,7 @@ struct alignas(32) RBTree {
       if (done) return true;
       // When the child is black, no violation can occur.
       if (!node->left->red) return done = true;
-      // If children has same color, then flip the colo.
+      // If children has same color, then flip the color.
       if (node->right->red) {
         node->left->red = node->right->red = false;
         return node->red = true;
@@ -252,7 +252,7 @@ struct alignas(32) RBTree {
       if (done) return true;
       // When the child is black, no violation can occur.
       if (!node->right->red) return done = true;
-      // If children has same color, then flip the colo.
+      // If children has same color, then flip the color.
       if (node->left->red) {
         node->left->red = node->right->red = false;
         return node->red = true;

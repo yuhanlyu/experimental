@@ -106,7 +106,7 @@ struct alignas(64) RBTreeStandardLink {
     if (current->link[0] != sentinel_ && current->link[1] != sentinel_) {
       // When the node to be deleted has two children, find the predecessor or
       // successor depending on default_dir_in_deletion.
-      dir = default_dir_in_deletion;
+      dir = 1;
       Node *replacement = current->link[dir];
       const bool opposite_dir = 1 - dir;
       for (parent = current; replacement->link[opposite_dir] != sentinel_;
@@ -119,9 +119,6 @@ struct alignas(64) RBTreeStandardLink {
       // code should swap current and replacement.
       current->value = replacement->value;
       current = replacement;
-      // Change the default so that the algorithm find predecessor or successor
-      // alternatively.
-      default_dir_in_deletion = !default_dir_in_deletion;
     }
 
     // Now, the node to be deleted should have at most one child.
@@ -289,8 +286,6 @@ struct alignas(64) RBTreeStandardLink {
   // The sentinel's link[0]/link[1] pointers can be changed arbitrarily in
   // Delete. Thus, the code should not depending on sentinel's parent pointer.
   Node *sentinel_ = &dummy_;
-
-  bool default_dir_in_deletion = false;
 };
 
 #endif

@@ -9,11 +9,6 @@ This module implements three versions of insertion/deletion:
 1. Iterative Standard algorithm, but use array of pointer instead of left/right pointers:
    Lin Chen, Rene Schott
    [Optimal operations on red-black trees](https://doi.org/10.1109/ICCI.1993.315316) 
-   Moreover, when deleting a node with two children, instead of picking successor/predecessor
-   deterministically, the algorithm pick successor or predecessor alternatively.
-   The idea is from the following paper.
-   Jeffrey L. Eppinger
-   [An empirical study of insertion and deletion in binary search trees](https://doi.org/10.1145/358172.358183)
 1. Iterative bottom-up: this is the method inspired by the technical report:  
    Robert Endre Tarjan  
    [Efficient Top-Down Updating of Red-Black Trees](https://www.cs.princeton.edu/research/techreps/TR-006-85)
