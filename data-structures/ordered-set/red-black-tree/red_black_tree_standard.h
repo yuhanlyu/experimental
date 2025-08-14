@@ -69,12 +69,6 @@ struct RBTreeStandard {
       grand_parent = parent->parent;
     }
 
-    // grand_parent->parent may be the header node.
-    // Without the header node, the code needs to test whether grand_parent is
-    // root explicitly.
-    Node *&root_link = ((grand_parent == grand_parent->parent->left)
-                            ? grand_parent->parent->left
-                            : grand_parent->parent->right);
     // The properties we know at this point:
     // 1. Current and parent must be red, and uncle is black due to the loop.
     // 2. Grandparent must be black, sibling must be black, and children of
@@ -82,6 +76,7 @@ struct RBTreeStandard {
     // Then, we just need to rotate accordingly.
     // Note that we didn't update colors, since the colors will be updated
     // afterwards anyway.
+    Node *sibling;
     if (parent == grand_parent->left) {
       if (current != parent->left) {
         //       G             G                C
@@ -108,14 +103,11 @@ struct RBTreeStandard {
       //     / \             / \
       //    c   S           S   U
       //
-      grand_parent->left = parent->right;
+      // Note that there are operations after the block.
+      sibling = parent->right;
+      grand_parent->left = sibling;
       parent->right->parent = grand_parent;
-      parent->parent = grand_parent->parent;
-      root_link = parent;
       parent->right = grand_parent;
-      grand_parent->parent = parent;
-      grand_parent->red = true;
-      parent->red = false;
     } else {
       if (current == parent->left) {
         parent->left = current->right;
@@ -124,15 +116,21 @@ struct RBTreeStandard {
         parent->parent = current;
         parent = current;
       }
-      grand_parent->right = parent->left;
-      parent->left->parent = grand_parent;
-      parent->parent = grand_parent->parent;
-      root_link = parent;
+      sibling = parent->left;
+      grand_parent->right = sibling;
       parent->left = grand_parent;
-      grand_parent->parent = parent;
-      grand_parent->red = true;
-      parent->red = false;
     }
+    // grand_parent->parent may be the header node.
+    // Without the header node, the code needs to test whether grand_parent is
+    // root explicitly.
+    ((grand_parent == grand_parent->parent->left)
+         ? grand_parent->parent->left
+         : grand_parent->parent->right) = parent;
+    parent->parent = grand_parent->parent;
+    sibling->parent = grand_parent;
+    grand_parent->parent = parent;
+    grand_parent->red = true;
+    parent->red = false;
     return true;
   }
 
