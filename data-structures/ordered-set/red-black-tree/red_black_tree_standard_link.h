@@ -7,9 +7,9 @@
 #include "../binary-search-tree-common/binary_search_tree_common.h"
 
 template <typename T>
-struct alignas(64) RBTreeStandardLink {
+struct RBTreeStandardLink {
  public:
-  struct Node {
+  struct alignas(64) Node {
     using value_type = T;
     // link[0] is left child and link[1] is right child.
     Node *link[2];

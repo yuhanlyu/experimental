@@ -6,9 +6,9 @@
 #include "../binary-search-tree-common/binary_search_tree_common.h"
 
 template <typename T>
-struct alignas(32) RBTree {
+struct RBTree {
  public:
-  struct Node {
+  struct alignas(32) Node {
     using value_type = T;
     explicit Node(const T& x, bool is_red = true) : value(x), red(is_red) {}
     Node() = default;
@@ -133,10 +133,9 @@ struct alignas(32) RBTree {
     // Find the node to be deleted and the lowest red node or black node with
     // red child/grandchild.
     for (current = node; current != sentinel; current = *parent) {
-      // Using bitwise or is faster than logical or.
-      if (current->red | current->left->red | current->right->red |
-          current->left->left->red | current->left->right->red |
-          current->right->left->red | current->right->right->red)
+      if (current->red || current->left->red || current->right->red ||
+          current->left->left->red || current->left->right->red ||
+          current->right->left->red || current->right->right->red)
         safe_node = parent;
       if (x == current->value) break;
       parent = (x < current->value) ? &current->left : &current->right;
@@ -148,9 +147,9 @@ struct alignas(32) RBTree {
     if (current->left != sentinel && current->right != sentinel) {
       Node* min = current->right;
       for (parent = &current->right; min->left != sentinel; min = min->left) {
-        if (min->red | min->left->red | min->right->red | min->left->left->red |
-            min->left->right->red | min->right->left->red |
-            min->right->right->red)
+        if (min->red || min->left->red || min->right->red ||
+            min->left->left->red || min->left->right->red ||
+            min->right->left->red || min->right->right->red)
           safe_node = parent;
         parent = &min->left;
       }

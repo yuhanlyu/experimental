@@ -7,9 +7,9 @@
 #include "../binary-search-tree-common/binary_search_tree_common.h"
 
 template <typename T>
-struct alignas(64) RBTreeStandard {
+struct RBTreeStandard {
  public:
-  struct Node {
+  struct alignas(64) Node {
     using value_type = T;
     Node *left;
     Node *right;
@@ -209,9 +209,9 @@ struct alignas(64) RBTreeStandard {
       if (sibling->red) {
         //     P               S
         //    / \             / \
-				//   c   s    -->    p  Dn
+        //   c   s    -->    p  Dn
         //      / \         / \
-				//     Cn Dn       c  Cn
+        //     Cn Dn       c  Cn
         parent->right = sibling->left;
         sibling->left->parent = parent;
 
@@ -239,9 +239,9 @@ struct alignas(64) RBTreeStandard {
         //    / \           / \         (later)       /  \
         //   C   S    -->  C  cn        ------->     P    S
         //      / \           / \                   / \
-				//     cn Dn         X   S                 C   X
+        //     cn Dn         X   S                 C   X
         //                        \
-				//                        Dn
+        //                        Dn
         // Since one additional rotation is required after this block,
         // the code in this block omit the links between parent and
         // close_nephew. The code in this block also omit the color change,
@@ -259,9 +259,9 @@ struct alignas(64) RBTreeStandard {
       // Now, sibling must be black and distant_nephew must be red.
       //      (p)             (s)
       //      / \             / \
-			//     C   S     -->   P   Dn
+      //     C   S     -->   P   Dn
       //        / \         / \
-			//      (cn) dn      C  (cn)
+      //      (cn) dn      C  (cn)
       // Most color/pointers changing are in the end of the function.
       sibling->left = parent;
       parent->right = close_nephew;

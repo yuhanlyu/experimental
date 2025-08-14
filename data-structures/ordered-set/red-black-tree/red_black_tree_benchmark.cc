@@ -19,7 +19,8 @@ int test[max_size];
 class RBTreeBenchmark : public benchmark::Fixture {
  public:
   void SetUp(const ::benchmark::State& state) override {
-    for (int i = 0; i < state.range(0); ++i) test[i] = i;
+    // The scope of test is all odd numbers from 1 to 2 * range - 1.
+    for (int i = 0; i < state.range(0); ++i) test[i] = 2 * i + 1;
   }
 
   static void Shuffle(const ::benchmark::State& state) {
@@ -47,7 +48,7 @@ class RBTreeBenchmark : public benchmark::Fixture {
 
   // Floyd's algorithm.
   static void RandomElement(const ::benchmark::State& state, int element[],
-                            int batch_size) {
+                            int batch_size, bool odd = false) {
     std::random_device rd;
     std::mt19937 g(rd());
     std::unordered_set<int> samples;
@@ -58,8 +59,10 @@ class RBTreeBenchmark : public benchmark::Fixture {
     }
 
     int i = 0;
+    // When odd is 0, the sample is even numbers.
+    // When odd is 1, the sample is odd numbers.
     for (int s : samples) {
-      element[i++] = s;
+      element[i++] = 2 * s + odd;
     }
 
     std::shuffle(element, element + batch_size, g);
@@ -75,12 +78,12 @@ BENCHMARK_DEFINE_F(RBTreeBenchmark, RBTreeStandardInsert)
     state.PauseTiming();
     RandomElement(state, element, batch_size);
     for (int i = 0; i < batch_size; ++i) {
-      tree.Delete(element[i]);
-    }
-    for (int i = 0; i < batch_size; ++i) {
       state.ResumeTiming();
       tree.Insert(test[i]);
       state.PauseTiming();
+    }
+    for (int i = 0; i < batch_size; ++i) {
+      tree.Delete(element[i]);
     }
   }
 }
@@ -97,12 +100,12 @@ BENCHMARK_DEFINE_F(RBTreeBenchmark, RBTreeStandardLinkInsert)
     state.PauseTiming();
     RandomElement(state, element, batch_size);
     for (int i = 0; i < batch_size; ++i) {
-      tree.Delete(element[i]);
-    }
-    for (int i = 0; i < batch_size; ++i) {
       state.ResumeTiming();
       tree.Insert(test[i]);
       state.PauseTiming();
+    }
+    for (int i = 0; i < batch_size; ++i) {
+      tree.Delete(element[i]);
     }
   }
 }
@@ -119,12 +122,12 @@ BENCHMARK_DEFINE_F(RBTreeBenchmark, RBTreeInsert)
     state.PauseTiming();
     RandomElement(state, element, batch_size);
     for (int i = 0; i < batch_size; ++i) {
-      tree.Delete(element[i]);
-    }
-    for (int i = 0; i < batch_size; ++i) {
       state.ResumeTiming();
       tree.Insert(test[i]);
       state.PauseTiming();
+    }
+    for (int i = 0; i < batch_size; ++i) {
+      tree.Delete(element[i]);
     }
   }
 }
@@ -141,12 +144,12 @@ BENCHMARK_DEFINE_F(RBTreeBenchmark, RBTreeBottomUpInsert)
     state.PauseTiming();
     RandomElement(state, element, batch_size);
     for (int i = 0; i < batch_size; ++i) {
-      tree.BottomUpDelete(element[i]);
-    }
-    for (int i = 0; i < batch_size; ++i) {
       state.ResumeTiming();
       tree.BottomUpInsert(test[i]);
       state.PauseTiming();
+    }
+    for (int i = 0; i < batch_size; ++i) {
+      tree.BottomUpDelete(element[i]);
     }
   }
 }
@@ -163,12 +166,12 @@ BENCHMARK_DEFINE_F(RBTreeBenchmark, RBTreeTopDownInsert)
     state.PauseTiming();
     RandomElement(state, element, batch_size);
     for (int i = 0; i < batch_size; ++i) {
-      tree.TopDownDelete(element[i]);
-    }
-    for (int i = 0; i < batch_size; ++i) {
       state.ResumeTiming();
       tree.TopDownInsert(test[i]);
       state.PauseTiming();
+    }
+    for (int i = 0; i < batch_size; ++i) {
+      tree.TopDownDelete(element[i]);
     }
   }
 }
@@ -186,12 +189,12 @@ BENCHMARK_DEFINE_F(RBTreeBenchmark, RBTreeSTLInsert)
     state.PauseTiming();
     RandomElement(state, element, batch_size);
     for (int i = 0; i < batch_size; ++i) {
-      tree.insert(element[i]);
-    }
-    for (int i = 0; i < batch_size; ++i) {
       state.ResumeTiming();
       tree.erase(test[i]);
       state.PauseTiming();
+    }
+    for (int i = 0; i < batch_size; ++i) {
+      tree.insert(element[i]);
     }
   }
 }
@@ -206,7 +209,7 @@ BENCHMARK_DEFINE_F(RBTreeBenchmark, RBTreeStandardDelete)
   int element[batch_size];
   for (auto _ : state) {
     state.PauseTiming();
-    RandomElement(state, element, batch_size);
+    RandomElement(state, element, batch_size, true);
     for (int i = 0; i < batch_size; ++i) {
       state.ResumeTiming();
       tree.Delete(element[i]);
@@ -228,7 +231,7 @@ BENCHMARK_DEFINE_F(RBTreeBenchmark, RBTreeStandardLinkDelete)
   int element[batch_size];
   for (auto _ : state) {
     state.PauseTiming();
-    RandomElement(state, element, batch_size);
+    RandomElement(state, element, batch_size, true);
     for (int i = 0; i < batch_size; ++i) {
       state.ResumeTiming();
       tree.Delete(element[i]);
@@ -250,7 +253,7 @@ BENCHMARK_DEFINE_F(RBTreeBenchmark, RBTreeDelete)
   int element[batch_size];
   for (auto _ : state) {
     state.PauseTiming();
-    RandomElement(state, element, batch_size);
+    RandomElement(state, element, batch_size, true);
     for (int i = 0; i < batch_size; ++i) {
       state.ResumeTiming();
       tree.Delete(element[i]);
@@ -272,7 +275,7 @@ BENCHMARK_DEFINE_F(RBTreeBenchmark, RBTreeBottomUpDelete)
   int element[batch_size];
   for (auto _ : state) {
     state.PauseTiming();
-    RandomElement(state, element, batch_size);
+    RandomElement(state, element, batch_size, true);
     for (int i = 0; i < batch_size; ++i) {
       state.ResumeTiming();
       tree.BottomUpDelete(element[i]);
@@ -294,7 +297,7 @@ BENCHMARK_DEFINE_F(RBTreeBenchmark, RBTreeTopDownDelete)
   int element[batch_size];
   for (auto _ : state) {
     state.PauseTiming();
-    RandomElement(state, element, batch_size);
+    RandomElement(state, element, batch_size, true);
     for (int i = 0; i < batch_size; ++i) {
       state.ResumeTiming();
       tree.TopDownDelete(element[i]);
@@ -316,7 +319,7 @@ BENCHMARK_DEFINE_F(RBTreeBenchmark, RBTreeSTLDelete)
   int element[batch_size];
   for (auto _ : state) {
     state.PauseTiming();
-    RandomElement(state, element, batch_size);
+    RandomElement(state, element, batch_size, true);
     for (int i = 0; i < batch_size; ++i) {
       state.ResumeTiming();
       tree.erase(element[i]);

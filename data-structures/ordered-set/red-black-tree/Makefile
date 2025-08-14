@@ -24,7 +24,7 @@ test: red_black_tree.h red_black_tree_test.cc
 
 benchmark: red_black_tree.h red_black_tree_standard.h red_black_tree_benchmark.cc
 	$(CC) $(CFLAGS) red_black_tree_benchmark.cc $(BENCHMARK_FLAGS) -o red_black_tree_benchmark
-	./red_black_tree_benchmark --benchmark_repetitions=100 --benchmark_report_aggregates_only=true --benchmark_out=benchmark.out
+	./red_black_tree_benchmark --benchmark_repetitions=100 --benchmark_report_aggregates_only=true --benchmark_min_warmup_time=1
 
 format: $(SRC)
 	$(CLANG_FORMAT) $(CLANG_FORMAT_FLAGS) $(SRC)
