@@ -10,13 +10,13 @@
 template <typename T>
 struct WAVLStandard {
  public:
-  struct Node {
+  struct alignas(64) Node {
     using value_type = T;
     Node* left = nullptr;
     Node* right = nullptr;
     Node* parent = nullptr;
     T value;
-    bool rank_parity = false;  // rank 0 -> false
+    bool odd_rank = false;  // rank 0 -> false
   };
 
   WAVLStandard() {
@@ -24,7 +24,7 @@ struct WAVLStandard {
     sentinel_->right = header_.right = sentinel_;
     sentinel_->parent = sentinel_;
     header_.parent = &header_;
-    sentinel_->rank_parity = header_.rank_parity = true;  // rank -1
+    sentinel_->odd_rank = header_.odd_rank = true;  // rank -1
   }
 
   ~WAVLStandard() { FreeTree(root_, sentinel_); }
@@ -36,33 +36,33 @@ struct WAVLStandard {
       return true;
     }
     Node **link = &root_, *parent = &header_;
-    for (Node* current = *link; current != sentinel_;) {
+    do {
+      Node* current = *link;
       if (x == current->value) return false;
       link = x < current->value ? &current->left : &current->right;
       parent = current;
-      current = *link;
-    }
+    } while ((*link) != sentinel_);
     *link = NewNode(x, parent);
 
-    Node* current = *link;
     // Set the header rank parity so that the loop does not need to test current
     // == root_. When current = root_, current must get promoted in the previous
-    // iteration. Thus, current->rank_parity != parent->rank_parity and loop
+    // iteration. Thus, current->odd_rank != parent->odd_rank and loop
     // terminates.
-    header_.rank_parity = root_->rank_parity;
+    header_.odd_rank = root_->odd_rank;
+    Node* current = *link;
     for (;;) {
       // If the current becomes 1-child of the parent (the parent become 1, 1
       // node), then we are done.
-      if (current->rank_parity != parent->rank_parity) return true;
+      if (current->odd_rank != parent->odd_rank) return true;
 
       // Now, the current must be 0-child of the parent.
       const Node* sibling =
           (current == parent->left) ? parent->right : parent->left;
       // If parent is a 0, 2 node, then we find a place to rotate.
-      if (current->rank_parity == sibling->rank_parity) break;
+      if (current->odd_rank == sibling->odd_rank) break;
       // Now, parent is a 0, 1 node, promote the parent and proceed at a higher
       // level.
-      parent->rank_parity = 1 - parent->rank_parity;
+      parent->odd_rank = !parent->odd_rank;
       current = parent;
       parent = current->parent;
     }
@@ -72,7 +72,7 @@ struct WAVLStandard {
     Node* inner_child =
         ((current == parent->left) ? current->right : current->left);
     if (current == parent->left) {
-      if (inner_child->rank_parity != current->rank_parity) {
+      if (inner_child->odd_rank != current->odd_rank) {
         // Current's inner child is a 2-child.
         //
         //      p                 p
@@ -91,8 +91,8 @@ struct WAVLStandard {
         inner_child->left = current;
         current->parent = inner_child;
 
-        inner_child->rank_parity = 1 - inner_child->rank_parity;
-        current->rank_parity = 1 - current->rank_parity;
+        inner_child->odd_rank = !inner_child->odd_rank;
+        current->odd_rank = !current->odd_rank;
         current = inner_child;
         inner_child = current->right;
       }
@@ -109,13 +109,13 @@ struct WAVLStandard {
       parent->left = inner_child;
       current->right = parent;
     } else {
-      if (inner_child->rank_parity != current->rank_parity) {
+      if (inner_child->odd_rank != current->odd_rank) {
         inner_child->right->parent = current;
         current->left = inner_child->right;
         inner_child->right = current;
         current->parent = inner_child;
-        inner_child->rank_parity = 1 - inner_child->rank_parity;
-        current->rank_parity = 1 - current->rank_parity;
+        inner_child->odd_rank = !inner_child->odd_rank;
+        current->odd_rank = !current->odd_rank;
         current = inner_child;
         inner_child = current->left;
       }
@@ -127,7 +127,7 @@ struct WAVLStandard {
     current->parent = parent->parent;
     inner_child->parent = parent;
     parent->parent = current;
-    parent->rank_parity = 1 - parent->rank_parity;
+    parent->odd_rank = !parent->odd_rank;
     return true;
   }
 
@@ -151,11 +151,11 @@ struct WAVLStandard {
     Node *child = current->left != sentinel_ ? current->left : current->right,
          *parent = current->parent;
 
-    // Set header_->rank_parity = root_->rank_parity.
-    // In this way, if root_->rank_parity is changed, root_->rank_parity will be
-    // the same as header_->rank_parity.
-    header_.rank_parity = 1 - root_->rank_parity;
-    const bool delete_one_child = current->rank_parity != parent->rank_parity;
+    // Set header_->odd_rank = !root_->odd_rank.
+    // In this way, if root_->odd_rank is changed, root_->odd_rank will be
+    // the same as header_->odd_rank.
+    header_.odd_rank = !root_->odd_rank;
+    const bool delete_one_child = current->odd_rank != parent->odd_rank;
     *link = child;
     child->parent = parent;
     delete current;
@@ -172,10 +172,10 @@ struct WAVLStandard {
 
       // Otherwise, deleting a 1-child of an unary node
       // Since the parent becomes a 2, 2 leaf, we demote the parent.
-      parent->rank_parity = 1 - parent->rank_parity;
+      parent->odd_rank = !parent->odd_rank;
       // Now, parent is a 1, 1 leaf. Parent can be a 2-child or a 3-child.
       // If parent is a 2-child, then we are done.
-      if (parent->rank_parity == parent->parent->rank_parity) return true;
+      if (parent->odd_rank == parent->parent->odd_rank) return true;
 
       // Otherwise, parent is a 3-child.
       current = parent;
@@ -188,15 +188,15 @@ struct WAVLStandard {
       sibling = (current == parent->left ? parent->right : parent->left);
       // If sibling is a 1-child and sibling is not a 2, 2, node, we find a
       // place to rotate.
-      if (sibling->rank_parity != parent->rank_parity &&
-          (sibling->left->rank_parity != sibling->rank_parity ||
-           sibling->right->rank_parity != sibling->rank_parity))
+      if (sibling->odd_rank != parent->odd_rank &&
+          (sibling->left->odd_rank != sibling->odd_rank ||
+           sibling->right->odd_rank != sibling->odd_rank))
         break;
 
-      sibling->rank_parity = parent->rank_parity;
-      parent->rank_parity = 1 - parent->rank_parity;
+      sibling->odd_rank = parent->odd_rank;
+      parent->odd_rank = !parent->odd_rank;
       //  If parent is not a 3-child, then we are done.
-      if (parent->rank_parity == parent->parent->rank_parity) return true;
+      if (parent->odd_rank == parent->parent->odd_rank) return true;
       current = parent;
       parent = current->parent;
     }
@@ -208,7 +208,7 @@ struct WAVLStandard {
         current == parent->left ? sibling->left : sibling->right;
     bool double_rotate = false;
     if (current == parent->left) {
-      if (sibling->right->rank_parity == sibling->rank_parity) {
+      if (sibling->right->odd_rank == sibling->odd_rank) {
         // Distant nephew is a 2-child, so close nephew is a 1-child.
         //       p                p        (later)      cn
         //     /   \     -->     / \       ------->    /   \
@@ -225,8 +225,8 @@ struct WAVLStandard {
         close_nephew->right->parent = sibling;
         close_nephew->right = sibling;
         sibling->parent = close_nephew;
-        close_nephew->rank_parity = 1 - close_nephew->rank_parity;
-        sibling->rank_parity = 1 - sibling->rank_parity;
+        close_nephew->odd_rank = !close_nephew->odd_rank;
+        sibling->odd_rank = !sibling->odd_rank;
         sibling = close_nephew;
         close_nephew = sibling->left;
         double_rotate = true;
@@ -243,13 +243,13 @@ struct WAVLStandard {
       parent->right = close_nephew;
       sibling->left = parent;
     } else {
-      if (sibling->left->rank_parity == sibling->rank_parity) {
+      if (sibling->left->odd_rank == sibling->odd_rank) {
         sibling->right = close_nephew->left;
         close_nephew->left->parent = sibling;
         close_nephew->left = sibling;
         sibling->parent = close_nephew;
-        close_nephew->rank_parity = 1 - close_nephew->rank_parity;
-        sibling->rank_parity = 1 - sibling->rank_parity;
+        close_nephew->odd_rank = !close_nephew->odd_rank;
+        sibling->odd_rank = !sibling->odd_rank;
         sibling = close_nephew;
         close_nephew = sibling->right;
         double_rotate = true;
@@ -262,11 +262,11 @@ struct WAVLStandard {
     sibling->parent = parent->parent;
     close_nephew->parent = parent;
     parent->parent = sibling;
-    sibling->rank_parity = 1 - sibling->rank_parity;
+    sibling->odd_rank = !sibling->odd_rank;
     // If parent is a leaf or double rotation is needed, demote twice, but
     // parity will not change. Otherwise, demote once.
     if (parent->left != parent->right && !double_rotate)
-      parent->rank_parity = 1 - sibling->rank_parity;
+      parent->odd_rank = !sibling->odd_rank;
     return true;
   }
 
@@ -277,7 +277,7 @@ struct WAVLStandard {
   void PrintTree() const { PrintTree(root_, "root", sentinel_); }
 
   bool IsBalanced() const {
-    if (sentinel_->rank_parity != true) {
+    if (sentinel_->odd_rank != true) {
       std::cout << "Sentinel must have rank -1\n";
       return false;
     }
@@ -291,13 +291,13 @@ struct WAVLStandard {
     n->left = sentinel_;
     n->right = sentinel_;
     n->value = value;
-    n->rank_parity = false;  // rank 0
+    n->odd_rank = false;  // rank 0
     return n;
   }
 
   static int FromRankParityToRankDifference(const Node* node,
                                             const Node* parent) {
-    return node->rank_parity == parent->rank_parity ? 2 : 1;
+    return node->odd_rank == parent->odd_rank ? 2 : 1;
   }
 
   static void PrintTree(const Node* root, std::string prefix,
@@ -305,7 +305,7 @@ struct WAVLStandard {
     if (root == sentinel) return;
     PrintTree(root->left, prefix + "->left", sentinel);
     std::cerr << prefix << " = " << root->value << ", "
-              << "Rank parity: " << root->rank_parity << ", "
+              << "Rank parity: " << root->odd_rank << ", "
               << FromRankParityToRankDifference(root, root->parent) << "-child "
               << FromRankParityToRankDifference(root->left, root) << ", "
               << FromRankParityToRankDifference(root->right, root) << ' '
@@ -325,13 +325,12 @@ struct WAVLStandard {
     int right_rank = ComputeRank(node->right, sentinel);
     if (left_rank == -2 || right_rank == -2) return -2;
     // No 2, 2 leaf.
-    if (node->left == node->right &&
-        node->rank_parity == node->left->rank_parity) {
+    if (node->left == node->right && node->odd_rank == node->left->odd_rank) {
       std::cout << "Cannot have 2, 2 leaf\n";
       return -2;
     }
-    left_rank += (node->rank_parity == node->left->rank_parity ? 2 : 1);
-    right_rank += (node->rank_parity == node->right->rank_parity ? 2 : 1);
+    left_rank += (node->odd_rank == node->left->odd_rank ? 2 : 1);
+    right_rank += (node->odd_rank == node->right->odd_rank ? 2 : 1);
     // Left tree's rank must be equalt to right tree's rank.
     if (left_rank != right_rank) {
       std::cout << "Left rank != Right rank\n";

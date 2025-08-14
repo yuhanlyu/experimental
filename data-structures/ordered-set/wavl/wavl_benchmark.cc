@@ -9,7 +9,7 @@
 namespace {
 
 constexpr int min_size = 1 << 10;
-constexpr int max_size = 1 << 20;
+constexpr int max_size = 1 << 22;
 constexpr int multiplier = 4;
 constexpr int batch_size = 10;
 int test[max_size];
@@ -17,6 +17,7 @@ int test[max_size];
 class WAVLBenchmark : public benchmark::Fixture {
  public:
   void SetUp(const ::benchmark::State& state) override {
+    // The scope of test is all odd numbers from 1 to 2 * range - 1.
     for (int i = 0; i < state.range(0); ++i) test[i] = 2 * i + 1;
   }
 
@@ -36,8 +37,8 @@ class WAVLBenchmark : public benchmark::Fixture {
   }
 
   // Floyd's algorithm.
-  static void RandomElement(const ::benchmark::State& state, int insert[],
-                            int removal[]) {
+  static void RandomElement(const ::benchmark::State& state, int element[],
+                            int batch_size, bool odd = false) {
     std::random_device rd;
     std::mt19937 g(rd());
     std::unordered_set<int> samples;
@@ -48,25 +49,31 @@ class WAVLBenchmark : public benchmark::Fixture {
     }
 
     int i = 0;
+    // When odd is 0, the sample is even numbers.
+    // When odd is 1, the sample is odd numbers.
     for (int s : samples) {
-      insert[i] = removal[i] = s;
-      ++i;
+      element[i++] = 2 * s + odd;
     }
 
-    std::shuffle(insert, insert + batch_size, g);
-    std::shuffle(removal, removal + batch_size, g);
+    std::shuffle(element, element + batch_size, g);
   }
 };
 
 BENCHMARK_DEFINE_F(WAVLBenchmark, WAVLStandardInsert)
 (benchmark::State& state) {
-  while (state.KeepRunning()) {
+  WAVLStandard<int> tree;
+  BuildTree(state, tree);
+  int element[batch_size];
+  for (auto _ : state) {
     state.PauseTiming();
-    Shuffle(state);
-    state.ResumeTiming();
-    WAVLStandard<int> tree;
-    for (int i = 0; i < state.range(0); ++i) {
+    RandomElement(state, element, batch_size);
+    for (int i = 0; i < batch_size; ++i) {
+      state.ResumeTiming();
       tree.Insert(test[i]);
+      state.PauseTiming();
+    }
+    for (int i = 0; i < batch_size; ++i) {
+      tree.Delete(element[i]);
     }
   }
 }
@@ -74,53 +81,21 @@ BENCHMARK_REGISTER_F(WAVLBenchmark, WAVLStandardInsert)
     ->RangeMultiplier(multiplier)
     ->Range(min_size, max_size);
 
-BENCHMARK_DEFINE_F(WAVLBenchmark, WAVLStandardDelete)
-(benchmark::State& state) {
-  while (state.KeepRunning()) {
-    state.PauseTiming();
-    WAVLStandard<int> tree;
-    BuildTree(state, tree);
-    state.ResumeTiming();
-    for (int i = 0; i < state.range(0); ++i) {
-      tree.Delete(test[i]);
-    }
-  }
-}
-BENCHMARK_REGISTER_F(WAVLBenchmark, WAVLStandardDelete)
-    ->RangeMultiplier(multiplier)
-    ->Range(min_size, max_size);
-
-BENCHMARK_DEFINE_F(WAVLBenchmark, WAVLStandardMix)
-(benchmark::State& state) {
-  while (state.KeepRunning()) {
-    state.PauseTiming();
-    WAVLStandard<int> tree;
-    BuildTree(state, tree);
-    int insert[batch_size];
-    int removal[batch_size];
-    RandomElement(state, insert, removal);
-    state.ResumeTiming();
-    for (int i = 0; i < batch_size; ++i) {
-      tree.Insert(removal[i]);
-    }
-    for (int i = 0; i < batch_size; ++i) {
-      tree.Delete(insert[i]);
-    }
-  }
-}
-BENCHMARK_REGISTER_F(WAVLBenchmark, WAVLStandardMix)
-    ->RangeMultiplier(multiplier)
-    ->Range(min_size, max_size);
-
 BENCHMARK_DEFINE_F(WAVLBenchmark, WAVLInsert)
 (benchmark::State& state) {
-  while (state.KeepRunning()) {
+  WAVL<int> tree;
+  BuildTree(state, tree);
+  int element[batch_size];
+  for (auto _ : state) {
     state.PauseTiming();
-    Shuffle(state);
-    state.ResumeTiming();
-    WAVL<int> tree;
-    for (int i = 0; i < state.range(0); ++i) {
+    RandomElement(state, element, batch_size);
+    for (int i = 0; i < batch_size; ++i) {
+      state.ResumeTiming();
       tree.Insert(test[i]);
+      state.PauseTiming();
+    }
+    for (int i = 0; i < batch_size; ++i) {
+      tree.Delete(element[i]);
     }
   }
 }
@@ -130,13 +105,19 @@ BENCHMARK_REGISTER_F(WAVLBenchmark, WAVLInsert)
 
 BENCHMARK_DEFINE_F(WAVLBenchmark, WAVLRecursiveInsert)
 (benchmark::State& state) {
-  while (state.KeepRunning()) {
+  WAVL<int> tree;
+  BuildTree(state, tree);
+  int element[batch_size];
+  for (auto _ : state) {
     state.PauseTiming();
-    Shuffle(state);
-    state.ResumeTiming();
-    WAVL<int> tree;
-    for (int i = 0; i < state.range(0); ++i) {
+    RandomElement(state, element, batch_size);
+    for (int i = 0; i < batch_size; ++i) {
+      state.ResumeTiming();
       tree.RecursiveInsert(test[i]);
+      state.PauseTiming();
+    }
+    for (int i = 0; i < batch_size; ++i) {
+      tree.RecursiveDelete(element[i]);
     }
   }
 }
@@ -144,15 +125,43 @@ BENCHMARK_REGISTER_F(WAVLBenchmark, WAVLRecursiveInsert)
     ->RangeMultiplier(multiplier)
     ->Range(min_size, max_size);
 
+BENCHMARK_DEFINE_F(WAVLBenchmark, WAVLStandardDelete)
+(benchmark::State& state) {
+  WAVLStandard<int> tree;
+  BuildTree(state, tree);
+  int element[batch_size];
+  for (auto _ : state) {
+    state.PauseTiming();
+    RandomElement(state, element, batch_size, true);
+    for (int i = 0; i < batch_size; ++i) {
+      state.ResumeTiming();
+      tree.Delete(element[i]);
+      state.PauseTiming();
+    }
+    for (int i = 0; i < batch_size; ++i) {
+      tree.Insert(test[i]);
+    }
+  }
+}
+BENCHMARK_REGISTER_F(WAVLBenchmark, WAVLStandardDelete)
+    ->RangeMultiplier(multiplier)
+    ->Range(min_size, max_size);
+
 BENCHMARK_DEFINE_F(WAVLBenchmark, WAVLRecursiveDelete)
 (benchmark::State& state) {
-  while (state.KeepRunning()) {
+  WAVL<int> tree;
+  BuildTree(state, tree);
+  int element[batch_size];
+  for (auto _ : state) {
     state.PauseTiming();
-    WAVL<int> tree;
-    BuildTree(state, tree);
-    state.ResumeTiming();
-    for (int i = 0; i < state.range(0); ++i) {
-      tree.RecursiveDelete(test[i]);
+    RandomElement(state, element, batch_size, true);
+    for (int i = 0; i < batch_size; ++i) {
+      state.ResumeTiming();
+      tree.RecursiveDelete(element[i]);
+      state.PauseTiming();
+    }
+    for (int i = 0; i < batch_size; ++i) {
+      tree.RecursiveInsert(test[i]);
     }
   }
 }

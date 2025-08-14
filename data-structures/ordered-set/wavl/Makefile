@@ -23,7 +23,7 @@ test: wavl.h wavl_standard.h wavl_test.cc
 
 benchmark: wavl.h wavl_benchmark.cc
 	$(CC) $(CFLAGS) wavl_benchmark.cc $(BENCHMARK_FLAGS) -o wavl_benchmark
-	./wavl_benchmark
+	./wavl_benchmark --benchmark_repetitions=100 --benchmark_report_aggregates_only=true --benchmark_min_warmup_time=1
 
 format: $(SRC)
 	$(CLANG_FORMAT) $(CLANG_FORMAT_FLAGS) $(SRC)

@@ -8,15 +8,15 @@
 template <typename T>
 struct WAVL {
  public:
-  struct Node {
+  struct alignas(32) Node {
     using value_type = T;
-    explicit Node(const T& x) : value(x), rank_parity(false) {}
+    explicit Node(const T& x) : value(x), odd_rank(false) {}
     Node(Node* l, Node* r) : left(l), right(r) {}
     Node() = default;
     Node* left = sentinel;
     Node* right = sentinel;
     T value;
-    bool rank_parity = true;  // Used by sentinel, represent rank -1.
+    bool odd_rank = true;  // Used by sentinel, represent rank -1.
   };
 
   bool Insert(const T& x) {
@@ -25,17 +25,17 @@ struct WAVL {
       return true;
     }
     Node **parent = &root_, **safe_node = &root_;
-    bool parent_parity = root_->rank_parity;
+    bool parent_parity = root_->odd_rank;
     // Find the safe node and the place to insert node.
     for (Node* current = *parent; current != sentinel; current = *parent) {
       if (x == current->value) return false;
       // if current is a 2-child node or is a 1, 2 node, then we found a safe
       // node.
-      if (current->rank_parity == parent_parity ||
-          current->left->rank_parity != current->right->rank_parity) {
+      if (current->odd_rank == parent_parity ||
+          current->left->odd_rank != current->right->odd_rank) {
         safe_node = parent;
       }
-      parent_parity = current->rank_parity;
+      parent_parity = current->odd_rank;
       parent = x < current->value ? &current->left : &current->right;
     }
     *parent = new Node(x);
@@ -43,47 +43,47 @@ struct WAVL {
     // Promote all nodes below the safe_node.
     for (Node* current = x < node->value ? node->left : node->right;
          current != *parent;) {
-      current->rank_parity = !current->rank_parity;
+      current->odd_rank = !current->odd_rank;
       current = x < current->value ? current->left : current->right;
     }
     if (x < node->value) {
       // When the new inserted node is a 1-child, no rebalance is required.
-      if (node->rank_parity != node->left->rank_parity) return true;
+      if (node->odd_rank != node->left->odd_rank) return true;
 
       // After this, the new inserted node is a 0-child.
       // For either promote/rotate, the parity will change.
-      node->rank_parity = !node->rank_parity;
-      const bool old_rank_parity = !node->rank_parity;
+      node->odd_rank = !node->odd_rank;
+      const bool old_odd_rank = !node->odd_rank;
 
       // If current node is a 1, 2 node, then we are done.
-      if (old_rank_parity != node->right->rank_parity) return true;
+      if (old_odd_rank != node->right->odd_rank) return true;
 
       // Rotate according to node->left->right->parity.
-      if (old_rank_parity == node->left->right->rank_parity) {
+      if (old_odd_rank == node->left->right->odd_rank) {
         RightRotate(node);
       } else {
-        node->left->rank_parity = !node->left->rank_parity;
-        node->left->right->rank_parity = !node->left->right->rank_parity;
+        node->left->odd_rank = !node->left->odd_rank;
+        node->left->right->odd_rank = !node->left->right->odd_rank;
         LRRotate(node);
       }
     } else {
       // When the new inserted node is a 1-child, no rebalance is required.
-      if (node->rank_parity != node->right->rank_parity) return true;
+      if (node->odd_rank != node->right->odd_rank) return true;
 
       // After this, the new inserted node is a 0-child.
       // For either promote/rotate, the parity will change.
-      node->rank_parity = !node->rank_parity;
-      const bool old_rank_parity = !node->rank_parity;
+      node->odd_rank = !node->odd_rank;
+      const bool old_odd_rank = !node->odd_rank;
 
       // If current node is a 1, 2 node, then we are done.
-      if (old_rank_parity != node->left->rank_parity) return true;
+      if (old_odd_rank != node->left->odd_rank) return true;
 
-      // Rotate according to node->right->left->rank_parity.
-      if (old_rank_parity == node->right->left->rank_parity) {
+      // Rotate according to node->right->left->odd_rank.
+      if (old_odd_rank == node->right->left->odd_rank) {
         LeftRotate(node);
       } else {
-        node->right->rank_parity = !node->right->rank_parity;
-        node->right->left->rank_parity = !node->right->left->rank_parity;
+        node->right->odd_rank = !node->right->odd_rank;
+        node->right->left->odd_rank = !node->right->left->odd_rank;
         RLRotate(node);
       }
     }
@@ -93,7 +93,7 @@ struct WAVL {
   // TODO: Finish implementation and test.
   bool Delete(const T& x) {
     Node **parent = &root_, **safe_node = &root_, *current;
-    bool parent_parity = root_->rank_parity;
+    bool parent_parity = root_->odd_rank;
     const T* delete_value = &x;
     // Find the safe node and the place to delete node.
     for (current = *parent; current != sentinel; current = *parent) {
@@ -101,7 +101,7 @@ struct WAVL {
       // When current node is 2-child of parent or current node is a (1, 2) node
       // safe_node is set to parent.
       if (IsSafeNodeForDelete(current, parent_parity)) safe_node = parent;
-      parent_parity = current->rank_parity;
+      parent_parity = current->odd_rank;
       parent = x < current->value ? &current->left : &current->right;
     }
     if (current == sentinel) return false;
@@ -112,7 +112,7 @@ struct WAVL {
       Node* min = current->right;
       for (parent = &current->right; min->left != sentinel; min = min->left) {
         if (IsSafeNodeForDelete(min, parent_parity)) safe_node = parent;
-        parent_parity = min->rank_parity;
+        parent_parity = min->odd_rank;
         parent = &min->left;
       }
       current->value = min->value;
@@ -127,7 +127,7 @@ struct WAVL {
     // Demote all nodes below the safe_node.
     for (current = *delete_value < node->value ? node->left : node->right;
          current != *parent;) {
-      current->rank_parity = !current->rank_parity;
+      current->odd_rank = !current->odd_rank;
       current = *delete_value < current->value ? current->left : current->right;
     }
 
@@ -144,7 +144,13 @@ struct WAVL {
     return Delete(root_, x, done);
   }
 
-  bool IsBalanced() const { return ValidateRank(root_) != -1; }
+  bool IsBalanced() const {
+    if (sentinel->odd_rank != true) {
+      std::cout << "Sentinel must have rank -1\n";
+      return false;
+    }
+    return ComputeRank(root_) != -2;
+  }
 
   ~WAVL() { FreeTree(root_, sentinel); }
 
@@ -161,25 +167,37 @@ struct WAVL {
  private:
   static void PrintTree(const Node* root, std::string prefix) {
     if (root == sentinel) return;
-    PrintTree(root->left, prefix + "->left");
-    std::cerr << prefix << " = " << root->value << " with " << root->rank_parity
-              << '\n';
-    PrintTree(root->right, prefix + "->right");
+    PrintTree(root->left, prefix + "->left", sentinel);
+    std::cerr << prefix << " = " << root->value << ", "
+              << "Rank parity: " << root->odd_rank << ", "
+              << FromRankParityToRankDifference(root, root->parent) << "-child "
+              << FromRankParityToRankDifference(root->left, root) << ", "
+              << FromRankParityToRankDifference(root->right, root) << ' '
+              << ((root->left == sentinel && root->right == sentinel) ? "leaf"
+                  : (root->left != sentinel && root->right != sentinel)
+                      ? "binary"
+                      : "unary")
+              << " node\n";
+    PrintTree(root->right, prefix + "->right", sentinel);
   }
 
-  static int ValidateRank(const Node* node) {
-    if (node == sentinel) return 0;
-    int left_rank = ValidateRank(node->left);
-    int right_rank = ValidateRank(node->right);
-    if (left_rank == -1 || right_rank == -1) return -1;
+  static int ComputeRank(const Node* node) {
+    if (node == sentinel) return -1;
+    int left_rank = ComputeRank(node->left);
+    int right_rank = ComputeRank(node->right);
+    if (left_rank == -2 || right_rank == -2) return -2;
     // No 2, 2 leaf.
-    if (left_rank == 0 && right_rank == 0 &&
-        node->rank_parity == node->left->rank_parity)
-      return -1;
-    left_rank += (node->rank_parity == node->left->rank_parity ? 2 : 1);
-    right_rank += (node->rank_parity == node->right->rank_parity ? 2 : 1);
+    if (node->left == node->right && node->odd_rank == node->left->odd_rank) {
+      std::cout << "Cannot have 2, 2 leaf\n";
+      return -2;
+    }
+    left_rank += (node->odd_rank == node->left->odd_rank ? 2 : 1);
+    right_rank += (node->odd_rank == node->right->odd_rank ? 2 : 1);
     // Left tree's rank must be equalt to right tree's rank.
-    if (left_rank != right_rank) return -1;
+    if (left_rank != right_rank) {
+      std::cout << "Left rank != Right rank\n";
+      return -2;
+    }
     return left_rank;
   }
 
@@ -194,44 +212,44 @@ struct WAVL {
       if (!Insert(node->left, x, done)) return false;
       if (done) return true;
       // When the new inserted node is a 1-child, no rebalance is required.
-      if (node->rank_parity != node->left->rank_parity) return done = true;
+      if (node->odd_rank != node->left->odd_rank) return done = true;
 
       // After this, the new inserted node is a 0-child.
       // For either promote/rotate, the parity will change.
-      node->rank_parity = !node->rank_parity;
-      const bool old_rank_parity = !node->rank_parity;
+      node->odd_rank = !node->odd_rank;
+      const bool old_odd_rank = !node->odd_rank;
 
       // If current node is a 0, 1 node, then upper layer should rebalance.
-      if (old_rank_parity != node->right->rank_parity) return true;
+      if (old_odd_rank != node->right->odd_rank) return true;
 
       // Rotate according to node->left->right->parity.
-      if (old_rank_parity == node->left->right->rank_parity) {
+      if (old_odd_rank == node->left->right->odd_rank) {
         RightRotate(node);
       } else {
-        node->left->rank_parity = !node->left->rank_parity;
-        node->left->right->rank_parity = !node->left->right->rank_parity;
+        node->left->odd_rank = !node->left->odd_rank;
+        node->left->right->odd_rank = !node->left->right->odd_rank;
         LRRotate(node);
       }
     } else {
       if (!Insert(node->right, x, done)) return false;
       if (done) return true;
       // When the new inserted node is a 1-child, no rebalance is required.
-      if (node->rank_parity != node->right->rank_parity) return done = true;
+      if (node->odd_rank != node->right->odd_rank) return done = true;
 
       // After this, the new inserted node is a 0-child.
       // For either promote/rotate, the parity will change.
-      node->rank_parity = !node->rank_parity;
-      const bool old_rank_parity = !node->rank_parity;
+      node->odd_rank = !node->odd_rank;
+      const bool old_odd_rank = !node->odd_rank;
 
       // If current node is a 0, 1 node, then upper layer should rebalance.
-      if (old_rank_parity != node->left->rank_parity) return true;
+      if (old_odd_rank != node->left->odd_rank) return true;
 
-      // Rotate according to node->right->left->rank_parity.
-      if (old_rank_parity == node->right->left->rank_parity) {
+      // Rotate according to node->right->left->odd_rank.
+      if (old_odd_rank == node->right->left->odd_rank) {
         LeftRotate(node);
       } else {
-        node->right->rank_parity = !node->right->rank_parity;
-        node->right->left->rank_parity = !node->right->left->rank_parity;
+        node->right->odd_rank = !node->right->odd_rank;
+        node->right->left->odd_rank = !node->right->left->odd_rank;
         RLRotate(node);
       }
     }
@@ -257,70 +275,70 @@ struct WAVL {
       if (!Delete(node->left, *delete_value, done)) return false;
       if (done) return true;
       // If the rank difference between left and current is 2.
-      if (node->rank_parity == node->left->rank_parity) {
+      if (node->odd_rank == node->left->odd_rank) {
         // When node is not leaf, no rebalancing is required.
         if (node->left != sentinel || node->right != sentinel)
           return done = true;
         // Leaf node cannot has rank 1.
-        node->rank_parity = !node->rank_parity;
+        node->odd_rank = !node->odd_rank;
         return true;
       }
       // At this point, the rank difference between left and current is 3.
       // If the rank difference between right and current is 2, demote.
-      if (node->rank_parity == node->right->rank_parity) {
-        node->rank_parity = !node->rank_parity;
+      if (node->odd_rank == node->right->odd_rank) {
+        node->odd_rank = !node->odd_rank;
         return true;
       }
       // If the rank difference between right and current is 1, and node->right
       // can be demote, then demote current and right.
-      if (node->right->rank_parity == node->right->left->rank_parity &&
-          node->right->rank_parity == node->right->right->rank_parity) {
-        node->rank_parity = !node->rank_parity;
-        node->right->rank_parity = !node->right->rank_parity;
+      if (node->right->odd_rank == node->right->left->odd_rank &&
+          node->right->odd_rank == node->right->right->odd_rank) {
+        node->odd_rank = !node->odd_rank;
+        node->right->odd_rank = !node->right->odd_rank;
         return true;
       }
       done = true;
-      node->right->rank_parity = !node->right->rank_parity;
-      if (node->rank_parity != node->right->right->rank_parity) {
+      node->right->odd_rank = !node->right->odd_rank;
+      if (node->odd_rank != node->right->right->odd_rank) {
         RLRotate(node);
         return true;
       }
       if (node->left != sentinel || node->right->left != sentinel)
-        node->rank_parity = !node->rank_parity;
+        node->odd_rank = !node->odd_rank;
       LeftRotate(node);
     } else {
       if (!Delete(node->right, *delete_value, done)) return false;
       if (done) return true;
       // If the rank difference between right and current is 2.
-      if (node->rank_parity == node->right->rank_parity) {
+      if (node->odd_rank == node->right->odd_rank) {
         // When node is not leaf, no rebalancing is required.
         if (node->left != sentinel || node->right != sentinel)
           return done = true;
-        node->rank_parity = !node->rank_parity;
+        node->odd_rank = !node->odd_rank;
         return true;
       }
       // At this point, the rank difference between right and current is 3.
       // If the rank difference between left and current is 2, demote.
-      if (node->rank_parity == node->left->rank_parity) {
-        node->rank_parity = !node->rank_parity;
+      if (node->odd_rank == node->left->odd_rank) {
+        node->odd_rank = !node->odd_rank;
         return true;
       }
       // If the rank difference between left and current is 1, and node->left
       // can be demote, then demote current and left.
-      if (node->left->rank_parity == node->left->left->rank_parity &&
-          node->left->rank_parity == node->left->right->rank_parity) {
-        node->rank_parity = !node->rank_parity;
-        node->left->rank_parity = !node->left->rank_parity;
+      if (node->left->odd_rank == node->left->left->odd_rank &&
+          node->left->odd_rank == node->left->right->odd_rank) {
+        node->odd_rank = !node->odd_rank;
+        node->left->odd_rank = !node->left->odd_rank;
         return true;
       }
       done = true;
-      node->left->rank_parity = !node->left->rank_parity;
-      if (node->rank_parity != node->left->left->rank_parity) {
+      node->left->odd_rank = !node->left->odd_rank;
+      if (node->odd_rank != node->left->left->odd_rank) {
         LRRotate(node);
         return true;
       }
       if (node->right != sentinel || node->left->right != sentinel)
-        node->rank_parity = !node->rank_parity;
+        node->odd_rank = !node->odd_rank;
       RightRotate(node);
     }
     return true;
@@ -328,15 +346,15 @@ struct WAVL {
 
   static bool IsSafeNodeForDelete(Node* current, bool parent_parity) {
     // If current is a 1-child, then current is a safe node.
-    if (current->rank_parity != parent_parity) return true;
+    if (current->odd_rank != parent_parity) return true;
     // After this, current is a 2-child.
     // If current is a 2, 2 node, then current is not a safe node.
-    if (current->left->rank_parity == current->right->rank_parity) return false;
-    Node* one_child = current->rank_parity != current->left->rank_parity
+    if (current->left->odd_rank == current->right->odd_rank) return false;
+    Node* one_child = current->odd_rank != current->left->odd_rank
                           ? current->left
                           : current->right;
     // If the 1-child is not a 2, 2, node, then current is a safe node.
-    return one_child->left->rank_parity != one_child->right->rank_parity;
+    return one_child->left->odd_rank != one_child->right->odd_rank;
   }
 
   // Left rotation:
