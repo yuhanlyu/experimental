@@ -35,12 +35,12 @@ struct RBTreeStandardLink {
     // Below, the tree cannot be empty.
     bool dir = 0;
     Node *current = root_, *parent;
-    do {
-      if (x == current->value) return false;
+    for (sentinel_->value = x; x != current->value;
+         current = current->link[dir]) {
       dir = x >= current->value;
       parent = current;
-      current = current->link[dir];
-    } while (current != sentinel_);
+    }
+    if (current != sentinel_) return false;
     current = parent->link[dir] = NewNode(x, parent, true);
 
     // Set the root to black so that the loop below can terminate naturally.
@@ -96,11 +96,11 @@ struct RBTreeStandardLink {
 
   bool Delete(const T &x) {
     bool dir = 0;
-    Node *current, *parent = &header_;
-    for (current = root_; current != sentinel_ && x != current->value;) {
+    Node *current = root_, *parent = &header_;
+    for (sentinel_->value = x; x != current->value;
+         current = current->link[dir]) {
       dir = (x >= current->value);
       parent = current;
-      current = current->link[dir];
     }
     if (current == sentinel_) return false;
     if (current->link[0] != sentinel_ && current->link[1] != sentinel_) {
