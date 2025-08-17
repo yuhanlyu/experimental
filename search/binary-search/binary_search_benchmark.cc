@@ -38,73 +38,80 @@ static void CustomArguments(benchmark::internal::Benchmark* b) {
   }
 }
 
-BENCHMARK_DEFINE_F(SearchBenchmark, Random)(benchmark::State& state) {
-  while (state.KeepRunning()) {
-    benchmark::DoNotOptimize(distribution_(generator_));
-  }
-}
-BENCHMARK_REGISTER_F(SearchBenchmark, Random)->Apply(CustomArguments);
-
 BENCHMARK_DEFINE_F(SearchBenchmark, BinarySearch)
 (benchmark::State& state) {
-  while (state.KeepRunning()) {
+  for (auto _ : state) {
     int r = distribution_(generator_);
+    state.ResumeTiming();
     benchmark::DoNotOptimize(BinarySearch(test, test + state.range(0), r));
+    state.PauseTiming();
   }
 }
 BENCHMARK_REGISTER_F(SearchBenchmark, BinarySearch)->Apply(CustomArguments);
 
 BENCHMARK_DEFINE_F(SearchBenchmark, BinarySearch1)
 (benchmark::State& state) {
-  while (state.KeepRunning()) {
+  for (auto _ : state) {
     int r = distribution_(generator_);
+    state.ResumeTiming();
     benchmark::DoNotOptimize(BinarySearch1(test, test + state.range(0), r));
+    state.PauseTiming();
   }
 }
 BENCHMARK_REGISTER_F(SearchBenchmark, BinarySearch1)->Apply(CustomArguments);
 
 BENCHMARK_DEFINE_F(SearchBenchmark, BinarySearch2)
 (benchmark::State& state) {
-  while (state.KeepRunning()) {
+  for (auto _ : state) {
     int r = distribution_(generator_);
+    state.ResumeTiming();
     benchmark::DoNotOptimize(BinarySearch2(test, test + state.range(0), r));
+    state.PauseTiming();
   }
 }
 BENCHMARK_REGISTER_F(SearchBenchmark, BinarySearch2)->Apply(CustomArguments);
 
 BENCHMARK_DEFINE_F(SearchBenchmark, BinarySearch3)
 (benchmark::State& state) {
-  while (state.KeepRunning()) {
+  for (auto _ : state) {
     int r = distribution_(generator_);
+    state.ResumeTiming();
     benchmark::DoNotOptimize(BinarySearch3(test, test + state.range(0), r));
+    state.PauseTiming();
   }
 }
 BENCHMARK_REGISTER_F(SearchBenchmark, BinarySearch3)->Apply(CustomArguments);
 
 BENCHMARK_DEFINE_F(SearchBenchmark, Shar1)
 (benchmark::State& state) {
-  while (state.KeepRunning()) {
+  for (auto _ : state) {
     int r = distribution_(generator_);
+    state.ResumeTiming();
     benchmark::DoNotOptimize(Shar1(test, test + state.range(0), r));
+    state.PauseTiming();
   }
 }
 BENCHMARK_REGISTER_F(SearchBenchmark, Shar1)->Apply(CustomArguments);
 
 BENCHMARK_DEFINE_F(SearchBenchmark, Shar2)
 (benchmark::State& state) {
-  while (state.KeepRunning()) {
+  for (auto _ : state) {
     int r = distribution_(generator_);
+    state.ResumeTiming();
     benchmark::DoNotOptimize(Shar2(test, test + state.range(0), r));
+    state.PauseTiming();
   }
 }
 BENCHMARK_REGISTER_F(SearchBenchmark, Shar2)->Apply(CustomArguments);
 
 BENCHMARK_DEFINE_F(SearchBenchmark, SkewedBinarySearch)
 (benchmark::State& state) {
-  while (state.KeepRunning()) {
+  for (auto _ : state) {
     int r = distribution_(generator_);
+    state.ResumeTiming();
     benchmark::DoNotOptimize(
         SkewedBinarySearch(test, test + state.range(0), r));
+    state.PauseTiming();
   }
 }
 BENCHMARK_REGISTER_F(SearchBenchmark, SkewedBinarySearch)
@@ -112,17 +119,21 @@ BENCHMARK_REGISTER_F(SearchBenchmark, SkewedBinarySearch)
 
 BENCHMARK_DEFINE_F(SearchBenchmark, SharUnroll)
 (benchmark::State& state) {
-  while (state.KeepRunning()) {
+  for (auto _ : state) {
     int r = distribution_(generator_);
+    state.ResumeTiming();
     benchmark::DoNotOptimize(SharUnroll(test, test + state.range(0), r));
+    state.PauseTiming();
   }
 }
 BENCHMARK_REGISTER_F(SearchBenchmark, SharUnroll)->Apply(CustomArguments);
 
 BENCHMARK_DEFINE_F(SearchBenchmark, STLSearch)(benchmark::State& state) {
-  while (state.KeepRunning()) {
+  for (auto _ : state) {
     int r = distribution_(generator_);
+    state.ResumeTiming();
     benchmark::DoNotOptimize(std::lower_bound(test, test + state.range(0), r));
+    state.PauseTiming();
   }
 }
 BENCHMARK_REGISTER_F(SearchBenchmark, STLSearch)->Apply(CustomArguments);
@@ -134,10 +145,12 @@ int compare(const void* p, const void* q) {
 }
 
 BENCHMARK_DEFINE_F(SearchBenchmark, BSearch)(benchmark::State& state) {
-  while (state.KeepRunning()) {
+  for (auto _ : state) {
     int r = distribution_(generator_);
+    state.ResumeTiming();
     benchmark::DoNotOptimize(
         bsearch(&r, test, state.range(0), sizeof(int), compare));
+    state.PauseTiming();
   }
 }
 BENCHMARK_REGISTER_F(SearchBenchmark, BSearch)->Apply(CustomArguments);

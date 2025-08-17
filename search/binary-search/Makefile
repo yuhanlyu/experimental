@@ -14,7 +14,7 @@ CLANG_FORMAT_FLAGS = -i -sort-includes -style='{BasedOnStyle: Google, UseTab: Ne
 
 TEST_FLAGS = $(DEBUG_SYMBOL) $(SANITIZE_FLAGS) -lgtest -lgtest_main $(PTHREAD)
 
-BENCHMARK_FLAGS = $(OPT_FLAGS) $(PTHREAD) -lbenchmark
+BENCHMARK_FLAGS = $(OPT_FLAGS) $(PTHREAD) -lbenchmark -stdlib=libc++
 
 SRC = binary_search.h binary_search_test.cc binary_search_benchmark.cc
 
@@ -24,7 +24,7 @@ test: binary_search.h binary_search_test.cc
 
 benchmark: binary_search.h binary_search_benchmark.cc
 	$(CC) $(CFLAGS) binary_search_benchmark.cc $(BENCHMARK_FLAGS) -o binary_search_benchmark
-	./binary_search_benchmark
+	./binary_search_benchmark --benchmark_repetitions=100 --benchmark_report_aggregates_only=true --benchmark_min_warmup_time=1
 
 format: $(SRC)
 	$(CLANG_FORMAT) $(CLANG_FORMAT_FLAGS) $(SRC)
