@@ -14,32 +14,22 @@ struct RBTreeStandard {
     Node *left;
     Node *right;
     Node *parent;
-    T value;
-    bool red;
+    T value{};
+    bool red = false;
   };
 
-  RBTreeStandard() {
-    dummy_.left = header_.left = sentinel_;
-    dummy_.right = header_.right = sentinel_;
-    dummy_.parent = header_.parent = sentinel_;
-    dummy_.red = header_.red = false;
-  }
   bool Insert(const T &x) {
-    // Empty tree.
-    if (root_ == sentinel_) {
-      root_ = NewNode(x, &header_, false);
-      return true;
-    }
-
-    // Below, the tree cannot be empty.
-    Node **link = &root_, *parent;
-    do {
-      Node *current = *link;
+    Node **link = &root_, *parent = &header_;
+    for (Node *current = *link; current != sentinel_; current = *link) {
       if (x == current->value) return false;
       link = x < current->value ? &current->left : &current->right;
       parent = current;
-    } while ((*link) != sentinel_);
-    *link = NewNode(x, parent, true);
+    }
+    *link = new Node{.left = sentinel_,
+                     .right = sentinel_,
+                     .parent = parent,
+                     .value = x,
+                     .red = true};
 
     // Set the root to black so that the loop below can terminate naturally.
     root_->red = false;
@@ -345,26 +335,16 @@ struct RBTreeStandard {
     return lh + (node->red ? 0 : 1);
   }
 
-  Node *NewNode(const T &x, Node *parent, bool red) {
-    Node *new_node = new Node();
-    new_node->left = sentinel_;
-    new_node->right = sentinel_;
-    new_node->parent = parent;
-    new_node->red = red;
-    new_node->value = x;
-    return new_node;
-  }
-
-  // Use a header node so that the left pointer points to the real root.
-  // The benefit is that, when rotating around a node, the code does not need to
-  // check whether the node is root or not to find correct pointer to update.
-  Node header_;
-  Node *&root_ = header_.left;
-  Node dummy_;
   // The sentinel's parent pointer can be changed arbitrarily in Insert/Delete.
   // The sentinel's left/right pointers can be changed arbitrarily in Delete.
   // Thus, the code should not depending on sentinel's parent pointer.
   Node *sentinel_ = &dummy_;
+  Node dummy_{.left = sentinel_, .right = sentinel_, .parent = sentinel_};
+  // Use a header node so that the left pointer points to the real root.
+  // The benefit is that, when rotating around a node, the code does not need to
+  // check whether the node is root or not to find correct pointer to update.
+  Node header_{dummy_};
+  Node *&root_ = header_.left;
 };
 
 #endif

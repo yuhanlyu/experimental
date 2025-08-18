@@ -10,38 +10,26 @@ template <typename T>
 struct RBTreeStandardLink {
  public:
   struct alignas(64) Node {
-    using value_type = T;
     // link[0] is left child and link[1] is right child.
     Node *link[2];
     Node *parent;
-    T value;
+    T value{};
     bool red;
   };
 
-  RBTreeStandardLink() {
-    dummy_.link[0] = header_.link[0] = sentinel_;
-    dummy_.link[1] = header_.link[1] = sentinel_;
-    dummy_.parent = header_.parent = sentinel_;
-    dummy_.red = header_.red = false;
-  }
-
   bool Insert(const T &x) {
-    // Empty tree.
-    if (root_ == sentinel_) {
-      root_ = NewNode(x, &header_, false);
-      return true;
-    }
-
-    // Below, the tree cannot be empty.
     bool dir = 0;
-    Node *current = root_, *parent;
+    Node *current = root_, *parent = &header_;
     for (sentinel_->value = x; x != current->value;
          current = current->link[dir]) {
       dir = x >= current->value;
       parent = current;
     }
     if (current != sentinel_) return false;
-    current = parent->link[dir] = NewNode(x, parent, true);
+    current = parent->link[dir] = new Node{.link = {sentinel_, sentinel_},
+                                           .parent = parent,
+                                           .value = x,
+                                           .red = true};
 
     // Set the root to black so that the loop below can terminate naturally.
     root_->red = false;
@@ -257,7 +245,7 @@ struct RBTreeStandardLink {
   }
 
   static void Traverse(const Node *root, const Node *sentinel,
-                       std::vector<typename Node::value_type> &result) {
+                       std::vector<T> &result) {
     if (root == sentinel) return;
     Traverse(root->link[0], sentinel, result);
     result.push_back(root->value);
@@ -276,16 +264,17 @@ struct RBTreeStandardLink {
     parent->parent = current;
   }
 
-  // Use a header node so that the link[0] pointer points to the real root.
-  // The benefit is that, when rotating around a node, the code does not need to
-  // check whether the node is root or not to find correct pointer to update.
-  Node header_;
-  Node *&root_ = header_.link[0];
-  Node dummy_;
   // The sentinel's parent pointer can be changed arbitrarily in Insert/Delete.
   // The sentinel's link[0]/link[1] pointers can be changed arbitrarily in
   // Delete. Thus, the code should not depending on sentinel's parent pointer.
   Node *sentinel_ = &dummy_;
+  Node dummy_{
+      .link = {sentinel_, sentinel_}, .parent = sentinel_, .red = false};
+  // Use a header node so that the link[0] pointer points to the real root.
+  // The benefit is that, when rotating around a node, the code does not need to
+  // check whether the node is root or not to find correct pointer to update.
+  Node header_{dummy_};
+  Node *&root_ = header_.link[0];
 };
 
 #endif
