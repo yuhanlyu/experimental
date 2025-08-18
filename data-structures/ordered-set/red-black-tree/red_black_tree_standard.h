@@ -15,7 +15,7 @@ struct RBTreeStandard {
     Node *right;
     Node *parent;
     T value{};
-    bool red = false;
+    bool red;
   };
 
   bool Insert(const T &x) {
@@ -25,11 +25,11 @@ struct RBTreeStandard {
       link = x < current->value ? &current->left : &current->right;
       parent = current;
     }
-    *link = new Node{.left = sentinel_,
-                     .right = sentinel_,
-                     .parent = parent,
-                     .value = x,
-                     .red = true};
+    *link = new Node{.left{sentinel_},
+                     .right{sentinel_},
+                     .parent{parent},
+                     .value{x},
+                     .red{true}};
 
     // Set the root to black so that the loop below can terminate naturally.
     root_->red = false;
@@ -339,7 +339,8 @@ struct RBTreeStandard {
   // The sentinel's left/right pointers can be changed arbitrarily in Delete.
   // Thus, the code should not depending on sentinel's parent pointer.
   Node *sentinel_ = &dummy_;
-  Node dummy_{.left = sentinel_, .right = sentinel_, .parent = sentinel_};
+  Node dummy_{
+      .left{sentinel_}, .right{sentinel_}, .parent{sentinel_}, .red{false}};
   // Use a header node so that the left pointer points to the real root.
   // The benefit is that, when rotating around a node, the code does not need to
   // check whether the node is root or not to find correct pointer to update.

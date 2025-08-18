@@ -26,10 +26,8 @@ struct RBTreeStandardLink {
       parent = current;
     }
     if (current != sentinel_) return false;
-    current = parent->link[dir] = new Node{.link = {sentinel_, sentinel_},
-                                           .parent = parent,
-                                           .value = x,
-                                           .red = true};
+    current = parent->link[dir] = new Node{
+        .link{sentinel_, sentinel_}, .parent{parent}, .value{x}, .red{true}};
 
     // Set the root to black so that the loop below can terminate naturally.
     root_->red = false;
@@ -268,8 +266,7 @@ struct RBTreeStandardLink {
   // The sentinel's link[0]/link[1] pointers can be changed arbitrarily in
   // Delete. Thus, the code should not depending on sentinel's parent pointer.
   Node *sentinel_ = &dummy_;
-  Node dummy_{
-      .link = {sentinel_, sentinel_}, .parent = sentinel_, .red = false};
+  Node dummy_{.link{sentinel_, sentinel_}, .parent{sentinel_}, .red{false}};
   // Use a header node so that the link[0] pointer points to the real root.
   // The benefit is that, when rotating around a node, the code does not need to
   // check whether the node is root or not to find correct pointer to update.
