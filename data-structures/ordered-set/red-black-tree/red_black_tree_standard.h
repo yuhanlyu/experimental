@@ -194,14 +194,15 @@ struct RBTreeStandard {
 
     Node *close_nephew, *distant_nephew;
     if (current == parent->left) {
+      close_nephew = sibling->left;
       if (sibling->red) {
         //     P               S
         //    / \             / \
         //   c   s    -->    p  Dn
         //      / \         / \
         //     Cn Dn       c  Cn
-        parent->right = sibling->left;
-        sibling->left->parent = parent;
+        parent->right = close_nephew;
+        close_nephew->parent = parent;
 
         sibling->parent = parent->parent;
         (parent->parent->left == parent ? parent->parent->left
@@ -217,10 +218,10 @@ struct RBTreeStandard {
           return true;
         }
         parent->red = true;
+        close_nephew = sibling->left;
       }
-      // Now, sibling must be black and one of the sibling's child must be red.
       distant_nephew = sibling->right;
-      close_nephew = sibling->left;
+      // Now, sibling must be black and one of the sibling's child must be red.
       if (!distant_nephew->red) {
         //
         //    (p)           (p)                       (Cn)
@@ -254,9 +255,10 @@ struct RBTreeStandard {
       sibling->left = parent;
       parent->right = close_nephew;
     } else {
+      close_nephew = sibling->right;
       if (sibling->red) {
-        parent->left = sibling->right;
-        sibling->right->parent = parent;
+        parent->left = close_nephew;
+        close_nephew->parent = parent;
 
         sibling->parent = parent->parent;
         (parent->parent->left == parent ? parent->parent->left
@@ -271,9 +273,9 @@ struct RBTreeStandard {
           return true;
         }
         parent->red = true;
+        close_nephew = sibling->right;
       }
       distant_nephew = sibling->left;
-      close_nephew = sibling->right;
       if (!distant_nephew->red) {
         sibling->right = close_nephew->left;
         close_nephew->left->parent = sibling;
