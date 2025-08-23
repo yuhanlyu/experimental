@@ -18,24 +18,61 @@ struct RBTreeStandardLink {
   };
 
   bool Insert(const T &x) {
+    return Insert(header_.link[0], x, sentinel_, &header_);
+  }
+
+  bool Delete(const T &x) {
+    return Delete(header_.link[0], x, sentinel_, &header_);
+  }
+
+  bool IsBalanced() const {
+    if (sentinel_->red) return false;
+    if (header_.link[0] != root()) return false;
+    if (header_.red) return false;
+    return BlackHeight(root()) != -1;
+  }
+
+  ~RBTreeStandardLink() { Free(root(), sentinel_); }
+
+  void InorderTraverse(std::vector<T> &result) const {
+    return Traverse(root(), sentinel_, result);
+  }
+
+  Node *root() const { return header_.link[0]; }
+
+  Node *&root() { return header_.link[0]; }
+
+  void PrintTree() const { PrintTree(root(), "root"); }
+
+  void PrintTree(const Node *root, std::string prefix) const {
+    if (root == sentinel_) return;
+    PrintTree(root->link[0], prefix + "->left");
+    std::cerr << prefix << " = " << root->value << ' '
+              << (root->red ? 'R' : 'B') << " Parent:" << root->parent->value
+              << '\n';
+    PrintTree(root->link[1], prefix + "->right");
+  }
+
+ private:
+  static bool Insert(Node *&root, const T &x, Node *sentinel, Node *header) {
     bool dir = 0;
-    Node *current = root_, *parent = &header_;
-    for (sentinel_->value = x; x != current->value;
+    Node *current = root, *parent = header;
+    for (sentinel->value = x; x != current->value;
          current = current->link[dir]) {
       dir = x >= current->value;
       parent = current;
     }
-    if (current != sentinel_) return false;
+    if (current != sentinel) return false;
     current = parent->link[dir] = new Node{
-        .link{sentinel_, sentinel_}, .parent{parent}, .value{x}, .red{true}};
+        .link{sentinel, sentinel}, .parent{parent}, .value{x}, .red{true}};
 
     // Set the root to black so that the loop below can terminate naturally.
-    root_->red = false;
+    root->red = false;
     // When root's both children are red, switch the children to black.
     // Removing this switch does not effect the correctness, but the result
     // tree may have a red root.
-    if (root_->link[0]->red && root_->link[1]->red)
-      root_->link[0]->red = root_->link[1]->red = false;
+    if (root->link[0]->red && root->link[1]->red)
+      root->link[0]->red = root->link[1]->red = false;
     // Invariant: Current must be red.
     Node *grand_parent = parent->parent;
     for (;;) {
@@ -80,22 +117,22 @@ struct RBTreeStandardLink {
     return true;
   }
 
-  bool Delete(const T &x) {
+  static bool Delete(Node *&root, const T &x, Node *sentinel, Node *header) {
     bool dir = 0;
-    Node *current = root_, *parent = &header_;
-    for (sentinel_->value = x; x != current->value;
+    Node *current = root, *parent = header;
+    for (sentinel->value = x; x != current->value;
          current = current->link[dir]) {
       dir = (x >= current->value);
       parent = current;
     }
-    if (current == sentinel_) return false;
-    if (current->link[0] != sentinel_ && current->link[1] != sentinel_) {
+    if (current == sentinel) return false;
+    if (current->link[0] != sentinel && current->link[1] != sentinel) {
       // When the node to be deleted has two children, find the predecessor or
       // successor depending on default_dir_in_deletion.
       dir = 1;
       Node *replacement = current->link[dir];
       const bool opposite_dir = 1 - dir;
-      for (parent = current; replacement->link[opposite_dir] != sentinel_;
+      for (parent = current; replacement->link[opposite_dir] != sentinel;
            replacement = replacement->link[opposite_dir]) {
         parent = replacement;
         dir = opposite_dir;
@@ -108,14 +145,13 @@ struct RBTreeStandardLink {
     }
 
     // Now, the node to be deleted should have at most one child.
-    bool rebalance_required = false;
-    Node *child =
-        current->link[0] != sentinel_ ? current->link[0] : current->link[1];
 
-    if (child == sentinel_) {
-      // If the node to be deleted has no child, then rebalance maybe required.
-      rebalance_required = !current->red && current != root_;
-    } else {
+    Node *child =
+        current->link[0] != sentinel ? current->link[0] : current->link[1];
+    // If the node to be deleted has no child, then rebalance maybe required.
+    const bool rebalance_required =
+        child == sentinel && !current->red && current != root;
+    if (child != sentinel) {
       // If the node to be deleted has one child, then pull up the child.
       child->red = false;
       child->parent = current->parent;
@@ -134,9 +170,9 @@ struct RBTreeStandardLink {
     //     to the loop invariant, current must be black. Thus, when current
     //     reaches the black child, the sibling will be red and the loop
     //     terminates.
-    if (!root_->link[0]->red && !root_->link[1]->red) root_->red = true;
+    if (!root->link[0]->red && !root->link[1]->red) root->red = true;
     Node *sibling;
-    for (current = sentinel_;;) {
+    for (current = sentinel;;) {
       // Loop invariant: Current must be black.
 
       // If sibling is red, or sibling has at least one red child, then we find
@@ -188,51 +224,12 @@ struct RBTreeStandardLink {
     return true;
   }
 
-  bool IsBalanced() const {
-    if (sentinel_->red) return false;
-    if (header_.link[0] != root_) return false;
-    if (header_.red) return false;
-    return BlackHeight(root_) != -1;
-  }
-
-  ~RBTreeStandardLink() { Free(root_, sentinel_); }
-
-  void InorderTraverse(std::vector<T> &result) const {
-    return Traverse(root_, sentinel_, result);
-  }
-
-  Node *root() const { return root_; }
-
-  Node *&root() { return root_; }
-
-  void PrintTree() const { PrintTree(root_, "root"); }
-
-  void PrintTree(const Node *root, std::string prefix) const {
-    if (root == sentinel_) return;
-    PrintTree(root->link[0], prefix + "->left");
-    std::cerr << prefix << " = " << root->value << ' '
-              << (root->red ? 'R' : 'B') << " Parent:" << root->parent->value
-              << '\n';
-    PrintTree(root->link[1], prefix + "->right");
-  }
-
- private:
   int BlackHeight(const Node *node) const {
     if (node == sentinel_) return 1;
     if (node->red && (node->link[0]->red || node->link[1]->red)) return -1;
     int lh = BlackHeight(node->link[0]), rh = BlackHeight(node->link[1]);
     if (lh == -1 || rh == -1 || lh != rh) return -1;
     return lh + (node->red ? 0 : 1);
-  }
-
-  Node *NewNode(const T &x, Node *parent, bool red) {
-    Node *new_node = new Node();
-    new_node->link[0] = sentinel_;
-    new_node->link[1] = sentinel_;
-    new_node->parent = parent;
-    new_node->red = red;
-    new_node->value = x;
-    return new_node;
   }
 
   static void Free(const Node *root, const Node *sentinel = nullptr) {
@@ -271,7 +268,6 @@ struct RBTreeStandardLink {
   // The benefit is that, when rotating around a node, the code does not need to
   // check whether the node is root or not to find correct pointer to update.
   Node header_{dummy_};
-  Node *&root_ = header_.link[0];
 };
 
 #endif

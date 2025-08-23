@@ -290,23 +290,23 @@ TEST(RBTreeStandard, Delete) {
     for (int i = 0; i < size; ++i) inserted_elements.push_back(i + 1);
     std::vector<int> temp(inserted_elements);
     do {
-      RBTreeStandard<int> tree;
-      for (int value : temp) {
-        ASSERT_TRUE(tree.Insert(value));
+      for (int i = 0; i < size; ++i) {
+        RBTreeStandard<int> tree;
+        for (int value : temp) ASSERT_TRUE(tree.Insert(value));
+        EXPECT_TRUE(tree.Delete(temp[i]));
+        EXPECT_TRUE(tree.IsBalanced());
+        std::vector<int> expected_result(temp);
+        expected_result.erase(expected_result.begin() + i);
+        std::sort(expected_result.begin(), expected_result.end());
+        std::vector<int> actual_result;
+        tree.InorderTraverse(actual_result);
+        EXPECT_THAT(actual_result, ElementsAreArray(expected_result));
+        EXPECT_FALSE(tree.Delete(temp[i]));
+        EXPECT_TRUE(tree.IsBalanced());
+        actual_result.clear();
+        tree.InorderTraverse(actual_result);
+        EXPECT_THAT(actual_result, ElementsAreArray(expected_result));
       }
-      EXPECT_TRUE(tree.Delete(temp[0]));
-      EXPECT_TRUE(tree.IsBalanced());
-      std::vector<int> expected_result(temp);
-      expected_result.erase(expected_result.begin());
-      std::sort(expected_result.begin(), expected_result.end());
-      std::vector<int> actual_result;
-      tree.InorderTraverse(actual_result);
-      EXPECT_THAT(actual_result, ElementsAreArray(expected_result));
-      EXPECT_FALSE(tree.Delete(temp[0]));
-      EXPECT_TRUE(tree.IsBalanced());
-      actual_result.clear();
-      tree.InorderTraverse(actual_result);
-      EXPECT_THAT(actual_result, ElementsAreArray(expected_result));
     } while (std::next_permutation(temp.begin(), temp.end()));
   }
 }
