@@ -10,74 +10,76 @@ struct RBTree {
  public:
   struct alignas(32) Node {
     using value_type = T;
-    Node* left = sentinel;
-    Node* right = sentinel;
+    Node* left;
+    Node* right;
     T value{};
-    bool red = false;
+    bool red;
   };
 
-  bool Insert(const T& x) { return Insert(root_, x); }
+  bool Insert(const T& x) { return Insert(root_, x, sentinel_); }
 
   bool Delete(const T& x) {
-    bool deleted = Delete(root_, x);
+    bool deleted = Delete(root_, x, sentinel_);
     root_->red = false;
     return deleted;
   }
 
   bool BottomUpInsert(const T& x) {
-    bool done = false, inserted = BottomUpInsert(root_, x, done);
+    bool done = false, inserted = BottomUpInsert(root_, x, done, sentinel_);
     root_->red = false;
     return inserted;
   }
 
   bool BottomUpDelete(const T& x) {
-    bool done = false, deleted = BottomUpDelete(root_, x, done);
+    bool done = false, deleted = BottomUpDelete(root_, x, done, sentinel_);
     root_->red = false;
     return deleted;
   }
 
   bool IsBalanced() const {
-    if (sentinel->red) return false;
-    if (sentinel->right != sentinel) return false;
-    if (sentinel->left != sentinel) return false;
+    if (sentinel_->red) return false;
+    if (sentinel_->right != sentinel_) return false;
+    if (sentinel_->left != sentinel_) return false;
     if (root_->red) return false;
-    return BlackHeight(root_) != -1;
+    return BlackHeight(root_, sentinel_) != -1;
   }
 
-  bool TopDownInsert(const T& x) { return TopDownInsert(root_, x); }
+  bool TopDownInsert(const T& x) { return TopDownInsert(root_, x, sentinel_); }
 
-  bool TopDownDelete(const T& x) { return TopDownDelete(root_, x); }
+  bool TopDownDelete(const T& x) { return TopDownDelete(root_, x, sentinel_); }
 
-  ~RBTree() { FreeTree(root_, sentinel); }
+  ~RBTree() { FreeTree(root_, sentinel_); }
 
   void InorderTraverse(std::vector<T>& result) const {
-    return ::InorderTraverse(root_, result, sentinel);
+    return ::InorderTraverse(root_, result, sentinel_);
   }
 
   Node* root() const { return root_; }
 
   Node*& root() { return root_; }
 
-  void PrintTree() const { PrintTree(root_, "root"); }
+  void PrintTree() const { PrintTree(root_, "root", sentinel_); }
 
-  static void PrintTree(const Node* root, std::string prefix) {
+  static void PrintTree(const Node* root, std::string prefix,
+                        const Node* sentinel) {
     if (root == sentinel) return;
-    PrintTree(root->left, prefix + "->left");
+    PrintTree(root->left, prefix + "->left", sentinel);
     std::cerr << prefix << " = " << root->value << ' '
               << (root->red ? 'R' : 'B') << '\n';
-    PrintTree(root->right, prefix + "->right");
+    PrintTree(root->right, prefix + "->right", sentinel);
   }
 
  private:
-  static int BlackHeight(const Node* node) {
+  static int BlackHeight(const Node* node, const Node* sentinel) {
     if (node == sentinel) return 1;
     if (node->red && (node->left->red || node->right->red)) return -1;
-    int lh = BlackHeight(node->left), rh = BlackHeight(node->right);
+    int lh = BlackHeight(node->left, sentinel),
+        rh = BlackHeight(node->right, sentinel);
     if (lh == -1 || rh == -1 || lh != rh) return -1;
     return lh + (node->red ? 0 : 1);
   }
 
-  static bool Insert(Node*& node, const T& x) {
+  static bool Insert(Node*& node, const T& x, Node* sentinel) {
     // When tree is empty, insert the new node and return.
     if (node == sentinel) {
       node =
@@ -125,7 +127,7 @@ struct RBTree {
     return true;
   }
 
-  static bool Delete(Node*& node, const T& x) {
+  static bool Delete(Node*& node, const T& x, Node* sentinel) {
     Node **parent = &node, **safe_node = &node, *current;
     if (!node->red && !node->left->red && !node->right->red) node->red = true;
     const T* delete_value = &x;
@@ -216,7 +218,8 @@ struct RBTree {
     return true;
   }
 
-  static bool BottomUpInsert(Node*& node, const T& x, bool& done) {
+  static bool BottomUpInsert(Node*& node, const T& x, bool& done,
+                             Node* sentinel) {
     // When the tree is empty, create the node at root;
     if (node == sentinel) {
       node = new Node{.left{sentinel}, .right{sentinel}, .value{x}, .red{true}};
@@ -224,7 +227,7 @@ struct RBTree {
     }
     if (x == node->value) return false;
     if (x < node->value) {
-      if (!BottomUpInsert(node->left, x, done)) return false;
+      if (!BottomUpInsert(node->left, x, done, sentinel)) return false;
       if (done) return true;
       // When the child is black, no violation can occur.
       if (!node->left->red) return done = true;
@@ -240,7 +243,7 @@ struct RBTree {
         return done = node->right->red = true;
       }
     } else {
-      if (!BottomUpInsert(node->right, x, done)) return false;
+      if (!BottomUpInsert(node->right, x, done, sentinel)) return false;
       if (done) return true;
       // When the child is black, no violation can occur.
       if (!node->right->red) return done = true;
@@ -259,7 +262,8 @@ struct RBTree {
     return true;
   }
 
-  static bool BottomUpDelete(Node*& node, const T& x, bool& done) {
+  static bool BottomUpDelete(Node*& node, const T& x, bool& done,
+                             Node* sentinel) {
     if (node == sentinel) return false;
     const T* delete_value = &x;
     if (x == node->value) {
@@ -282,7 +286,8 @@ struct RBTree {
       delete_value = &node->value;
     }
     if (*delete_value < node->value) {
-      if (!BottomUpDelete(node->left, *delete_value, done)) return false;
+      if (!BottomUpDelete(node->left, *delete_value, done, sentinel))
+        return false;
       if (done) return true;
       Node **parent = &node, *&sibling = node->right;
       // When sibling is red, rotate to obtain a black sibling.
@@ -310,7 +315,8 @@ struct RBTree {
       (*parent)->left->red = (*parent)->right->red = false;
       return done = true;
     } else {
-      if (!BottomUpDelete(node->right, *delete_value, done)) return false;
+      if (!BottomUpDelete(node->right, *delete_value, done, sentinel))
+        return false;
       if (done) return true;
       Node **parent = &node, *&sibling = node->left;
       // When sibling is red, rotate to obtain a black sibling.
@@ -340,14 +346,14 @@ struct RBTree {
     }
   }
 
-  static bool TopDownInsert(Node*& node, const T& x) {
+  static bool TopDownInsert(Node*& node, const T& x, Node* sentinel) {
     if (node == sentinel) {
       node =
           new Node{.left{sentinel}, .right{sentinel}, .value{x}, .red{false}};
       return true;
     }
     if (x == node->value) return false;
-    for (Node *nil = &dummy, **gg_parent = &nil, **g_parent = &nil,
+    for (Node *nil = sentinel, **gg_parent = &nil, **g_parent = &nil,
               **parent = &node;
          ;) {
       // Loop invariant: the sibling of parent (pointed by g_parent) is black.
@@ -396,11 +402,13 @@ struct RBTree {
     return true;
   }
 
-  static bool TopDownDelete(Node*& node, const T& x) {
+  static bool TopDownDelete(Node*& node, const T& x, Node* sentinel) {
     if (node == sentinel) return false;
     // Set sibling and g_parent to nil pointer to simplify the initial
     // condition.
-    Node *to_be_deleted = sentinel, nil, *sibling = &nil, **g_parent = &sibling;
+    Node *to_be_deleted = sentinel,
+         nil{.left{sentinel}, .right{sentinel}, .red{false}}, *sibling = &nil,
+         **g_parent = &sibling;
     for (Node **parent = &node, **next, **next_sibling; *parent != sentinel;
          g_parent = parent, parent = next, sibling = *next_sibling) {
       // Loop invariant: when current is black, the sibling is black, and
@@ -528,10 +536,10 @@ struct RBTree {
     return y;
   }
 
-  static inline Node dummy;
-  static constexpr Node* sentinel = &dummy;
+  Node* sentinel_ = &dummy_;
+  Node dummy_{.left{sentinel_}, .right{sentinel_}, .red{false}};
 
-  Node* root_ = sentinel;
+  Node* root_ = sentinel_;
 };
 
 #endif
