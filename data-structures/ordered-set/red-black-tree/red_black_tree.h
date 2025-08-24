@@ -133,10 +133,7 @@ struct RBTree {
     // Find the node to be deleted and the lowest red node or black node with
     // red child/grandchild.
     for (current = node; current != sentinel; current = *parent) {
-      if (current->red || current->left->red || current->right->red ||
-          current->left->left->red || current->left->right->red ||
-          current->right->left->red || current->right->right->red)
-        safe_node = parent;
+      if (IsSafeNodeForDelete(current)) safe_node = parent;
       if (x == current->value) break;
       parent = (x < current->value) ? &current->left : &current->right;
     }
@@ -147,10 +144,7 @@ struct RBTree {
     if (current->left != sentinel && current->right != sentinel) {
       Node* min = current->right;
       for (parent = &current->right; min->left != sentinel; min = min->left) {
-        if (min->red || min->left->red || min->right->red ||
-            min->left->left->red || min->left->right->red ||
-            min->right->left->red || min->right->right->red)
-          safe_node = parent;
+        if (IsSafeNodeForDelete(min)) safe_node = parent;
         parent = &min->left;
       }
       current->value = min->value;
@@ -465,6 +459,12 @@ struct RBTree {
     delete to_be_deleted;
     node->red = false;
     return true;
+  }
+
+  static bool IsSafeNodeForDelete(Node* node) {
+    return node->red || node->left->red || node->right->red ||
+           node->left->left->red || node->right->right->red ||
+           node->right->left->red || node->left->right->red;
   }
 
   // Left rotation:
