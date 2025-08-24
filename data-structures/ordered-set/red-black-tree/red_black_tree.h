@@ -10,11 +10,9 @@ struct RBTree {
  public:
   struct alignas(32) Node {
     using value_type = T;
-    explicit Node(const T& x, bool is_red = true) : value(x), red(is_red) {}
-    Node() = default;
     Node* left = sentinel;
     Node* right = sentinel;
-    T value;
+    T value{};
     bool red = false;
   };
 
@@ -82,7 +80,8 @@ struct RBTree {
   static bool Insert(Node*& node, const T& x) {
     // When tree is empty, insert the new node and return.
     if (node == sentinel) {
-      node = new Node(x, false);
+      node =
+          new Node{.left{sentinel}, .right{sentinel}, .value{x}, .red{false}};
       return true;
     }
     // If both of root's children are red, then flip the color.
@@ -97,7 +96,7 @@ struct RBTree {
       if (x == current->value) return false;
       link = x < current->value ? &current->left : &current->right;
     } while ((*link) != sentinel);
-    *link = new Node(x);
+    *link = new Node{.left{sentinel}, .right{sentinel}, .value{x}, .red{true}};
     Node *&update_node = *safe_node,
          *next =
              x < update_node->value ? update_node->left : update_node->right,
@@ -220,7 +219,7 @@ struct RBTree {
   static bool BottomUpInsert(Node*& node, const T& x, bool& done) {
     // When the tree is empty, create the node at root;
     if (node == sentinel) {
-      node = new Node(x);
+      node = new Node{.left{sentinel}, .right{sentinel}, .value{x}, .red{true}};
       return true;
     }
     if (x == node->value) return false;
@@ -343,7 +342,8 @@ struct RBTree {
 
   static bool TopDownInsert(Node*& node, const T& x) {
     if (node == sentinel) {
-      node = new Node(x, false);
+      node =
+          new Node{.left{sentinel}, .right{sentinel}, .value{x}, .red{false}};
       return true;
     }
     if (x == node->value) return false;
@@ -356,7 +356,8 @@ struct RBTree {
       // the current.
       Node* current = *parent;
       if (current == sentinel)
-        current = *parent = new Node(x);
+        current = *parent =
+            new Node{.left{sentinel}, .right{sentinel}, .value{x}, .red{true}};
       else if (x == current->value)
         return node->red = false;
       else if (current->left->red && current->right->red) {
