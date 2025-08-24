@@ -147,6 +147,28 @@ BENCHMARK_REGISTER_F(WAVLBenchmark, WAVLStandardDelete)
     ->RangeMultiplier(multiplier)
     ->Range(min_size, max_size);
 
+BENCHMARK_DEFINE_F(WAVLBenchmark, WAVLDelete)
+(benchmark::State& state) {
+  WAVL<int> tree;
+  BuildTree(state, tree);
+  int element[batch_size];
+  for (auto _ : state) {
+    state.PauseTiming();
+    RandomElement(state, element, batch_size, true);
+    for (int i = 0; i < batch_size; ++i) {
+      state.ResumeTiming();
+      tree.Delete(element[i]);
+      state.PauseTiming();
+    }
+    for (int i = 0; i < batch_size; ++i) {
+      tree.Insert(test[i]);
+    }
+  }
+}
+BENCHMARK_REGISTER_F(WAVLBenchmark, WAVLStandardDelete)
+    ->RangeMultiplier(multiplier)
+    ->Range(min_size, max_size);
+
 BENCHMARK_DEFINE_F(WAVLBenchmark, WAVLRecursiveDelete)
 (benchmark::State& state) {
   WAVL<int> tree;

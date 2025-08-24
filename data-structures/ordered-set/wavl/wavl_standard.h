@@ -161,8 +161,6 @@ struct WAVLStandard {
     delete current;
     current = child;
 
-    // If pulling up to root_, then we are done.
-    // if (current == root_) return true;
     if (delete_one_child) {
       //  If deleting a 1-child.
       //  If sibling is not a sentinel, parent must be a 1, 1 node.

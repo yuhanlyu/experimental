@@ -13,7 +13,7 @@ CLANG_FORMAT_FLAGS = -i -sort-includes -style='{BasedOnStyle: Google, UseTab: Ne
 
 TEST_FLAGS = $(DEBUG_SYMBOL) $(SANITIZE_FLAGS) -lgtest -lgtest_main $(PTHREAD)
 
-BENCHMARK_FLAGS = $(OPT_FLAGS) $(PTHREAD) -lbenchmark -g
+BENCHMARK_FLAGS = $(OPT_FLAGS) $(PTHREAD) -lbenchmark -g -stdlib=libc++
 
 SRC = wavl.h wavl_standard.h wavl_test.cc wavl_benchmark.cc
 

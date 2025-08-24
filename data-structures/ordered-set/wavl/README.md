@@ -12,6 +12,9 @@ Bernhard Haeupler, Siddhartha Sen, Robert E. Tarjan
 ACM Transactions on Algorithms (TALG), Volume 11, Issue 4
 Article No.: 30, Pages 1 - 26
 
+The wavl.h implements two algorithms without parent pointers. Insert/Delete uses safe node technique,
+while RecursiveInsert/RecursiveDelete uses recursion.
+
 ## Benchmark
 <pre>
 ------------------------------------------------------------------------------------
